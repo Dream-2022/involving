@@ -218,117 +218,11 @@ onMounted(() => {
     setChart3()
     setChart4()
 });
-
-
-//  const state = reactive({
-// tableData: [],
-//     //测试数据
-//     calendarData: [
-//         {
-//             day: "2022-11-04",
-//             xianyue: 400,
-//             yiyue: 5,
-//             sy: 1,
-//         },
-//         {
-//             day: "2022-11-05",
-//             xianyue: 500,
-//             yiyue: 5,
-//             sy: 1,
-//         },
-//         {
-//             day: "2022-11-06",
-//             xianyue: 200,
-//             yiyue: 5,
-//             sy: 1,
-//         },
-//         {
-//             day: "2022-11-07",
-//             xianyue: 0,
-//             yiyue: 0,
-//             sy: 0,
-//         },
-//     ],
-// });
-
-
-// //处理日期获取后台数据动态渲染上去
-// const textContent = (date) => {
-//     //当前date是拿到上面日历组件当前的日期值 根据该值去筛选测试数据找到对应各个日期下对应的数据return出去
-//     console.log(date, 1111);
-//     return state.calendarData.filter((item) => {
-//         return date === item.day;
-//     });
-// };
 //点击静态分析
 function staticAnalysis() {
     //跳转页面
     console.log("点击")
     router.push('../userUploadPage')
-}
-const setChart = () => {
-    let chartDom = document.querySelector(".navigation-title");
-    let myChart = echarts.init(chartDom);
-    // 指定图表的配置项和数据
-    let option = {
-        graphic: {
-            elements: [
-                {
-                    type: 'text',
-                    left: 'center',
-                    top: 'center',
-                    style: {
-                        text: 'GoodAn',
-                        fontSize: 24,
-                        fontWeight: 'bold',
-                        lineDash: [0, 200],
-                        lineDashOffset: 0,
-                        fill: 'transparent',
-                        stroke: '#116DFF',
-                        lineWidth: 1
-                    },
-                    keyframeAnimation: {
-                        duration: 8000,
-                        loop: true,
-                        keyframes: [
-                            {
-                                percent: 0.5,
-                                style: {
-                                    fill: 'transparent',
-                                    lineDashOffset: 200,
-                                    lineDash: [200, 0]
-                                }
-                            },
-                            {
-                                // Stop for a while.
-                                percent: 0.1,
-                                style: {
-                                    fill: '#116DFF'
-                                }
-                            },
-                            {
-                                percent: 1,
-                                style: {
-                                    fill: '#116DFF'
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
-        }
-    };
-
-    // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
-
-    window.addEventListener("resize", () => {
-        myChart.resize();
-    });
-
-    onUnmounted(() => {
-        myChart.dispose();
-    });
 }
 const setChart1 = () => {
     let chartDom1 = document.getElementById("chart1-content");
@@ -862,6 +756,70 @@ const setChart4 = () => {
         myChart4.dispose();
     });
 }
+const setChart = () => {
+    let chartDom = document.querySelector(".navigation-title");
+    let myChart = echarts.init(chartDom);
+    // 指定图表的配置项和数据
+    let option = {
+        graphic: {
+            elements: [
+                {
+                    type: 'text',
+                    left: 'center',
+                    top: 'center',
+                    style: {
+                        text: 'GoodAn',
+                        fontSize: 24,
+                        fontWeight: 'bold',
+                        lineDash: [0, 200],
+                        lineDashOffset: 0,
+                        fill: 'transparent',
+                        stroke: '#116DFF',
+                        lineWidth: 1
+                    },
+                    keyframeAnimation: {
+                        duration: 8000,
+                        loop: true,
+                        keyframes: [
+                            {
+                                percent: 0.5,
+                                style: {
+                                    fill: 'transparent',
+                                    lineDashOffset: 200,
+                                    lineDash: [200, 0]
+                                }
+                            },
+                            {
+                                // Stop for a while.
+                                percent: 0.1,
+                                style: {
+                                    fill: '#116DFF'
+                                }
+                            },
+                            {
+                                percent: 1,
+                                style: {
+                                    fill: '#116DFF'
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+
+    window.addEventListener("resize", () => {
+        myChart.resize();
+    });
+
+    onUnmounted(() => {
+        myChart.dispose();
+    });
+}
 </script>
 <style lang="scss" scoped>
 .banner {
@@ -878,9 +836,10 @@ const setChart4 = () => {
 }
 
 .ground {
-    height: 1200px;
     flex-wrap: wrap;
-    transform: translateY(-44.3%);
+    position: absolute;
+    top: 0%;
+    // transform: translateY(-44.3%);
     background-size: cover;
     background: linear-gradient(rgba(0, 103, 221, 0.3) 0%,
             rgb(205, 226, 252) 45%,
@@ -925,11 +884,6 @@ const setChart4 = () => {
         .navigation-title {
             height: 50px;
             width: 120px;
-            // color: $title-color;
-            // font-weight: 600;
-            // font-size: 18px;
-            // margin-left: 10px;
-            // line-height: 40px;
         }
     }
 
@@ -1101,7 +1055,7 @@ const setChart4 = () => {
         grid-template-areas:
             "chart1 chart1 chart2 chart2 chart3 chart3 chart4 chart4"
             "footer1 footer1 footer1 footer2 footer2 footer2 footer2 footer2";
-        grid-template-rows: 175px 500px;
+        grid-template-rows: 175px 450px;
         grid-template-columns: repeat(8, 11%);
         grid-gap: 10px 1.7%;
         margin-right: 10px;
@@ -1395,6 +1349,7 @@ const setChart4 = () => {
                 .el-calendar__header {
                     justify-content: center;
                     align-items: center;
+                    padding-top: 20px;
 
                     @media (max-width: 765px) {
                         padding-left: 10px;

@@ -10,7 +10,8 @@
                 </div>
             </div>
             <el-menu default-active="1" class="el-menu-vertical-demo" :collapse="isCollapse">
-                <RouterLink :to="'foundation'"><el-menu-item index="1">
+                <RouterLink :to="'foundation'">
+                    <el-menu-item index="1">
                         <span class="iconfont icon-info1"></span>
                         <template #title>基本信息</template>
                     </el-menu-item>

@@ -24,11 +24,26 @@
 import { UploadFilled } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router';
 import { ref } from 'vue'
+import axios from 'axios'
 const router = useRouter();
 const value = ref(false)
 function uploadClick() {
     console.log("点击")
-    router.push('../../userResultPage')
+    // router.push('../../userResultPage')
+    const http = axios.create({
+        baseURL: 'http://192.168.50.32:10010',
+        // timeout: 5000
+    })
+    http({
+        url: '/apk-download/download',
+        method: 'POST',
+        params: {
+            apkUrl: 'https://download.yidianzixun.com/',
+            k: 'v'
+        }
+    }).then(res => {
+        console.log(res.data)
+    })
 }
 </script>
 <style lang="scss" scoped>

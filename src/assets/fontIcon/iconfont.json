@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "17406393",
+      "name": "TXT文件",
+      "font_class": "TXTwenjian",
+      "unicode": "e666",
+      "unicode_decimal": 58982
+    },
+    {
+      "icon_id": "6882137",
+      "name": "txt文件",
+      "font_class": "txtwenjian",
+      "unicode": "e701",
+      "unicode_decimal": 59137
+    },
+    {
+      "icon_id": "18174850",
+      "name": "文件,txt",
+      "font_class": "txt-full",
+      "unicode": "ea44",
+      "unicode_decimal": 59972
+    },
+    {
+      "icon_id": "40067019",
+      "name": "excel-filled",
+      "font_class": "excel-filled",
+      "unicode": "ea24",
+      "unicode_decimal": 59940
+    },
+    {
       "icon_id": "1111736",
       "name": "exit",
       "font_class": "exit",
