@@ -143,7 +143,7 @@ const setChart = () => {
         top: 0;
         left: 0;
         width: 100%;
-        z-index: 1;
+        z-index: 10;
         padding-left: 60px;
         background-color: #fff;
         height: 60px;

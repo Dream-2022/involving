@@ -10,23 +10,6 @@
             <RouterView></RouterView>
         </div>
     </div>
-    <!-- <div class="footer-box">
-        <div class="top-box">
-            <div class="top-left">
-                <div>
-                    <img src="@/assets/img/logo2.png" class="footer-img">
-                    GoodAn
-                </div>
-                <div>
-                    GoodAn 致力于
-                </div>
-            </div>
-            <div class="top-middle">
-
-            </div>
-            <div class="top-left"></div>
-        </div>
-    </div> -->
 </template>
 
 <script setup>
@@ -76,15 +59,6 @@
                 border-bottom: 3px solid $title-color;
             }
         }
-    }
-}
-
-.footer-box {
-    height: 250px;
-    background-color: #1b2129;
-
-    .footer-img {
-        width: 30px;
     }
 }
 </style>

@@ -27,8 +27,8 @@
                 <img src="@/assets/img/word-special.png" />
             </div>
             <div class="search-box">
-                <el-input v-model="input" class="search-content" placeholder="URL，MD5，域名，ip" />
-                <el-button color="#065fed" :dark="isDark">搜索</el-button>
+                <el-input v-model="searchValue" class="search-content" placeholder="URL，MD5，域名，ip" />
+                <el-button color="#065fed">搜索</el-button>
             </div>
         </div>
         <div class="module-boxes">
@@ -137,12 +137,148 @@
                         <div class="title-box">范本库</div>
                         <div class="more-view">查看更多<span class="iconfont icon-Rightyou"></span></div>
                     </div>
+                    <div class="template-boxes">
+                        <div class="template-box">
+                            <div class="template-title">《保险资金委托投资管理协议（范本）》（2023年12月修订）</div>
+                            <div class="template-bottom">
+                                <div class="first-label">产销客</div>
+                                <div class="second-label">专户</div>
+                                <div class="name-label">邓超群</div>
+                                <div class="time-label">2024-3-5</div>
+                            </div>
+                        </div>
+                        <div class="template-box">
+                            <div class="template-title">《保险资金委托投资管理协议（范本）》（2023年12月修订）</div>
+                            <div class="template-bottom">
+                                <div class="first-label">产销客</div>
+                                <div class="second-label">专户</div>
+                                <div class="name-label">邓超群</div>
+                                <div class="time-label">2024-3-5</div>
+                            </div>
+                        </div>
+                        <div class="template-box">
+                            <div class="template-title">《保险资金委托投资管理协议（范本）》（2023年12月修订）</div>
+                            <div class="template-bottom">
+                                <div class="first-label">产销客</div>
+                                <div class="second-label">专户</div>
+                                <div class="name-label">邓超群</div>
+                                <div class="time-label">2024-3-5</div>
+                            </div>
+                        </div>
+                        <div class="template-box">
+                            <div class="template-title">《保险资金委托投资管理协议（范本）》（2023年12月修订）</div>
+                            <div class="template-bottom">
+                                <div class="first-label">产销客</div>
+                                <div class="second-label">专户</div>
+                                <div class="name-label">邓超群</div>
+                                <div class="time-label">2024-3-5</div>
+                            </div>
+                        </div>
+                        <div class="template-box">
+                            <div class="template-title">《保险资金委托投资管理协议（范本）》（2023年12月修订）</div>
+                            <div class="template-bottom">
+                                <div class="first-label">产销客</div>
+                                <div class="second-label">专户</div>
+                                <div class="name-label">邓超群</div>
+                                <div class="time-label">2024-3-5</div>
+                            </div>
+                        </div>
+                        <div class="template-box">
+                            <div class="template-title">《保险资金委托投资管理协议（范本）》（2023年12月修订）</div>
+                            <div class="template-bottom">
+                                <div class="first-label">产销客</div>
+                                <div class="second-label">专户</div>
+                                <div class="name-label">邓超群</div>
+                                <div class="time-label">2024-3-5</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="@/assets/img/book.png" class="template-img">
+                    </div>
                 </div>
                 <div class="footer2">
                     <div class="footer-title">
                         <el-divider direction="vertical" />
                         <div class="title-box">最近分析记录</div>
                         <div class="more-view">查看更多<span class="iconfont icon-Rightyou"></span></div>
+                    </div>
+                    <div class="analysis-boxes">
+                        <div class="analysis-box">
+                            <div class="analysis-top">
+                                <div class="analysis-md5">4654687968746543131545.apk</div>
+                                <div class="analysis-title">神奇工具.apk</div>
+                            </div>
+                            <div class="analysis-bottom">
+                                <el-progress :percentage="percentage" :color="customColors" />
+                                <div class="first-label" :class="getLabelColor('黑灰产')">黑灰产</div>
+                                <div class="second-label">冒充领导、熟人类</div>
+                                <div class="time-label">2024-5-6 12:15:44</div>
+                            </div>
+                        </div>
+                        <div class="analysis-box">
+                            <div class="analysis-top">
+                                <div class="analysis-md5">4654687968746543131545.apk</div>
+                                <div class="analysis-title">神奇工具.apk</div>
+                            </div>
+                            <div class="analysis-bottom">
+                                <el-progress :percentage="percentage" :color="customColors" />
+                                <div class="first-label" :class="getLabelColor('涉诈')">涉诈</div>
+                                <div class="second-label">冒充军警购物类</div>
+                                <div class="time-label">2024-5-6 12:15:44</div>
+                            </div>
+                        </div>
+                        <div class="analysis-box">
+                            <div class="analysis-top">
+                                <div class="analysis-md5">4654687968746543131545.apk</div>
+                                <div class="analysis-title">神奇工具.apk</div>
+                            </div>
+                            <div class="analysis-bottom">
+                                <el-progress :percentage="percentage" :color="customColors" />
+                                <div class="first-label" :class="getLabelColor('涉赌')">涉赌</div>
+                                <div class="second-label">网络婚恋、交友类</div>
+                                <div class="time-label">2024-5-6 12:15:44</div>
+                            </div>
+                        </div>
+                        <div class="analysis-box">
+                            <div class="analysis-top">
+                                <div class="analysis-md5">465468796874654dfg3131545.apk</div>
+                                <div class="analysis-title">神奇工具.apk</div>
+                            </div>
+                            <div class="analysis-bottom">
+                                <el-progress :percentage="percentage" :color="customColors" />
+                                <div class="first-label" :class="getLabelColor('涉黄')">涉黄</div>
+                                <div class="second-label">虚假征信类</div>
+                                <div class="time-label">2024-5-6 12:15:44</div>
+                            </div>
+                        </div>
+                        <div class="analysis-box">
+                            <div class="analysis-top">
+                                <div class="analysis-md5">4654687968746543131545.apk</div>
+                                <div class="analysis-title">神奇工具.apk</div>
+                            </div>
+                            <div class="analysis-bottom">
+                                <el-progress :percentage="percentage" :color="customColors" />
+                                <div class="first-label" :class="getLabelColor('白名单')">白名单</div>
+                                <div class="second-label">虚假购物、服务类</div>
+                                <div class="time-label">2024-5-6 12:15:44</div>
+                            </div>
+                        </div>
+                        <div class="analysis-box">
+                            <div class="analysis-top">
+                                <div class="analysis-md5">4654687968746543131545.apk</div>
+                                <div class="analysis-title">神奇工具.apk</div>
+                            </div>
+                            <div class="analysis-bottom">
+                                <el-progress :percentage="percentage" :color="customColors" />
+                                <div class="first-label" :class="getLabelColor('黑灰产')">黑灰产</div>
+                                <div class="second-label">虚假购物、服务类</div>
+                                <div class="time-label">2024-5-6 12:15:44</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <img src="@/assets/img/book.png" class="template-img">
                     </div>
                 </div>
             </div>
@@ -155,26 +291,26 @@
                         1200
                     </div>
                 </div>
-                <el-calendar>
-                    <template #header="{ date }">
-                        <el-button size="small" @click="selectDate('prev-month')">
-                            上个月
+                <el-calendar ref="calendar">
+                    <template #header="{ }">
+                        <el-button size="small" @click="selectDate('today')">
+                            今天
                         </el-button>
-                        <span class="date-content">{{ date }}</span>
-                        <el-button-group>
-                            <el-button size="small" @click="selectDate('today')">
-                                今天
+                        <span class="date-content">{{ calendarString }}</span>
+                        <div>
+                            <el-button size="small" @click="selectDate('prev-month')">
+                                上月
                             </el-button>
+                        </div>
+                        <div>
                             <el-button size="small" @click="selectDate('next-month')">
-                                下个月
+                                下月
                             </el-button>
-                        </el-button-group>
+                        </div>
                     </template>
                     <template #date-cell="{ data }">
                         <el-row :class="data.isSelected ? 'is-selected' : 'sds'">
                             {{ data.day.split('-').slice(2).join('-') }}
-                            <!-- {{ data.day }} -->
-                            <!-- {{ data.isSelected ? '✔️' : '' }} -->
                         </el-row>
                         <div class="iconfont icon-weibiaoti1"></div>
                         <!-- <div v-for="(item, index) in textContent(data.day)" :key="index">
@@ -193,7 +329,7 @@
                     </template>
                 </el-calendar>
                 <div class="button-box">
-                    <el-button color="#065fed" :dark="isDark">签到</el-button>
+                    <el-button color="#065fed">签到</el-button>
                     <div class="prompt">
                         <span>连续签到6天, </span>
                         <span>再签到1天可获取100积分</span>
@@ -201,23 +337,162 @@
                 </div>
             </div>
         </div>
+        <!-- <div class="footer-box">
+            <div class="top-box">
+                <div class="top-left">
+                    <div>
+                        <img src="@/assets/img/logo2.png" class="footer-img">
+                        GoodAn
+                    </div>
+                    <div>
+                        GoodAn 致力于
+                    </div>
+                </div>
+                <div class="top-middle">
+
+                </div>
+                <div class="top-left"></div>
+            </div>
+        </div> -->
     </div>
 </template>
 <script setup>
 import "@/assets/fontIcon/iconfont.css";
+import { ref } from 'vue'
 import { useRouter } from 'vue-router';
 import { onUnmounted, onMounted, getCurrentInstance } from "vue";
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
 const router = useRouter();
-
+//进度条的颜色
+const customColors = [
+    { color: 'linear-gradient(to right,#FFD4BD,#D6573E', percentage: 25 },
+    { color: 'linear-gradient(to right,#F2DCAA,#e7823c', percentage: 50 },
+    { color: 'linear-gradient(to right,#BDF1FF,#1B79D1', percentage: 75 },
+    { color: 'linear-gradient(to right,#DDFA9D,#9BD420', percentage: 100 },
+]
+let percentage = ref(44)
+let calendarDate = ref(new Date())
+let calendarString = ref()
+const calendar = ref()
+let searchValue = ref('')
 onMounted(() => {
     setChart()
     setChart1()
     setChart2()
     setChart3()
     setChart4()
+    //日历上的年月
+    const year = calendarDate.value.getFullYear();
+    const month = calendarDate.value.getMonth() + 1;
+    calendarString.value = year + '年' + month + '月'
+    //范本库超出范围
+    displayWindowSize()
+    //获取签到的天数
+    //获取范本库
+
 });
+//范本库/最近分析记录超出或少于范围
+function displayWindowSize() {
+    let footer1 = null
+    let templateBoxes = null
+    let footer2 = null
+    let analysisBoxes = null
+    setTimeout(() => {
+        footer1 = document.querySelector('.footer1');
+        templateBoxes = document.querySelector('.template-boxes');
+        if (templateBoxes.offsetHeight + 20 + 70 < footer1.offsetHeight) {
+            const templateBoxItems = templateBoxes.querySelectorAll('.display-none');
+            if (templateBoxItems.length > 0) {
+                templateBoxItems[0].classList.remove('display-none')
+            }
+        }
+        if (templateBoxes.offsetHeight + 20 + 70 < footer1.offsetHeight) {
+            const templateBoxItems = templateBoxes.querySelectorAll('.display-none');
+            if (templateBoxItems.length > 0) {
+                templateBoxItems[0].classList.remove('display-none')
+            }
+        }
+        if (templateBoxes.offsetHeight + 20 > footer1.offsetHeight) {
+            const templateBoxItems = templateBoxes.querySelectorAll('.template-box:not(.display-none)');
+            if (templateBoxItems.length > 0) {
+                templateBoxItems[templateBoxItems.length - 1].classList.add('display-none')
+            }
+        }
+        if (templateBoxes.offsetHeight + 20 > footer1.offsetHeight) {
+            const templateBoxItems = templateBoxes.querySelectorAll('.template-box:not(.display-none)');
+            if (templateBoxItems.length > 0) {
+                templateBoxItems[templateBoxItems.length - 1].classList.add('display-none')
+            }
+        }
+        footer2 = document.querySelector('.footer2');
+        analysisBoxes = document.querySelector('.analysis-boxes');
+        if (analysisBoxes.offsetHeight + 60 < footer2.offsetHeight) {
+            const templateBoxItems = analysisBoxes.querySelectorAll('.display-none1');
+            if (templateBoxItems.length > 0) {
+                templateBoxItems[0].classList.remove('display-none1')
+            }
+        }
+        if (analysisBoxes.offsetHeight + 60 < footer2.offsetHeight) {
+            const templateBoxItems = analysisBoxes.querySelectorAll('.display-none1');
+            if (templateBoxItems.length > 0) {
+                templateBoxItems[0].classList.remove('display-none1')
+            }
+        }
+        console.log(analysisBoxes.offsetHeight > footer2.offsetHeight - 40)
+        if (analysisBoxes.offsetHeight > footer2.offsetHeight - 40) {
+            const templateBoxItems = analysisBoxes.querySelectorAll('.analysis-box:not(.display-none1)');
+            if (templateBoxItems.length > 0) {
+                templateBoxItems[templateBoxItems.length - 1].classList.add('display-none1')
+            }
+        }
+        console.log(analysisBoxes.offsetHeight > footer2.offsetHeight - 40)
+        if (analysisBoxes.offsetHeight > footer2.offsetHeight - 40) {
+            const templateBoxItems = analysisBoxes.querySelectorAll('.analysis-box:not(.display-none1)');
+            if (templateBoxItems.length > 0) {
+                templateBoxItems[templateBoxItems.length - 1].classList.add('display-none1')
+            }
+        }
+    }, 0)
+}
+//获取最近分析记录的标签颜色
+function getLabelColor(word) {
+    if (word == '黑灰产') {
+        return 'greyLabel'
+    } else if (word == '涉黄') {
+        return 'yellowLabel'
+    } else if (word == '涉诈') {
+        return 'redLabel'
+    } else if (word == '涉赌') {
+        return 'purpleLabel'
+    } else if (word == '白名单') {
+        return 'greenLabel'
+    }
+}
+window.addEventListener("resize", displayWindowSize);
+//日历上的上月，下月和今天
+const selectDate = (val) => {
+    if (!calendar.value)
+        return
+    calendar.value.selectDate(val)
+    console.log(val)
+    let year = null
+    let month = null
+    if (val == 'next-month') {
+        calendarDate.value.setMonth(calendarDate.value.getMonth() + 1);
+        year = calendarDate.value.getFullYear();
+        month = calendarDate.value.getMonth() + 1;
+    } else if (val == 'prev-month') {
+        calendarDate.value.setMonth(calendarDate.value.getMonth() - 1);
+        year = calendarDate.value.getFullYear();
+        month = calendarDate.value.getMonth() + 1;
+    } else if (val == 'today') {
+        calendarDate.value = new Date()
+        year = calendarDate.value.getFullYear();
+        month = calendarDate.value.getMonth() + 1;
+    }
+    calendarString.value = year + '年' + month + '月'
+}
 //点击静态分析
 function staticAnalysis() {
     //跳转页面
@@ -714,37 +989,70 @@ const setChart4 = () => {
                 },
             },
         },
-        series: {
-            name: '检测apk占比',
-            type: 'pie',
-            radius: ['40%', '70%'],
-            avoidLabelOverlap: false,
-            padAngle: 5,
-            center: ['70%', '65%'],
-            itemStyle: {
-                borderRadius: 10
-            },
-            label: {
-                show: false,
-                position: 'center',
-                fontSize: 12
-            },
-            emphasis: {
+        series: [
+            {
+                name: '检测apk占比',
+                type: 'pie',
+                radius: ['35%', '60%'],
+                avoidLabelOverlap: false,
+                padAngle: 5,
+                center: ['70%', '50%'],
+                itemStyle: {
+                    borderRadius: 6
+                },
                 label: {
-                    show: true,
-                    fontSize: 10,
-                    fontWeight: 'bold'
-                }
+                    show: false,
+                    position: 'center',
+                    fontSize: 12
+                },
+                emphasis: {
+                    focus: 'none', // 强调时不放大
+                    label: {
+                        show: true,
+                        fontSize: 10,
+                        fontWeight: 'bold'
+                    },
+                    scale: false // 这里不放大其他数据项
+                },
+                labelLine: {
+                    show: false
+                },
+                data: [
+                    { value: 300, name: '安全', itemStyle: { color: '#7ab25f' }, hoverOffset: 10 }, // 设置 hoverOffset
+                    { value: 1000, name: '危险apk', itemStyle: { color: '#F56C6C' }, hoverOffset: 0 } // 设置 hoverOffset
+                ]
             },
-            labelLine: {
-                show: false
-            },
-            data: [
-                { value: 1048, name: '危险apk', itemStyle: { color: '#F56C6C' } },
-                { value: 735, name: '安全apk', itemStyle: { color: '#7ab25f' } }
-            ]
-        }
-
+            {
+                name: '',
+                type: 'pie',
+                radius: ['75%', '100%'],
+                padAngle: 2,
+                center: ['70%', '50%'],
+                itemStyle: {
+                    borderRadius: 6
+                },
+                emphasis: {
+                    focus: 'none', // 强调时不放大
+                    label: {
+                        show: true,
+                        fontSize: 10,
+                        fontWeight: 'bold'
+                    },
+                },
+                label: {
+                    show: false,
+                    position: 'center',
+                    fontSize: 12
+                },
+                data: [
+                    { value: 300, name: '安全', itemStyle: { color: '#7ab25f' }, hoverOffset: 10 }, // 设置 hoverOffset
+                    { value: 221, name: '黑灰产', itemStyle: { color: '#cccccc' }, hoverOffset: 0 },
+                    { value: 520, name: '涉黄', itemStyle: { color: '#FF915A' }, hoverOffset: 0 },
+                    { value: 100, name: '涉诈', itemStyle: { color: '#5470C6' }, hoverOffset: 0 },
+                    { value: 159, name: '涉毒', itemStyle: { color: '#FAC858' }, hoverOffset: 0 },
+                ]
+            }
+        ]
     };
     myChart4.setOption(option4);
 
@@ -1068,7 +1376,7 @@ const setChart = () => {
             grid-template-areas:
                 "chart1 chart1 chart1 chart1 chart2 chart2 chart2 chart2"
                 " chart3 chart3 chart3 chart3 chart4 chart4 chart4 chart4"
-                "footer1 footer1 footer1 footer1 footer2 footer2 footer2 footer2";
+                "footer1 footer1 footer1 footer1 footer1 footer1 footer1 footer1";
         }
 
         @media (min-width: 765px) and (max-width: 1024px) {
@@ -1176,7 +1484,7 @@ const setChart = () => {
         .footer1,
         .footer2 {
             border-radius: 10px;
-            grid-area: footer1;
+            position: relative;
 
             .footer-title {
                 display: flex;
@@ -1210,10 +1518,185 @@ const setChart = () => {
                 }
             }
 
+            .template-img {
+                height: 60px;
+                position: absolute;
+                bottom: 0;
+                right: 10%;
+            }
+
+        }
+
+        .footer1 {
+            grid-area: footer1;
+
+            .template-boxes {
+                word-wrap: break-word;
+                font-size: 14px;
+                padding: 15px 10px 0 15px;
+
+                .template-box {
+                    margin-bottom: 6px;
+                    padding-bottom: 10px;
+                    // border-bottom: 1px solid #ccc;
+
+                    .template-title {
+                        margin-bottom: 5px;
+                        overflow: hidden;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
+                        -webkit-line-clamp: 2;
+                        text-overflow: ellipsis;
+                    }
+
+                    .template-bottom {
+                        font-size: 12px;
+                        display: flex;
+                        flex-wrap: wrap;
+                        line-height: 20px;
+                        align-items: center;
+
+                        .first-label {
+                            background-color: $button-color;
+                            color: #fff;
+                            border-radius: 5px;
+                            padding: 0 5px;
+                        }
+
+                        .second-label {
+                            margin-left: 5px;
+                            margin-right: 8px;
+                            background-color: #e6eaf2;
+                            color: $button-color;
+                            border-radius: 5px;
+                            padding: 0 5px;
+                        }
+
+                        .name-label {
+                            margin-right: auto;
+                        }
+
+                        .time-label {
+                            margin-right: 5px;
+                        }
+                    }
+
+                }
+            }
         }
 
         .footer2 {
             grid-area: footer2;
+
+            @media (max-width: 765px) {
+                display: none;
+            }
+
+            @media (min-width: 765px) and (max-width: 1024px) {}
+
+            @media (min-width: 1024px) {}
+
+            .analysis-boxes {
+                word-wrap: break-word;
+                font-size: 14px;
+                padding: 15px 10px 0 15px;
+
+                .analysis-box {
+                    border-radius: 10px;
+                    margin-bottom: 10px;
+                    padding-bottom: 10px;
+                    // border-bottom: 1px solid #ccc;
+
+                    .template-title {
+                        margin-bottom: 5px;
+                        overflow: hidden;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
+                        -webkit-line-clamp: 2;
+                        text-overflow: ellipsis;
+                    }
+
+                    .analysis-top {
+                        display: flex;
+                        word-wrap: break-word;
+                        flex-wrap: wrap;
+                        /* 或者使用white-space属性 */
+                        white-space: pre-wrap;
+
+                        .analysis-md5 {
+                            word-wrap: break-word;
+                            white-space: pre-wrap;
+                            margin-right: auto;
+                        }
+
+                        .analysis-title {
+                            margin-right: 5px;
+                        }
+                    }
+
+                    .analysis-bottom {
+                        margin-top: 5px;
+                        font-size: 12px;
+                        display: flex;
+                        flex-wrap: wrap;
+                        line-height: 20px;
+                        align-items: center;
+
+                        .el-progress {
+                            width: 250px;
+                        }
+
+                        .first-label {
+                            color: #fff;
+                            border-radius: 5px;
+                            padding: 0 5px;
+                        }
+
+                        .purpleLabel {
+                            background-color: $purple;
+                        }
+
+                        .yellowLabel {
+                            background-color: $yellow;
+                        }
+
+                        .greenLabel {
+                            background-color: $green;
+                        }
+
+                        .greyLabel {
+                            background-color: $grey;
+                        }
+
+                        .redLabel {
+                            background-color: $red;
+                        }
+
+                        .second-label {
+                            margin-left: 5px;
+                            margin-right: 8px;
+                            background-color: #FFE5D6;
+                            color: #ff5e00;
+                            border-radius: 5px;
+                            padding: 0 5px;
+                            margin-right: auto;
+                        }
+
+                        .time-label {
+                            margin-right: 5px;
+
+                            @media (max-width: 765px) {}
+
+                            @media (min-width: 765px) and (max-width: 1024px) {
+                                display: none;
+                            }
+
+                            @media (min-width: 1024px) {}
+                        }
+                    }
+
+                }
+            }
         }
     }
 
@@ -1427,6 +1910,17 @@ const setChart = () => {
     }
 }
 
+.footer-box {
+    margin-top: 50px;
+    height: 250px;
+    color: #fff;
+    background-color: #304a76;
+
+    .footer-img {
+        width: 30px;
+    }
+}
+
 @font-face {
     font-family: "iconfont";
     /* Project id 4533157 */
@@ -1438,5 +1932,13 @@ const setChart = () => {
 .iconfont::before {
     font-size: 20px;
     font-weight: 600;
+}
+
+.display-none {
+    display: none;
+}
+
+.display-none1 {
+    display: none;
 }
 </style>

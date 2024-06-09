@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "4936613",
+      "name": "file-pdf-fill",
+      "font_class": "file-pdf-fill",
+      "unicode": "e858",
+      "unicode_decimal": 59480
+    },
+    {
+      "icon_id": "5634513",
+      "name": "user-shield",
+      "font_class": "user-shield",
+      "unicode": "f13d",
+      "unicode_decimal": 61757
+    },
+    {
+      "icon_id": "40402718",
+      "name": "dataStatics",
+      "font_class": "dataStatics",
+      "unicode": "e8bc",
+      "unicode_decimal": 59580
+    },
+    {
       "icon_id": "17406393",
       "name": "TXT文件",
       "font_class": "TXTwenjian",
