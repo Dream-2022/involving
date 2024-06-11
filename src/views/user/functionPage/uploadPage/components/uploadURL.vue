@@ -14,9 +14,10 @@
                 </el-button>
             </el-button-group>
         </div>
-        <el-switch size="large" v-if="selectValue" v-model="value" active-text="开启动态分析" />
+        <el-switch size="large" v-if="selectValue" v-model="isActiveAnalysis" active-text="开启动态分析" />
         <div class="button-box">
-            <el-button color="#547BF1" @click="confirmClick">{{ selectValue ? value ? '开始动态分析' : '开始静态分析' : '开始下载'
+            <el-button color="#547BF1" @click="confirmClick">{{ selectValue ? isActiveAnalysis ? '开始动态分析' : '开始静态分析' :
+            '开始下载'
                 }}</el-button>
         </div>
     </div>
@@ -25,7 +26,7 @@
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { URLDownloadApkAPI } from '@/apis/analysis.js'
-const value = ref(false)
+const isActiveAnalysis = ref(false)
 const selectValue = ref(false)
 let inputContent = ref('')
 async function confirmClick() {
@@ -46,7 +47,7 @@ async function confirmClick() {
     const res = await URLDownloadApkAPI(inputContent.value, 'v')
     console.log(res)
     let link = document.createElement('a');
-    link.href = res.data
+    link.href = res.data.data
     link.click();//模拟点击
     URL.revokeObjectURL(link.href);
     const linkElement = document.querySelector('link[href="' + link.href + '"]');

@@ -12,15 +12,15 @@
                     </RouterLink>
                 </li>
                 <li>
+                    <RouterLink active-class="option-active" :to="'/userMyAnalysisPage'" @click="backClick">我的分析
+                    </RouterLink>
+                </li>
+                <li>
                     <RouterLink active-class="option-active" :to="'/userUploadPage'" @click="backClick">apk分析
                     </RouterLink>
                 </li>
                 <li>
                     <RouterLink active-class="option-active" :to="'/userBlackWhitePage'" @click="backClick">黑白名单库
-                    </RouterLink>
-                </li>
-                <li>
-                    <RouterLink active-class="option-active" :to="'/userMyAnalysisPage'" @click="backClick">我的分析
                     </RouterLink>
                 </li>
                 <li>

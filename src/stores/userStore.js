@@ -11,8 +11,18 @@ export const useUserStore = defineStore('user', () => {
     const getIsLogin=()=>{
         return isLogin.value
     }
-        const getUserInfo=()=>{
+    const getUserInfo=()=>{
         return user.value
+    }
+    const setUserInfo=(userInfo,shortToken,refreshToken)=>{
+        user.value=null
+        user.value={
+            ...userInfo,
+            shortToken,
+            refreshToken
+        };
+        console.log('看谁先到111')
+        console.log(user.value)
     }
     const clearInfoAndToken=()=>{
         user.value=null
@@ -26,6 +36,7 @@ export const useUserStore = defineStore('user', () => {
     return {
         user,
         getIsLogin,
+        setUserInfo,
         clearInfoAndToken,
         changeToken,
         getUserInfo,

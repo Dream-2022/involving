@@ -5,23 +5,23 @@
                 最近分析
             </div>
             <div class="middle-word">以下内容是访客的分析记录，如果您不希望公开自己的分析记录，请在上传分析前登录用户账号</div>
-            <el-table :data="recentList" style="width: 100%" stripe>
-                <el-table-column prop="data1" label="应用程序" width="120" :max-width="120">
+            <el-table :data="recentAnalysisList" style="width: 100%" stripe>
+                <el-table-column prop="data1" label="应用程序" width="220">
                     <template #default="{ row }">
-                        <div><img :src="row.data1" class="apk-img"></div>
-                        <div><strong>{{ row.data2 }}</strong></div>
+                        <div><img :src="row.apkIconPath" class="apk-img"></div>
+                        <div><strong>{{ row.fileName }}</strong></div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="data3" label="文件名称" :min-width="100" :max-width="220" />
-                <el-table-column prop="data4" label="风险评估" :min-width="80" :max-width="150">
+                <el-table-column prop="fileName" label="文件名称" width="240" />
+                <el-table-column label="风险评估" width="180">
                     <template #default="{ row }">
-                        <el-button color="#547BF1" @click="CodeFileDisplay(row.id)" size="small">{{ row.data2
+                        <el-button color="#547BF1" @click="CodeFileDisplay(row.id)" size="small">{{ row.apkDesc
                             }}</el-button>
                     </template>
                 </el-table-column>
-                <el-table-column prop="data5" label="MD5值" :min-width="120" :max-width="250" />
-                <el-table-column prop="data2" label="最后分析时间" width="90" />
-                <el-table-column prop="data2" label="操作" width="120" fixed="right">
+                <el-table-column prop="fileMd5" label="MD5值" width="360" />
+                <el-table-column prop="detectedTime" label="最后分析时间" width="220" />
+                <el-table-column label="操作" width="120" fixed="right">
                     <template #default="{ row }">
                         <el-button color="#547BF1" size="small" plain @click="safeClick(row)"
                             style="margin-left:12px; margin-bottom: 10px; ">
@@ -42,41 +42,31 @@
     </div>
 </template>
 <script setup>
-import { reactive } from "vue";
-let recentList = reactive([
-    {
-        data1: "src/assets/img/avatar.jpeg",
-        data2: "开盘啦 - 5.14.0.4",
-        data3: "kpl_5.14.0.4.apk",
-        data4: "AI评估：很危险，请谨慎安装",
-        data5: "e8e9f6f95d96c970ffbc8a36bcd06a8e",
-        data6: "2024-06-06 10:54:19",
-    },
-    {
-        data1: "src/assets/img/avatar.jpeg",
-        data2: "开盘啦 - 5.14.0.4",
-        data3: "kpl_5.14.0.4.apk",
-        data4: "AI评估：很危险，请谨慎安装",
-        data5: "e8e9f6f95d96c970ffbc8a36bcd06a8e",
-        data6: "2024-06-06 10:54:19",
-    },
-    {
-        data1: "src/assets/img/avatar.jpeg",
-        data2: "开盘啦 - 5.14.0.4",
-        data3: "kpl_5.14.0.4.apk",
-        data4: "AI评估：很危险，请谨慎安装",
-        data5: "e8e9f6f95d96c970ffbc8a36bcd06a8e",
-        data6: "2024-06-06 10:54:19",
-    },
-    {
-        data1: "src/assets/img/avatar.jpeg",
-        data2: "开盘啦 - 5.14.0.4",
-        data3: "kpl_5.14.0.4.apk",
-        data4: "AI评估：很危险，请谨慎安装",
-        data5: "e8e9f6f95d96c970ffbc8a36bcd06a8e",
-        data6: "2024-06-06 10:54:19",
-    },
-])
+import { onMounted, reactive, ref } from "vue";
+import { getRecentAnalysisAPI } from '@/apis/mainPage.js'
+let recentAnalysisList = ref([])
+onMounted(async () => {
+    //获取最近分析
+    const res1 = await getRecentAnalysisAPI('1', 'v')
+    console.log(res1.data)
+    recentAnalysisList.value = res1.data.data.records
+    recentAnalysisList.value.forEach(item => {
+        const date = new Date(item.detectedTime);
+        const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+        item.detectedTime = formattedDate;
+        if (item.apkDesc == 'scam') {
+            item.apkDesc = '涉诈'
+        } else if (item.apkDesc == 'sex') {
+            item.apkDesc = '涉黄'
+        } else if (item.apkDesc == 'gamble') {
+            item.apkDesc = '涉赌'
+        } else if (item.apkDesc == 'black') {
+            item.apkDesc = '黑灰色'
+        } else if (item.apkDesc == 'white') {
+            item.apkDesc = '白名单'
+        }
+    });
+})
 // window.addEventListener('scroll', () => {
 //     // 当滚动到页面底部时执行函数
 //     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {

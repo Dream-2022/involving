@@ -6,7 +6,7 @@ import UserFunctionPage from "@/views/user/functionPage/index.vue";
 import UserRecentPage from "@/views/user/functionPage/recentPage/index.vue";
 import UserBlackWhitePage from "@/views/user/functionPage/blackWhitePage/index.vue";
 import UserMyAnalysisPage from "@/views/user/functionPage/myAnalysisPage/index.vue";
-import UserMemberPage from "@/views/user/functionPage/myAnalysisPage/index.vue";
+import UserMemberPage from "@/views/user/functionPage/memberPage/index.vue";
 
 import UserUploadPage from "@/views/user/functionPage/uploadPage/index.vue";
 import fileComponents from "@/views/user/functionPage/uploadPage/components/uploadFile.vue";
@@ -24,6 +24,8 @@ import ThirdParty from "@/views/user/resultPage/components/thirdParty.vue";
 import Traceability from "@/views/user/resultPage/components/traceability.vue";
 import Unsullied from "@/views/user/resultPage/components/unsullied.vue";
 
+import LoginPage from "@/views/login/login.vue";
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -35,6 +37,11 @@ const router = createRouter({
       children:[
         {path:'userMainPage',component:UserMainPage},
       ]
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginPage,
     },
     {
       path: '/userFunctionPage',
@@ -55,7 +62,11 @@ const router = createRouter({
           ]
         },
         {path: '/userBlackWhitePage',component: UserBlackWhitePage},
-        {path: '/userMyAnalysisPage',component: UserMyAnalysisPage},
+        {
+          path: '/userMyAnalysisPage',
+          component: UserMyAnalysisPage,
+          props: true
+        },
         {path: '/userMemberPage',component: UserMemberPage},
       ]
     },

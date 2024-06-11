@@ -3,10 +3,10 @@
         <div class="upload-box">
             <div class="iconfont icon-fingerprint"></div>
             <el-input v-model="input" style="width: 95%" placeholder="URL, IP地址, 域名, 文件hash" />
-            <el-switch size="large" v-model="value" active-text="开启动态分析" /><br>
+            <el-switch size="large" v-model="isActiveAnalysis" active-text="开启动态分析" /><br>
             <div class="button-box">
                 <el-button color="#547BF1">
-                    {{ value ? '开始动态分析' : '开始静态分析' }}
+                    {{ isActiveAnalysis ? '开始动态分析' : '开始静态分析' }}
                 </el-button>
             </div>
         </div>
@@ -14,7 +14,7 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-const value = ref(false)
+const isActiveAnalysis = ref(false)
 </script>
 <style lang="scss" scoped>
 .upload-box {

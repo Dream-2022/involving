@@ -33,28 +33,28 @@
         </div>
         <div class="module-boxes">
             <div class="module-box">
-                <img src="@/assets/3D/3-t.png" />
-                <div>最近分析</div>
+                <img src="@/assets/3D/3-t.png" @click="staticAnalysis('userRecentPage')" />
+                <div @click="staticAnalysis('userRecentPage')">最近分析</div>
             </div>
             <div class="module-box">
-                <img src="@/assets/3D/private.png" />
-                <div>我的分析</div>
+                <img src="@/assets/3D/private.png" @click="staticAnalysis('userMyAnalysisPage')" />
+                <div @click="staticAnalysis('userMyAnalysisPage')">我的分析</div>
             </div>
             <div class="module-box">
-                <img src="@/assets/3D/0-t.png" @click="staticAnalysis" />
-                <div @click="staticAnalysis">静态分析</div>
+                <img src="@/assets/3D/0-t.png" @click="Analysis('userUploadPage', false)" />
+                <div @click="Analysis('userUploadPage', false)">静态分析</div>
             </div>
             <div class="module-box">
-                <img src="@/assets/3D/1-t.png" />
-                <div>动态分析</div>
+                <img src="@/assets/3D/1-t.png" @click="Analysis('userUploadPage', true)" />
+                <div @click="Analysis('userUploadPage', true)">动态分析</div>
             </div>
             <div class="module-box">
-                <img src="@/assets/3D/book-search.png" />
-                <div>黑白名单库</div>
+                <img src="@/assets/3D/book-search.png" @click="staticAnalysis('userBlackWhitePage')" />
+                <div @click="staticAnalysis('userBlackWhitePage')">黑白名单库</div>
             </div>
-            <div class="module-box">
+            <div class="module-box" @click="staticAnalysis('userMemberPage')">
                 <img src="@/assets/3D/2-t.png" />
-                <div>会员信息</div>
+                <div @click="staticAnalysis('userMemberPage')">会员信息</div>
             </div>
         </div>
         <div class="middle-box">
@@ -138,58 +138,13 @@
                         <div class="more-view">查看更多<span class="iconfont icon-Rightyou"></span></div>
                     </div>
                     <div class="template-boxes">
-                        <div class="template-box">
-                            <div class="template-title">《保险资金委托投资管理协议（范本）》（2023年12月修订）</div>
+                        <div class="template-box" v-for="item in templateList.slice(0, 6)" :key="item">
+                            <div class="template-title">{{ item.essayTitle }}</div>
                             <div class="template-bottom">
-                                <div class="first-label">产销客</div>
-                                <div class="second-label">专户</div>
-                                <div class="name-label">邓超群</div>
-                                <div class="time-label">2024-3-5</div>
-                            </div>
-                        </div>
-                        <div class="template-box">
-                            <div class="template-title">《保险资金委托投资管理协议（范本）》（2023年12月修订）</div>
-                            <div class="template-bottom">
-                                <div class="first-label">产销客</div>
-                                <div class="second-label">专户</div>
-                                <div class="name-label">邓超群</div>
-                                <div class="time-label">2024-3-5</div>
-                            </div>
-                        </div>
-                        <div class="template-box">
-                            <div class="template-title">《保险资金委托投资管理协议（范本）》（2023年12月修订）</div>
-                            <div class="template-bottom">
-                                <div class="first-label">产销客</div>
-                                <div class="second-label">专户</div>
-                                <div class="name-label">邓超群</div>
-                                <div class="time-label">2024-3-5</div>
-                            </div>
-                        </div>
-                        <div class="template-box">
-                            <div class="template-title">《保险资金委托投资管理协议（范本）》（2023年12月修订）</div>
-                            <div class="template-bottom">
-                                <div class="first-label">产销客</div>
-                                <div class="second-label">专户</div>
-                                <div class="name-label">邓超群</div>
-                                <div class="time-label">2024-3-5</div>
-                            </div>
-                        </div>
-                        <div class="template-box">
-                            <div class="template-title">《保险资金委托投资管理协议（范本）》（2023年12月修订）</div>
-                            <div class="template-bottom">
-                                <div class="first-label">产销客</div>
-                                <div class="second-label">专户</div>
-                                <div class="name-label">邓超群</div>
-                                <div class="time-label">2024-3-5</div>
-                            </div>
-                        </div>
-                        <div class="template-box">
-                            <div class="template-title">《保险资金委托投资管理协议（范本）》（2023年12月修订）</div>
-                            <div class="template-bottom">
-                                <div class="first-label">产销客</div>
-                                <div class="second-label">专户</div>
-                                <div class="name-label">邓超群</div>
-                                <div class="time-label">2024-3-5</div>
+                                <div class="first-label">{{ item.labelList[0] }}</div>
+                                <div class="second-label">{{ item.labelList[1] }}</div>
+                                <div class="name-label">{{ item.essayWriter }}</div>
+                                <div class="time-label">{{ item.publicationTime }}</div>
                             </div>
                         </div>
                     </div>
@@ -204,76 +159,16 @@
                         <div class="more-view">查看更多<span class="iconfont icon-Rightyou"></span></div>
                     </div>
                     <div class="analysis-boxes">
-                        <div class="analysis-box">
+                        <div class="analysis-box" v-for="item in recentAnalysisList.slice(0, 6)" :key="item">
                             <div class="analysis-top">
-                                <div class="analysis-md5">4654687968746543131545.apk</div>
-                                <div class="analysis-title">神奇工具.apk</div>
+                                <div class="analysis-md5">{{ item.fileMd5 }}</div>
+                                <div class="analysis-title">{{ item.fileName }}</div>
                             </div>
                             <div class="analysis-bottom">
                                 <el-progress :percentage="percentage" :color="customColors" />
-                                <div class="first-label" :class="getLabelColor('黑灰产')">黑灰产</div>
+                                <div class="first-label" :class="getLabelColor(item.apkDesc)">{{ item.apkDesc }}</div>
                                 <div class="second-label">冒充领导、熟人类</div>
-                                <div class="time-label">2024-5-6 12:15:44</div>
-                            </div>
-                        </div>
-                        <div class="analysis-box">
-                            <div class="analysis-top">
-                                <div class="analysis-md5">4654687968746543131545.apk</div>
-                                <div class="analysis-title">神奇工具.apk</div>
-                            </div>
-                            <div class="analysis-bottom">
-                                <el-progress :percentage="percentage" :color="customColors" />
-                                <div class="first-label" :class="getLabelColor('涉诈')">涉诈</div>
-                                <div class="second-label">冒充军警购物类</div>
-                                <div class="time-label">2024-5-6 12:15:44</div>
-                            </div>
-                        </div>
-                        <div class="analysis-box">
-                            <div class="analysis-top">
-                                <div class="analysis-md5">4654687968746543131545.apk</div>
-                                <div class="analysis-title">神奇工具.apk</div>
-                            </div>
-                            <div class="analysis-bottom">
-                                <el-progress :percentage="percentage" :color="customColors" />
-                                <div class="first-label" :class="getLabelColor('涉赌')">涉赌</div>
-                                <div class="second-label">网络婚恋、交友类</div>
-                                <div class="time-label">2024-5-6 12:15:44</div>
-                            </div>
-                        </div>
-                        <div class="analysis-box">
-                            <div class="analysis-top">
-                                <div class="analysis-md5">465468796874654dfg3131545.apk</div>
-                                <div class="analysis-title">神奇工具.apk</div>
-                            </div>
-                            <div class="analysis-bottom">
-                                <el-progress :percentage="percentage" :color="customColors" />
-                                <div class="first-label" :class="getLabelColor('涉黄')">涉黄</div>
-                                <div class="second-label">虚假征信类</div>
-                                <div class="time-label">2024-5-6 12:15:44</div>
-                            </div>
-                        </div>
-                        <div class="analysis-box">
-                            <div class="analysis-top">
-                                <div class="analysis-md5">4654687968746543131545.apk</div>
-                                <div class="analysis-title">神奇工具.apk</div>
-                            </div>
-                            <div class="analysis-bottom">
-                                <el-progress :percentage="percentage" :color="customColors" />
-                                <div class="first-label" :class="getLabelColor('白名单')">白名单</div>
-                                <div class="second-label">虚假购物、服务类</div>
-                                <div class="time-label">2024-5-6 12:15:44</div>
-                            </div>
-                        </div>
-                        <div class="analysis-box">
-                            <div class="analysis-top">
-                                <div class="analysis-md5">4654687968746543131545.apk</div>
-                                <div class="analysis-title">神奇工具.apk</div>
-                            </div>
-                            <div class="analysis-bottom">
-                                <el-progress :percentage="percentage" :color="customColors" />
-                                <div class="first-label" :class="getLabelColor('黑灰产')">黑灰产</div>
-                                <div class="second-label">虚假购物、服务类</div>
-                                <div class="time-label">2024-5-6 12:15:44</div>
+                                <div class="time-label">{{ item.detectedTime }}</div>
                             </div>
                         </div>
                     </div>
@@ -358,9 +253,11 @@
 </template>
 <script setup>
 import "@/assets/fontIcon/iconfont.css";
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router';
 import { onUnmounted, onMounted, getCurrentInstance } from "vue";
+import { getTemplateAPI, getRecentAnalysisAPI } from '@/apis/mainPage.js'
+import { getDetectionAPI, getMemberAPI, getFriendAPI, getApkAPI } from '@/apis/echarts.js'
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
 const router = useRouter();
@@ -376,21 +273,64 @@ let calendarDate = ref(new Date())
 let calendarString = ref()
 const calendar = ref()
 let searchValue = ref('')
-onMounted(() => {
-    setChart()
-    setChart1()
-    setChart2()
-    setChart3()
-    setChart4()
+let templateList = ref([])//范本库
+let recentAnalysisList = ref([])//最近分析
+//图表
+let detectionList = reactive([])
+let memberList = reactive([])
+let friendList = reactive([])
+let apkList = reactive([])
+onMounted(async () => {
     //日历上的年月
     const year = calendarDate.value.getFullYear();
     const month = calendarDate.value.getMonth() + 1;
     calendarString.value = year + '年' + month + '月'
     //范本库超出范围
     displayWindowSize()
-    //获取签到的天数
     //获取范本库
-
+    const res = await getTemplateAPI('1', 'v')
+    templateList.value = res.data.data.records
+    console.log(templateList.value)
+    templateList.value.forEach(item => {
+        item.labelList = item.essayLabel.split(';');
+    })
+    //获取最近分析
+    const res1 = await getRecentAnalysisAPI('1', 'v')
+    console.log(res1.data)
+    recentAnalysisList.value = res1.data.data.records
+    recentAnalysisList.value.forEach(item => {
+        const date = new Date(item.detectedTime);
+        const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+        item.detectedTime = formattedDate;
+        if (item.apkDesc == 'scam') {
+            item.apkDesc = '涉诈'
+        } else if (item.apkDesc == 'sex') {
+            item.apkDesc = '涉黄'
+        } else if (item.apkDesc == 'gamble') {
+            item.apkDesc = '涉赌'
+        } else if (item.apkDesc == 'black') {
+            item.apkDesc = '黑灰色'
+        } else if (item.apkDesc == 'white') {
+            item.apkDesc = '白名单'
+        }
+    });
+    //获取图表
+    const res2 = await getDetectionAPI('2650874158@qq.com', '7', 'v')
+    detectionList = res2.data.data
+    console.log(detectionList[1][0])
+    const res3 = await getMemberAPI('2650874158@qq.com', '7', 'v')
+    memberList = res3.data.data
+    const res4 = await getFriendAPI('2650874158@qq.com', '7', 'v')
+    friendList = res4.data.data
+    const res5 = await getApkAPI('2650874158@qq.com', '7', 'v')
+    console.log(res5.data.data[0])
+    apkList = res5.data.data[0]
+    //获取签到的天数
+    setChart()
+    setChart1()
+    setChart2()
+    setChart3()
+    setChart4()
 });
 //范本库/最近分析记录超出或少于范围
 function displayWindowSize() {
@@ -439,14 +379,12 @@ function displayWindowSize() {
                 templateBoxItems[0].classList.remove('display-none1')
             }
         }
-        console.log(analysisBoxes.offsetHeight > footer2.offsetHeight - 40)
         if (analysisBoxes.offsetHeight > footer2.offsetHeight - 40) {
             const templateBoxItems = analysisBoxes.querySelectorAll('.analysis-box:not(.display-none1)');
             if (templateBoxItems.length > 0) {
                 templateBoxItems[templateBoxItems.length - 1].classList.add('display-none1')
             }
         }
-        console.log(analysisBoxes.offsetHeight > footer2.offsetHeight - 40)
         if (analysisBoxes.offsetHeight > footer2.offsetHeight - 40) {
             const templateBoxItems = analysisBoxes.querySelectorAll('.analysis-box:not(.display-none1)');
             if (templateBoxItems.length > 0) {
@@ -469,6 +407,7 @@ function getLabelColor(word) {
         return 'greenLabel'
     }
 }
+//监听页面
 window.addEventListener("resize", displayWindowSize);
 //日历上的上月，下月和今天
 const selectDate = (val) => {
@@ -493,11 +432,15 @@ const selectDate = (val) => {
     }
     calendarString.value = year + '年' + month + '月'
 }
-//点击静态分析
-function staticAnalysis() {
+//点击快捷入口
+function staticAnalysis(string) {
     //跳转页面
     console.log("点击")
-    router.push('../userUploadPage')
+    router.push(`../${string}`)
+}
+function Analysis(string, value) {
+    console.log("点击")
+    router.push(`../${string}/file/?value=${value}`)
 }
 const setChart1 = () => {
     let chartDom1 = document.getElementById("chart1-content");
@@ -577,6 +520,7 @@ const setChart1 = () => {
                                 // 坐标轴标签
                                 show: false,
                             },
+                            data: detectionList[0][0],
                             boundaryGap: false,
                         },
                     ],
@@ -626,7 +570,8 @@ const setChart1 = () => {
                                     },
                                 ]),
                             },
-                            data: [110, 120, 230, 134, 150, 225, 210],
+                            symbolSize: 5,
+                            data: detectionList[1][0],
                         },
                     ],
                 }
@@ -651,10 +596,8 @@ const setChart1 = () => {
             }
         ]
     };
-
     // 使用刚指定的配置项和数据显示图表。
     myChart1.setOption(option1);
-
     window.addEventListener("resize", () => {
         myChart1.resize();
     });
@@ -740,6 +683,7 @@ const setChart2 = () => {
                                 // 坐标轴标签
                                 show: false,
                             },
+                            data: memberList[0][0],
                             boundaryGap: false,
                         },
                     ],
@@ -789,7 +733,7 @@ const setChart2 = () => {
                                     },
                                 ]),
                             },
-                            data: [120, 132, 101, 134, 90, 230, 210],
+                            data: memberList[1][0],
                         },
                     ],
                 }
@@ -814,14 +758,11 @@ const setChart2 = () => {
             }
         ]
     };
-
     // 使用刚指定的配置项和数据显示图表。
     myChart2.setOption(option2);
-
     window.addEventListener("resize", () => {
         myChart2.resize();
     });
-
     onUnmounted(() => {
         myChart2.dispose();
     });
@@ -881,7 +822,7 @@ const setChart3 = () => {
         },
         xAxis: {
             type: 'category',
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            data: friendList[0][0],
             axisTick: {
                 show: false, // 坐标轴刻度线
             },
@@ -919,25 +860,21 @@ const setChart3 = () => {
             boundaryGap: false,
         },
         series: {
-            data: [120, 200, 150, 80, 70, 110, 130],
+            data: friendList[1][0],
             type: 'bar',
             itemStyle: {
-                normal: {
-                    color: "#ed8b31",
-                    borderRadius: [50, 50, 0, 0]
-                }
+                color: "#ed8b31",
+                borderRadius: [50, 50, 0, 0]
             },
             barGap: '90%',
             barCategoryGap: '65%',/*多个并排柱子设置柱子之间的间距*/
+            barMinHeight: 3, // 设置柱状图的最小高度，单位可以是像素或者百分比
         }
     };
-    // 使用刚指定的配置项和数据显示图表。
     myChart3.setOption(option3);
-
     window.addEventListener("resize", () => {
         myChart3.resize();
     });
-
     onUnmounted(() => {
         myChart3.dispose();
     });
@@ -1045,11 +982,11 @@ const setChart4 = () => {
                     fontSize: 12
                 },
                 data: [
-                    { value: 300, name: '安全', itemStyle: { color: '#7ab25f' }, hoverOffset: 10 }, // 设置 hoverOffset
-                    { value: 221, name: '黑灰产', itemStyle: { color: '#cccccc' }, hoverOffset: 0 },
-                    { value: 520, name: '涉黄', itemStyle: { color: '#FF915A' }, hoverOffset: 0 },
-                    { value: 100, name: '涉诈', itemStyle: { color: '#5470C6' }, hoverOffset: 0 },
-                    { value: 159, name: '涉毒', itemStyle: { color: '#FAC858' }, hoverOffset: 0 },
+                    { value: 300, name: '安全', itemStyle: { color: '#7ab25f' } }, // 设置 hoverOffset
+                    { value: 221, name: '黑灰产', itemStyle: { color: '#cccccc' } },
+                    { value: 520, name: '涉黄', itemStyle: { color: '#FF915A' } },
+                    { value: 100, name: '涉诈', itemStyle: { color: '#5470C6' } },
+                    { value: 159, name: '涉毒', itemStyle: { color: '#FAC858' } },
                 ]
             }
         ]
@@ -1577,7 +1514,13 @@ const setChart = () => {
                         }
 
                         .time-label {
-                            margin-right: 5px;
+                            @media (max-width: 765px) {}
+
+                            @media (min-width: 765px) and (max-width: 1024px) {
+                                display: none;
+                            }
+
+                            @media (min-width: 1024px) {}
                         }
                     }
 
@@ -1683,8 +1626,6 @@ const setChart = () => {
                         }
 
                         .time-label {
-                            margin-right: 5px;
-
                             @media (max-width: 765px) {}
 
                             @media (min-width: 765px) and (max-width: 1024px) {
