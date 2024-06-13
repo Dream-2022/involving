@@ -189,7 +189,7 @@ const modify = async () => {
         userStore.setUserInfo(res.data.data)
         ElMessage.success(res.data.message)
         setTimeout(() => {
-            location.href = 'http://192.168.50.9:5173/'
+            location.href = 'http://192.168.50.8:5173/'
         }, 2000)
     }
     else {

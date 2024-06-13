@@ -416,6 +416,7 @@ function expandClick() {
             position: fixed;
             top: 0;
             z-index: 9;
+            box-shadow: 0 2px 6px 1px rgba(0, 0, 0, 0.05);
 
             .icon-bars {
                 font-size: 24px;

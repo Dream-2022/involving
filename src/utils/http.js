@@ -13,7 +13,7 @@ const route=useRoute()
 const http = axios.create({
     baseURL: 'http://192.168.50.8:80',
     // headers: {
-        // 'Access-Control-Allow-Origin': 'http://192.168.50.32:10010' // 设置允许的源
+    //     'Access-Control-Allow-Origin': 'http://192.168.50.32:10010' // 设置允许的源
     // }
     // timeout: 5000
 })

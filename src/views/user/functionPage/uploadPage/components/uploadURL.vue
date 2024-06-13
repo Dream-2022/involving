@@ -25,7 +25,7 @@
 <script setup>
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { URLDownloadApkAPI } from '@/apis/analysis.js'
+import { URLDownloadApkAPI } from '@/apis/download.js'
 const isActiveAnalysis = ref(false)
 const selectValue = ref(false)
 let inputContent = ref('')
@@ -49,6 +49,8 @@ async function confirmClick() {
     let link = document.createElement('a');
     link.href = res.data.data
     link.click();//模拟点击
+    ElMessage.success("正在下载...")
+    inputContent.value = ''
     URL.revokeObjectURL(link.href);
     const linkElement = document.querySelector('link[href="' + link.href + '"]');
     if (linkElement) {

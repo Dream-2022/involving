@@ -929,6 +929,8 @@ function getInfoClass2(securityLevel) {
     }
 
     .abuseAuthority {
+        padding-bottom: 30px;
+
         .abuseAuthority-title {
             font-weight: 600;
             margin-left: 7px;

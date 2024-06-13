@@ -26,6 +26,7 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router';
 import { reactive, ref, onMounted } from 'vue'
+import { multipartUploadAPI, finishUploadAPI } from '@/apis/multipartUpload.js'
 import '@/utils/spark-md5.min.js'
 const router = useRouter();
 const route = useRoute();
@@ -85,20 +86,9 @@ async function getFileMd5(file) {
         };
     });
 }
-function upload(data) {
-    var xhr = new XMLHttpRequest();
-    // 当上传完成时调用
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            uploadResult.append('上传成功分片：' + data.get("chunkNumber") + '\t');
-        }
-    }
-    xhr.onerror = function () {
-        uploadResult.innerHTML = '上传失败';
-    }
-    // 发送请求
-    xhr.open('POST', '/uploadBig', true);
-    xhr.send(data);
+async function upload(totalNumber, chunkNumber, md5, file, k) {
+    const res = await multipartUploadAPI(totalNumber, chunkNumber, md5, file, k);
+    return res
 }
 function sliceFile(file) {
     if (!(file instanceof Blob)) {
@@ -143,35 +133,8 @@ async function uploadClick() {
     let fileArr = sliceFile(file);
     //保存文件名称
     let fileName = file.name;
-
-    // 分片上传文件
-    var uploadedChunks = [];
-    var xhr = new XMLHttpRequest();
-    // 处理上传进度
-    xhr.upload.onprogress = function (event) {
-        var percent = 100 * event.loaded / event.total;
-        console.log('上传进度：' + percent + '%')
-        uploadResult.innerHTML = '上传进度：' + percent + '%';
-    };
-    // 当上传完成时调用
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            console.log('上传成功' + xhr.responseText)
-            uploadResult.innerHTML = '上传成功' + xhr.responseText;
-            // 记录已上传的分片号
-            uploadedChunks.push(chunkNumber);
-            // 判断是否所有分片都已上传完成
-            if (uploadedChunks.length === fileArr.length) {
-                // 所有分片已上传完成，发送请求告知服务器所有分片已上传完毕
-                console.log('所有分片已上传完毕');
-                // TODO: 发送请求告知服务器所有分片已上传完毕
-
-            }
-        }
-    }
-    xhr.onerror = function () {
-        uploadResult.innerHTML = '上传失败';
-    }
+    console.log(fileName)
+    const uploadPromises = [];
     fileArr.forEach((e, i) => {
         //创建formdata对象
         console.log('创建formdata对象')
@@ -181,13 +144,22 @@ async function uploadClick() {
         data.append("chunkNumber", i)
         data.append("md5", fileMd5)
         data.append("file", new File([e], fileName));
-        upload(data, i); // 传入分片号
+        // upload(data, i); // 传入分片号
+        const uploadPromise = upload(fileArr.length, i, fileMd5, new File([e], fileName), 'v')
+        uploadPromises.push(uploadPromise)
+        console.log(uploadPromise)
     })
-    // 发送请求
-    console.log('发送请求')
-}
-function handleChange(fileList) {
-    console.log(fileList)
+    try {
+        // 等待所有上传请求完成
+        await Promise.all(uploadPromises);
+        console.log('所有文件分片上传完毕');
+        console.log(fileMd5)
+        //静态分析的请求
+        const res = finishUploadAPI(fileMd5, 'v');
+        console.log(res)
+    } catch (error) {
+        console.error('上传过程中出现错误:', error);
+    }
 }
 
 // async function uploadClick() {
