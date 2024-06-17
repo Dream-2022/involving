@@ -133,7 +133,7 @@
         <div class="right-box">
             <div class="navigation">
                 <span class="iconfont icon-bars" @click="expandClick"></span>
-                <div class="navigation-icon">
+                <div class="navigation-icon" v-if="userInfo!=null">
                     <span class="iconfont icon-lingdang-xianxing"></span>
                     <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
                     <el-divider direction="vertical" class="divider" />
@@ -148,7 +148,7 @@
                             <template #dropdown>
                                 <div class="avatar">
                                     <div class="avatar-box">
-                                        <img src="@/assets/img/avatar.jpeg" class="drop-img">
+                                        <img :src="userInfo.userIconPath" class="drop-img">
                                         <div>李华</div>
                                     </div>
                                 </div>
@@ -161,6 +161,16 @@
                         </el-dropdown>
                     </el-col>
                 </div>
+                <div class="navigation-icon" v-else>
+                    <div>
+                        <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
+                        <el-divider direction="vertical" class="divider" />
+                    <span class="navigation-button" @click="loginClick">登录&nbsp;</span>
+                    <span style="font-size: 14px;">&nbsp;&nbsp;或&nbsp;&nbsp;</span>
+                    <span class="navigation-button" @click="loginClick">&nbsp;注册
+                    </span>
+                    </div>
+                </div>
             </div>
             <div class="content-box">
                 <RouterView></RouterView>
@@ -170,8 +180,12 @@
 </template>
 <script setup>
 import { ref, onUnmounted, onMounted, getCurrentInstance } from "vue";
+import { useUserStore } from '@/stores/userStore.js'
+const userStore = useUserStore()
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
+
+let userInfo = ref(null)
 
 const isCollapse = ref(false)//导航栏
 let disposed = ref(false)//判断图表是否显示
@@ -187,6 +201,8 @@ function handleMenuItemClick(scrollId) {
 }
 onMounted(() => {
     //判断导航栏是否展开
+    userStore.initialize()
+    userInfo.value = userStore.user
     let diva = document.querySelector(".navigation-icon")
     var w = document.documentElement.clientWidth;
     console.log(diva)
@@ -475,6 +491,9 @@ function expandClick() {
                     .el-dropdown-menu:hover {
                         border: none;
                     }
+                }
+                .navigation-button:hover{
+                    cursor: pointer;
                 }
             }
 

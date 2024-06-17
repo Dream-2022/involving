@@ -33,7 +33,7 @@ http.interceptors.request.use(config => {
     const user=userStore.getUserInfo()
     if(user!==null){
         // console.log(user.shortToken)
-        config.headers.set("Authorization",user.shortToken)
+        config.headers.set("Authorization",user.Accesstoken)
     }
     return config
 }, e => Promise.reject(e))

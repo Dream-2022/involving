@@ -1,7 +1,7 @@
 <template>
     <div class="upload-box">
-        <el-upload class="upload-demo" :auto-upload="false" :limit="1" drag multiple @exceed="handleExceed"
-            @change="fileChange" :before-upload="handleBeforeUpload">
+        <el-upload class="upload-demo" :on-remove="handleRemove" :auto-upload="false" :limit="1" drag multiple
+            @exceed="handleExceed" @change="fileChange" :file-list="uploadList">
             <el-icon class="el-icon--upload"><upload-filled /></el-icon>
             <div class="el-upload__text">
                 <em>点击</em> 或 <em>拖拽</em><br>
@@ -26,11 +26,15 @@ import { UploadFilled } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router';
 import { reactive, ref, onMounted } from 'vue'
+import { useStaticDataStore } from '@/stores/staticDataStore.js';
 import { multipartUploadAPI, finishUploadAPI } from '@/apis/multipartUpload.js'
 import '@/utils/spark-md5.min.js'
 const router = useRouter();
 const route = useRoute();
+const staticDataStore = useStaticDataStore();
+
 const isActiveAnalysis = ref(false)
+const uploadList = ref([])//el-upload组件中的文件列表
 let fileX = ref(null)
 const chunkSize = 1 * 1024 * 1024;
 onMounted(() => {
@@ -41,12 +45,95 @@ onMounted(() => {
     }
     console.log(isActiveAnalysis.value)
 })
+//点击上传文件
+async function uploadClick() {
+    if (!fileX.value || !fileX.value.raw || fileX.value.size === 0) {
+        ElMessage.error('上传文件不能为空！');
+        return;
+    }
+    console.log(fileX.value.raw);
+    const file = fileX.value.raw;
+    const extension = file.name.split('.').pop();
+    if (extension !== 'apk') {
+        ElMessage.error('只能上传后缀为 .apk 的文件！');
+        return;
+    }
+    // 计算md5
+    let fileMd5;
+    try {
+        fileMd5 = await getFileMd5(file);
+    } catch (error) {
+        console.error('获取文件MD5值出错：', error);
+        return;
+    }
+    console.log(fileMd5)
+
+
+    if (!file) return;
+    if (!fileMd5) return;
+    //断点续传,判断是否中断传输，中断的话从中断处开始
+    let flag = 0
+    const res = await finishUploadAPI(fileMd5, 'v')
+    console.log(res)
+    console.log(res.data)
+    if (res.data && res.data.data) {
+        const dataArray = res.data.data;
+        console.log(dataArray)
+        flag = dataArray[0]
+    }
+    console.log(flag)
+    //获取到文件
+    let fileArr = sliceFile(file);
+    //保存文件名称
+    let fileName = file.name;
+    console.log(fileName)
+    const uploadPromises = [];
+    for (let i = flag; i < fileArr.length; i++) {
+        console.log('创建 formdata 对象');
+        let data = new FormData();
+        data.append("totalNumber", fileArr.length);
+        data.append("chunkSize", chunkSize);
+        data.append("chunkNumber", i);
+        data.append("md5", fileMd5);
+        data.append("file", new File([fileArr[i]], fileName));
+        const uploadPromise = upload(fileArr.length, i, fileMd5, new File([fileArr[i]], fileName), 'v');
+        uploadPromises.push(uploadPromise);
+        console.log(uploadPromise);
+    }
+    try {
+        // 等待所有上传请求完成
+        await Promise.all(uploadPromises)
+        console.log('所有文件分片上传完毕')
+        console.log(uploadList.value.length)
+        console.log(uploadList.value)
+        if (uploadList.value.length > 0) {
+            uploadList.value = []
+        }
+        ElMessage.success("上传成功，等待分析. . .")
+        //静态分析的请求(上传文件完毕后)
+        const res = await finishUploadAPI(fileMd5, 'v')
+        if (res.data.code == 415) {
+            setTimeout(() => {
+                ElMessage.warning(res.data.message)
+            }, 1000)
+            return
+        }
+        console.log(res.data.data)
+        staticDataStore.staticDataList = res.data.data
+        ElMessage.success('apk 解析完毕')
+        router.push('/userResultPage')
+    } catch (error) {
+        console.error('上传过程中出现错误:', error);
+    }
+}
+//文件个数过多触发事件
 function handleExceed() {
     ElMessage({
         message: '最多只能上传一个文件',
         type: 'warning',
     });
 }
+//拖拽文件时触发事件
 const fileChange = (file) => {
     const extension = file.name.split('.').pop();
     if (extension !== 'apk') {
@@ -55,10 +142,14 @@ const fileChange = (file) => {
     console.log(file)
     fileX.value = file
     console.log(fileX.value)
+    uploadList.value.push(file);
+    console.log(uploadList.value)
 };
-const handleBeforeUpload = (file) => {
-
+//处理文件列表，以便后续清空文件列表
+const handleRemove = (file, fileList) => {
+    uploadList.value = fileList;
 };
+//获取md5
 async function getFileMd5(file) {
     return new Promise((resolve, reject) => {
         const sliceLength = 10;
@@ -86,10 +177,12 @@ async function getFileMd5(file) {
         };
     });
 }
+//分片上传的请求
 async function upload(totalNumber, chunkNumber, md5, file, k) {
     const res = await multipartUploadAPI(totalNumber, chunkNumber, md5, file, k);
     return res
 }
+//文件分片后上传
 function sliceFile(file) {
     if (!(file instanceof Blob)) {
         throw new TypeError('Parameter "file" must be a Blob object');
@@ -104,62 +197,6 @@ function sliceFile(file) {
         start = end;
     }
     return chunks;
-}
-async function uploadClick() {
-    if (!fileX.value || !fileX.value.raw || fileX.value.size === 0) {
-        ElMessage.error('上传文件不能为空！');
-        return;
-    }
-    console.log(fileX.value.raw);
-    const file = fileX.value.raw;
-    const extension = file.name.split('.').pop();
-    if (extension !== 'apk') {
-        ElMessage.error('只能上传后缀为 .apk 的文件！');
-        return;
-    }
-    // 计算md5
-    let fileMd5;
-    try {
-        fileMd5 = await getFileMd5(file);
-    } catch (error) {
-        console.error('获取文件MD5值出错：', error);
-        return;
-    }
-    console.log(fileMd5)
-
-    if (!file) return;
-    if (!fileMd5) return;
-    //获取到文件
-    let fileArr = sliceFile(file);
-    //保存文件名称
-    let fileName = file.name;
-    console.log(fileName)
-    const uploadPromises = [];
-    fileArr.forEach((e, i) => {
-        //创建formdata对象
-        console.log('创建formdata对象')
-        let data = new FormData();
-        data.append("totalNumber", fileArr.length)
-        data.append("chunkSize", chunkSize)
-        data.append("chunkNumber", i)
-        data.append("md5", fileMd5)
-        data.append("file", new File([e], fileName));
-        // upload(data, i); // 传入分片号
-        const uploadPromise = upload(fileArr.length, i, fileMd5, new File([e], fileName), 'v')
-        uploadPromises.push(uploadPromise)
-        console.log(uploadPromise)
-    })
-    try {
-        // 等待所有上传请求完成
-        await Promise.all(uploadPromises);
-        console.log('所有文件分片上传完毕');
-        console.log(fileMd5)
-        //静态分析的请求
-        const res = finishUploadAPI(fileMd5, 'v');
-        console.log(res)
-    } catch (error) {
-        console.error('上传过程中出现错误:', error);
-    }
 }
 
 // async function uploadClick() {

@@ -28,24 +28,62 @@
                     </RouterLink>
                 </li>
             </ul>
-            <div class="navigation-icon">
+            <div class="navigation-icon" v-if='userInfo!=null'>
                 <span class="iconfont icon-lingdang-xianxing"></span>
                 <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
                 <el-divider direction="vertical" class="divider" />
-                <span class="portrait-box">
+                <span>
+                    <el-dropdown>
+                        <span class="el-dropdown-link">
+                            <span class="portrait-box">
+                                <span class="portrait-nickname">{{ userInfo.userName }}</span>
+                                <span class="iconfont icon-down1"></span>
+                            </span>
+                        </span>
+                        <template #dropdown>
+                            <div class="avatar">
+                                <div class="avatar-box">
+                                    <img :src="imgPath" class="drop-img">
+                                    <div>{{ userInfo.userName }}</div>
+                                </div>
+                            </div>
+                            <el-dropdown-menu>
+                                <el-dropdown-item>我的资料</el-dropdown-item>
+                                <el-dropdown-item>上传分析</el-dropdown-item>
+                                <el-dropdown-item><span class="iconfont icon-exit"></span>&nbsp;退出登录</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
+                </span>
+                <!-- <span class="portrait-box">
                     <span class="portrait-nickname">李华</span>
                     <span class="iconfont icon-down1"></span>
+                </span> -->
+            </div>
+            <div class="navigation-icon" v-else>
+                <span>
+                    <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
+                    <el-divider direction="vertical" class="divider" />
                 </span>
+                    <span class="navigation-button" @click="loginClick">登录&nbsp;</span>
+                    <span style="font-size: 14px;">&nbsp;或&nbsp;</span>
+                    <span class="navigation-button" @click="loginClick">&nbsp;注册
+                    </span>
             </div>
         </div>
         <RouterView></RouterView>
     </div>
 </template>
 <script setup>
-import { onUnmounted, onMounted, getCurrentInstance } from "vue";
+import { onUnmounted, onMounted, getCurrentInstance, ref } from "vue";
+import { useUserStore } from "@/stores/userStore";
+const userStore = useUserStore()
+let userInfo = ref([])
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
 onMounted(() => {
+    userStore.initialize()
+    userInfo.value = userStore.user
     setChart()
 })
 function backClick() {
@@ -203,6 +241,10 @@ const setChart = () => {
             flex: 1;
             line-height: 60px;
 
+            .el-dropdown {
+                margin-top: 23px;
+            }
+
             .el-divider {
                 background-color: #000;
                 height: 40px;
@@ -237,8 +279,9 @@ const setChart = () => {
                     margin-left: 10px;
                 }
             }
-
-
+                .navigation-button {
+                    cursor: pointer;
+                }
         }
     }
 
@@ -276,6 +319,29 @@ const setChart = () => {
 
     .bg-image6 {
         background-image: url("@/assets/upload_back/svg5.png");
+    }
+}
+
+.el-scrollbar {
+    .avatar {
+        display: flex;
+        text-align: center;
+
+        .avatar-box {
+            margin: 5px auto;
+            margin-top: 20px;
+
+            .drop-img {
+                width: 50px;
+                height: 50px;
+                text-align: center;
+                border-radius: 50px;
+            }
+        }
+
+        .menu-item {
+            margin-left: 20px;
+        }
     }
 }
 </style>

@@ -45,7 +45,7 @@
 
 </script>
 <style lang="scss" scoped>
-.recent-box {
+.my-analysis {
     width: 90%;
     min-width: 600px;
     margin: 120px auto;

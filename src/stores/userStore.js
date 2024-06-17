@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 
 export const useUserStore = defineStore('user', () => {
     
-    const user=ref({})
+    const user=ref(null)
 
     const isLogin=ref(false);
 
@@ -14,15 +14,16 @@ export const useUserStore = defineStore('user', () => {
     const getUserInfo=()=>{
         return user.value
     }
-    const setUserInfo=(userInfo,shortToken,refreshToken)=>{
+    const setUserInfo=(userInfo,Accesstoken,Refreshtoken)=>{
         user.value=null
         user.value={
             ...userInfo,
-            shortToken,
-            refreshToken
+            Accesstoken,
+            Refreshtoken
         };
         console.log('看谁先到111')
         console.log(user.value)
+        localStorage.setItem('user',user.value)
     }
     const clearInfoAndToken=()=>{
         user.value=null
@@ -30,9 +31,15 @@ export const useUserStore = defineStore('user', () => {
     }
 
     const changeToken=()=>{
-        user.value.shortToken=user.value.refreshToken
+        user.value.Accesstoken=user.value.Refreshtoken
     }
-
+    const initialize = () => {
+        console.log('初始化逻辑执行');
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) {
+            user.value = JSON.parse(savedUser);
+        }
+    };
     return {
         user,
         getIsLogin,
@@ -40,6 +47,7 @@ export const useUserStore = defineStore('user', () => {
         clearInfoAndToken,
         changeToken,
         getUserInfo,
+        initialize
     }
 },{
     persist:true

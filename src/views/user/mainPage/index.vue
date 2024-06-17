@@ -10,15 +10,45 @@
                 <div class="navigation-title" @click="() => $router.push('../../userMainPage')"></div>
             </div>
             <div class="blank-box"></div>
-            <div class="navigation-icon">
-                <span class="iconfont icon-lingdang-xianxing"></span>
-                <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
-                <el-divider direction="vertical" class="divider" />
+            <div class="navigation-icon" v-if="userInfo != null">
+                <div>
+                    <span class="iconfont icon-lingdang-xianxing"></span>
+                    <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
+                    <el-divider direction="vertical" class="divider" />
+                </div>
+                <el-dropdown>
+                    <span class="el-dropdown-link">
+                        <span class="portrait-box">
+                            <span class="portrait-nickname">{{ userInfo.userName }}</span>
+                            <span class="iconfont icon-down1"></span>
+                        </span>
+                    </span>
+                    <template #dropdown>
+                        <div class="avatar">
+                            <div class="avatar-box">
+                                <img :src="imgPath" class="drop-img">
+                                <div>{{ userInfo.userName }}</div>
+                            </div>
+                        </div>
+                        <el-dropdown-menu>
+                            <el-dropdown-item>我的资料</el-dropdown-item>
+                            <el-dropdown-item @click="staticAnalysis('userMyAnalysisPage')">上传分析</el-dropdown-item>
+                            <el-dropdown-item @click="signOutClick"><span
+                                    class="iconfont icon-exit"></span>&nbsp;退出登录</el-dropdown-item>
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
+            </div>
+            <div class="navigation-icon" v-else>
+                <div>
+                    <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
+                    <el-divider direction="vertical" class="divider" />
+                </div>
                 <div class="navigation-portrait">
-                    <div>
-                        <img src="@/assets/img/avatar.jpeg" class="portrait-avatar" />
+                    <div class="navigation-button" @click="loginClick">登录&nbsp;</div>
+                    <span style="font-size: 14px;">&nbsp;&nbsp;或&nbsp;&nbsp;</span>
+                    <div class="navigation-button" @click="loginClick">&nbsp;注册
                     </div>
-                    <div class="portrait-nickname">李华</div>
                 </div>
             </div>
         </div>
@@ -27,7 +57,7 @@
                 <img src="@/assets/img/word-special.png" />
             </div>
             <div class="search-box">
-                <el-input v-model="searchValue" class="search-content" placeholder="URL，MD5，域名，ip" />
+                <el-input v-model="searchValue" class="search-content" placeholder="MD5，包名，文件名，APP名称" />
                 <el-button color="#065fed">搜索</el-button>
             </div>
         </div>
@@ -59,77 +89,78 @@
         </div>
         <div class="middle-box">
             <div class="left-boxes">
-                <div class="chart1">
+                <div class="chart1" v-if="userInfo != null">
                     <div id="chart1-content"></div>
                     <el-dropdown @command="handleCommand1">
-                        <span class="el-dropdown-link">
-                            近一周趋势图
+                        <span class="el-dropdown-link">{{ selectedOption1 }}
                             <span class="iconfont icon-down"></span>
                         </span>
                         <template #dropdown>
                             <el-dropdown-menu>
-                                <el-dropdown-item command="a">Action 1</el-dropdown-item>
-                                <el-dropdown-item command="b">Action 2</el-dropdown-item>
-                                <el-dropdown-item command="c">Action 3</el-dropdown-item>
-                                <el-dropdown-item command="d" disabled>Action 4</el-dropdown-item>
-                                <el-dropdown-item command="e" divided>Action 5</el-dropdown-item>
+                                <el-dropdown-item command="a">近一周趋势图</el-dropdown-item>
+                                <el-dropdown-item command="b">近两周趋势图</el-dropdown-item>
+                                <el-dropdown-item command="c">近一月趋势图</el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
                     </el-dropdown>
                 </div>
-                <div class="chart2">
+                <div class="chart1" v-else>
+                    <span class="chart-title1">检测数量</span>
+                    <div class="none-data">暂无数据</div>
+                </div>
+                <div class="chart2" v-if="userInfo != null">
                     <div id="chart2-content"></div>
                     <el-dropdown @command="handleCommand2">
-                        <span class="el-dropdown-link">
-                            近一周趋势图
-                            <span class="iconfont icon-down"></span>
+                        <span class="el-dropdown-link">{{ selectedOption2 }}<span class="iconfont icon-down"></span>
                         </span>
                         <template #dropdown>
                             <el-dropdown-menu>
-                                <el-dropdown-item command="a">Action 1</el-dropdown-item>
-                                <el-dropdown-item command="b">Action 2</el-dropdown-item>
-                                <el-dropdown-item command="c">Action 3</el-dropdown-item>
-                                <el-dropdown-item command="d" disabled>Action 4</el-dropdown-item>
-                                <el-dropdown-item command="e" divided>Action 5</el-dropdown-item>
+                                <el-dropdown-item command="a">近一周趋势图</el-dropdown-item>
+                                <el-dropdown-item command="b">近两周趋势图</el-dropdown-item>
+                                <el-dropdown-item command="c">近一月趋势图</el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
                     </el-dropdown>
                 </div>
-                <div class="chart3">
+                <div class="chart2" v-else>
+                    <span class="chart-title2">会员积分</span>
+                    <div class="none-data">暂无数据</div>
+                </div>
+                <div class="chart3" v-if="userInfo != null">
                     <div id="chart3-content"></div>
                     <el-dropdown @command="handleCommand3">
-                        <span class="el-dropdown-link">
-                            近一周趋势图
-                            <span class="iconfont icon-down"></span>
+                        <span class="el-dropdown-link">{{ selectedOption3 }}<span class="iconfont icon-down"></span>
                         </span>
                         <template #dropdown>
                             <el-dropdown-menu>
-                                <el-dropdown-item command="a">Action 1</el-dropdown-item>
-                                <el-dropdown-item command="b">Action 2</el-dropdown-item>
-                                <el-dropdown-item command="c">Action 3</el-dropdown-item>
-                                <el-dropdown-item command="d" disabled>Action 4</el-dropdown-item>
-                                <el-dropdown-item command="e" divided>Action 5</el-dropdown-item>
+                                <el-dropdown-item command="a">近一周趋势图</el-dropdown-item>
+                                <el-dropdown-item command="b">近两周趋势图</el-dropdown-item>
+                                <el-dropdown-item command="c">近一月趋势图</el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
                     </el-dropdown>
                 </div>
-                <div class="chart4">
+                <div class="chart3" v-else>
+                    <span class="chart-title3">邀请好友</span>
+                    <div class="none-data">暂无数据</div>
+                </div>
+                <div class="chart4" v-if="userInfo != null">
                     <div id="chart4-content"></div>
                     <el-dropdown @command="handleCommand4">
-                        <span class="el-dropdown-link">
-                            近一周趋势图
-                            <span class="iconfont icon-down"></span>
+                        <span class="el-dropdown-link">{{ selectedOption4 }}<span class="iconfont icon-down"></span>
                         </span>
                         <template #dropdown>
                             <el-dropdown-menu>
-                                <el-dropdown-item command="a">Action 1</el-dropdown-item>
-                                <el-dropdown-item command="b">Action 2</el-dropdown-item>
-                                <el-dropdown-item command="c">Action 3</el-dropdown-item>
-                                <el-dropdown-item command="d" disabled>Action 4</el-dropdown-item>
-                                <el-dropdown-item command="e" divided>Action 5</el-dropdown-item>
+                                <el-dropdown-item command="a">近一周趋势图</el-dropdown-item>
+                                <el-dropdown-item command="b">近两周趋势图</el-dropdown-item>
+                                <el-dropdown-item command="c">近一月趋势图</el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
                     </el-dropdown>
+                </div>
+                <div class="chart4" v-else>
+                    <span class="chart-title4">apk检测</span>
+                    <div class="none-data">暂无数据</div>
                 </div>
                 <div class="footer1">
                     <div class="footer-title">
@@ -256,10 +287,12 @@ import "@/assets/fontIcon/iconfont.css";
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router';
 import { onUnmounted, onMounted, getCurrentInstance } from "vue";
+import { useUserStore } from '@/stores/userStore.js'
 import { getTemplateAPI, getRecentAnalysisAPI } from '@/apis/mainPage.js'
 import { getDetectionAPI, getMemberAPI, getFriendAPI, getApkAPI } from '@/apis/echarts.js'
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
+const userStore = useUserStore();
 const router = useRouter();
 //进度条的颜色
 const customColors = [
@@ -275,12 +308,30 @@ const calendar = ref()
 let searchValue = ref('')
 let templateList = ref([])//范本库
 let recentAnalysisList = ref([])//最近分析
+//charts图表数据
+let option1 = ref()
+let option2 = ref()
+let option3 = ref()
+let option4 = ref()
+//charts图标选中
+let selectedOption1 = ref('近一周趋势图')
+let selectedOption2 = ref('近一周趋势图')
+let selectedOption3 = ref('近一周趋势图')
+let selectedOption4 = ref('近一周趋势图')
+let myChart1 = ref()
+let myChart2 = ref()
+let myChart3 = ref()
+let myChart4 = ref()
+let myChart = ref()
 //图表
-let detectionList = reactive([])
-let memberList = reactive([])
-let friendList = reactive([])
-let apkList = reactive([])
+let detectionList = ref([])
+let memberList = ref([])
+let friendList = ref([])
+let apkList = ref([])
+let userInfo = ref(null)
 onMounted(async () => {
+    userStore.initialize()
+    userInfo.value = userStore.user
     //日历上的年月
     const year = calendarDate.value.getFullYear();
     const month = calendarDate.value.getMonth() + 1;
@@ -314,24 +365,38 @@ onMounted(async () => {
             item.apkDesc = '白名单'
         }
     });
-    //获取图表
-    const res2 = await getDetectionAPI('2650874158@qq.com', '7', 'v')
-    detectionList = res2.data.data
-    console.log(detectionList[1][0])
-    const res3 = await getMemberAPI('2650874158@qq.com', '7', 'v')
-    memberList = res3.data.data
-    const res4 = await getFriendAPI('2650874158@qq.com', '7', 'v')
-    friendList = res4.data.data
-    const res5 = await getApkAPI('2650874158@qq.com', '7', 'v')
-    console.log(res5.data.data[0])
-    apkList = res5.data.data[0]
     //获取签到的天数
+
     setChart()
-    setChart1()
-    setChart2()
-    setChart3()
-    setChart4()
+    if(userInfo.value!=null){
+        //获取图表
+        const res2 = await getDetectionAPI('2650874158@qq.com', '7', 'v')
+        detectionList.value = res2.data.data
+        console.log(detectionList.value[1][0])
+        const res3 = await getMemberAPI('2650874158@qq.com', '7', 'v')
+        memberList.value = res3.data.data
+        const res4 = await getFriendAPI('2650874158@qq.com', '7', 'v')
+        friendList = res4.data.data
+        const res5 = await getApkAPI('2650874158@qq.com', '7', 'v')
+        console.log(res5.data.data[0])
+        apkList = res5.data.data[0]
+
+        setChart1()
+        setChart2()
+        setChart3()
+        setChart4()
+    }
+    
 });
+//点击登录或者注册
+function loginClick() {
+    router.push('/login')
+}
+//退出登录
+function signOutClick() {
+    localStorage.removeItem('user')
+    router.push('/login')
+}
 //范本库/最近分析记录超出或少于范围
 function displayWindowSize() {
     let footer1 = null
@@ -442,18 +507,123 @@ function Analysis(string, value) {
     console.log("点击")
     router.push(`../${string}/file/?value=${value}`)
 }
-const setChart1 = () => {
+//下拉框的改变
+async function handleCommand1(command) {
+    let flag = 0;
+    switch (command) {
+        case 'a':
+            selectedOption1.value = '近一周趋势图'
+            flag = 7
+            break;
+        case 'b':
+            selectedOption1.value = '近两周趋势图'
+            flag = 14
+            break;
+        case 'c':
+            selectedOption1.value = '近一月趋势图'
+            flag = 30
+            break;
+        default:
+            console.log('未知命令');
+    }
+    const res = await getDetectionAPI(userStore.user.userMail, flag, 'v')
+    detectionList.value = res.data.data
     let chartDom1 = document.getElementById("chart1-content");
     let myChart1 = echarts.init(chartDom1);
+    option1.media[0].option.xAxis[0].data = detectionList.value[0][0]
+    option1.media[0].option.series[0].data = detectionList.value[1][0]
+    console.log(option1)
+    myChart1.setOption(option1);
+}
+async function handleCommand2(command) {
+    let flag = 0;
+    switch (command) {
+        case 'a':
+            selectedOption2.value = '近一周趋势图'
+            flag = 7
+            break;
+        case 'b':
+            selectedOption2.value = '近两周趋势图'
+            flag = 14
+            break;
+        case 'c':
+            selectedOption2.value = '近一月趋势图'
+            flag = 30
+            break;
+        default:
+            console.log('未知命令');
+    }
+    const res = await getMemberAPI(userStore.user.userMail, flag, 'v')
+    memberList.value = res.data.data
+    let chartDom2 = document.getElementById("chart2-content");
+    myChart2 = echarts.init(chartDom2);
+    option2.media[0].option.xAxis[0].data = memberList.value[0][0]
+    option2.media[0].option.series[0].data = memberList.value[1][0]
+    myChart2.setOption(option2);
+}
+async function handleCommand3(command) {
+    let flag = 0;
+    switch (command) {
+        case 'a':
+            selectedOption3.value = '近一周趋势图'
+            flag = 7
+            break;
+        case 'b':
+            selectedOption3.value = '近两周趋势图'
+            flag = 14
+            break;
+        case 'c':
+            selectedOption3.value = '近一月趋势图'
+            flag = 30
+            break;
+        default:
+            console.log('未知命令');
+    }
+    const res = await getFriendAPI(userStore.user.userMail, flag, 'v')
+    friendList = res.data.data
+    let chartDom3 = document.getElementById("chart3-content");
+    myChart3 = echarts.init(chartDom3);
+    option3.media[0].option.xAxis[0].data = friendList.value[0][0]
+    option3.media[0].option.series[0].data = friendList.value[1][0]
+    console.log(option3)
+    myChart3.setOption(option3);
+}
+async function handleCommand4(command) {
+    let flag = 0;
+    switch (command) {
+        case 'a':
+            selectedOption4.value = '近一周趋势图'
+            flag = 7
+            break;
+        case 'b':
+            selectedOption4.value = '近两周趋势图'
+            flag = 14
+            break;
+        case 'c':
+            selectedOption4.value = '近一月趋势图'
+            flag = 30
+            break;
+        default:
+            console.log('未知命令');
+    }
+    const res = await getApkAPI(userStore.user.userMail, flag, 'v')
+    apkList = res.data.data
+}
+const setChart1 = () => {
+    let chartDom1 = document.getElementById("chart1-content");
+    myChart1 = echarts.init(chartDom1);
+    const sum = detectionList.value[1][0].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const average = sum / detectionList.value[1][0].length;
+    console.log(average)
     // 指定图表的配置项和数据
-    let option1 = {
+    option1 = {
         media: [
             {
                 option: {
                     title: {
                         show: true,
                         text: `{value|检测数量}`,
-                        subtext: "{value|平均}{titleSize| 8 }{value|次}",
+                        subtext: `{value|平均}{titleSize| ${average} }{value|次}`,
                         textStyle: {
                             color: '#065fed',//文字颜色
                             fontSize: '18',//文字大小
@@ -520,7 +690,7 @@ const setChart1 = () => {
                                 // 坐标轴标签
                                 show: false,
                             },
-                            data: detectionList[0][0],
+                            data: detectionList.value[0][0],
                             boundaryGap: false,
                         },
                     ],
@@ -571,7 +741,7 @@ const setChart1 = () => {
                                 ]),
                             },
                             symbolSize: 5,
-                            data: detectionList[1][0],
+                            data: detectionList.value[1][0],
                         },
                     ],
                 }
@@ -583,7 +753,7 @@ const setChart1 = () => {
                 option: {
                     title: {
                         text: "检测",
-                        subtext: "平均 8 次",
+                        subtext: `平均 0 次`,
                         textStyle: {
                             color: '#065fed',//文字颜色
                             fontSize: '14'//文字大小
@@ -596,20 +766,19 @@ const setChart1 = () => {
             }
         ]
     };
+    console.log(option1)
     // 使用刚指定的配置项和数据显示图表。
     myChart1.setOption(option1);
     window.addEventListener("resize", () => {
         myChart1.resize();
     });
-    onUnmounted(() => {
-        myChart1.dispose();
-    });
+
 };
 const setChart2 = () => {
     let chartDom2 = document.getElementById("chart2-content");
-    let myChart2 = echarts.init(chartDom2);
+    myChart2 = echarts.init(chartDom2);
     // 指定图表的配置项和数据
-    let option2 = {
+    option2 = {
         media: [
             {
                 option: {
@@ -683,7 +852,7 @@ const setChart2 = () => {
                                 // 坐标轴标签
                                 show: false,
                             },
-                            data: memberList[0][0],
+                            data: memberList.value[0][0],
                             boundaryGap: false,
                         },
                     ],
@@ -733,7 +902,7 @@ const setChart2 = () => {
                                     },
                                 ]),
                             },
-                            data: memberList[1][0],
+                            data: memberList.value[1][0],
                         },
                     ],
                 }
@@ -763,14 +932,11 @@ const setChart2 = () => {
     window.addEventListener("resize", () => {
         myChart2.resize();
     });
-    onUnmounted(() => {
-        myChart2.dispose();
-    });
 };
 const setChart3 = () => {
     let chartDom3 = document.getElementById("chart3-content");
-    let myChart3 = echarts.init(chartDom3);
-    let option3 = {
+    myChart3 = echarts.init(chartDom3);
+    option3 = {
         title: {
             show: true,
             text: `{value|邀请好友}`,
@@ -875,14 +1041,11 @@ const setChart3 = () => {
     window.addEventListener("resize", () => {
         myChart3.resize();
     });
-    onUnmounted(() => {
-        myChart3.dispose();
-    });
 }
 const setChart4 = () => {
     let chartDom4 = document.getElementById("chart4-content");
-    let myChart4 = echarts.init(chartDom4);
-    let option4 = {
+    myChart4 = echarts.init(chartDom4);
+    option4 = {
         title: {
             show: true,
             text: `{value|apk占比}`,
@@ -992,18 +1155,13 @@ const setChart4 = () => {
         ]
     };
     myChart4.setOption(option4);
-
     window.addEventListener("resize", () => {
         myChart4.resize();
-    });
-
-    onUnmounted(() => {
-        myChart4.dispose();
     });
 }
 const setChart = () => {
     let chartDom = document.querySelector(".navigation-title");
-    let myChart = echarts.init(chartDom);
+    myChart = echarts.init(chartDom);
     // 指定图表的配置项和数据
     let option = {
         graphic: {
@@ -1053,18 +1211,21 @@ const setChart = () => {
             ]
         }
     };
-
     // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option);
-
     window.addEventListener("resize", () => {
         myChart.resize();
     });
-
-    onUnmounted(() => {
-        myChart.dispose();
-    });
 }
+onUnmounted(() => {
+    if(userInfo.value!=null){
+    myChart1.dispose();
+    myChart2.dispose();
+    myChart3.dispose();
+    myChart4.dispose();
+    }
+    myChart.dispose();
+});
 </script>
 <style lang="scss" scoped>
 .banner {
@@ -1113,12 +1274,16 @@ const setChart = () => {
         flex: 0.9;
 
         @media (max-width: 765px) {
-            flex: 1.5;
+            flex: 1;
         }
 
-        @media (min-width: 765px) and (max-width: 1024px) {}
+        @media (min-width: 765px) and (max-width: 1024px) {
+            margin-left: 25px;
+        }
 
-        @media (min-width: 1024px) {}
+        @media (min-width: 1024px) {
+            margin-left: 50px;
+        }
 
         .navigation-logo {
             width: 40px;
@@ -1143,23 +1308,52 @@ const setChart = () => {
             flex: 1;
         }
 
-        @media (min-width: 1024px) {}
+        @media (min-width: 1024px) and (max-width: 1300px) {
+            flex: 1;
+        }
+
+        @media (min-width: 1300px) {
+            flex: 2;
+        }
     }
 
     .navigation-icon {
         display: flex;
-        flex: 1;
+        flex: 0.7;
         line-height: 40px;
 
+        @media (max-width: 600px) {
+            flex: 1;
+        }
+
+        @media (min-width: 600px) and (max-width: 765px) {}
+
+        @media (min-width: 765px) and (max-width: 1024px) {
+            flex: 1;
+        }
+
+        @media (min-width: 1024px) {}
+
+        .el-dropdown-link {
+            color: #000;
+            line-height: 40px;
+            padding-left: 5px;
+        }
+
         .el-divider {
-            background-color: #000;
+            background-color: #414141;
             height: 40px;
             margin-right: 25px;
-            border-left: 1px solid #000;
+            border-left: 1px solid #414141;
         }
 
         .iconfont {
             margin-right: 15px;
+        }
+
+        .icon-down1::before {
+            font-size: 14px;
+            margin-left: 3px;
         }
     }
 
@@ -1177,6 +1371,14 @@ const setChart = () => {
         .portrait-nickname {
             font-size: 14px;
             margin-left: 10px;
+        }
+
+        .navigation-button {
+            cursor: pointer;
+        }
+
+        .navigation-button:hover {
+            color: #000;
         }
     }
 }
@@ -1418,6 +1620,34 @@ const setChart = () => {
             }
         }
 
+        .chart-title1,
+        .chart-title2,
+        .chart-title3,
+        .chart-title4 {
+            font-size: 18px;
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+            margin-left: 5px;
+        }
+        .chart-title1{
+            color: #547BF1;
+        }
+        .chart-title2{
+            color: #6C54F1;
+        }
+        .chart-title3{
+            color: #ed8b31;
+        }
+        .chart-title4{
+            color: #7ab25f;
+        }
+        .none-data{
+            line-height: 130px;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
         .footer1,
         .footer2 {
             border-radius: 10px;
@@ -1881,5 +2111,28 @@ const setChart = () => {
 
 .display-none1 {
     display: none;
+}
+
+.el-scrollbar {
+    .avatar {
+        display: flex;
+        text-align: center;
+
+        .avatar-box {
+            margin: 5px auto;
+            margin-top: 20px;
+
+            .drop-img {
+                width: 50px;
+                height: 50px;
+                text-align: center;
+                border-radius: 50px;
+            }
+        }
+
+        .menu-item {
+            margin-left: 20px;
+        }
+    }
 }
 </style>

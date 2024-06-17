@@ -89,25 +89,20 @@ const router = useRouter()
 const route = useRoute()
 
 const userStore = useUserStore();
-
 const loginData = ref({
     account: '87247104', password: '123'
 })
-
 const registerData = ref({
     email: '', code: '', password: ''
 })
-
 const modifyData = ref({
     email: '', password: '', code: ''
 })
-
 const loginRules = {
     account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
     password: [{ required: true, message: '请输入密码', trigger: 'blur' },
     { pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^]{8,16}$/, message: '密码必须是8到16位包含大小写字母数字', trigger: 'blur' }]
 }
-
 const registerRules = {
     email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' },
     { type: 'email', message: '请输入正确邮箱', trigger: 'blur' }],
@@ -116,7 +111,6 @@ const registerRules = {
     code: [{ required: true, message: '验证码不能为空', trigger: 'blur' },
     { pattern: /^[0-9A-Za-z]{6}$/, message: '验证码错误', trigger: 'blur' }]
 }
-
 const modifyRules = {
     email: [{ required: true, message: '邮箱不能为空', trigger: 'blur' },
     { type: 'email', message: '请输入正确邮箱', trigger: 'blur' }],
@@ -125,11 +119,9 @@ const modifyRules = {
     code: [{ required: true, message: '验证码不能为空', trigger: 'blur' },
     { pattern: /^[0-9A-Za-z]{6}$/, message: '验证码错误', trigger: 'blur' }]
 }
-
 const toIdLogin = () => {
     loginOptions.value = true
 }
-
 const toEmailLogin = () => {
     loginOptions.value = false
 }
@@ -147,18 +139,12 @@ const login = async () => {
     console.log(res)
     if (res.data.code == 200) {
         console.log(res.headers)
-
-        userStore.setUserInfo(res.data.data, res.headers.authorization, res.headers['authorization-refresh'])
-
+        userStore.setUserInfo(res.data.data, res.headers.get('Accesstoken'), res.headers.get('Refreshtoken'))
         ElMessage.success(res.data.message)
-
-        router.push('/')
-
+        localStorage.setItem('user', JSON.stringify(userStore.user))
         setTimeout(() => {
             router.push('/')
-
-            // console.log('kkkk')
-        }, 3000)
+        }, 500)
     }
     else {
         ElMessage.error(res.data.message)
