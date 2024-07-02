@@ -1,7 +1,7 @@
 <template>
     <div class="middle-box">
-        <div class="middle-title">APK分析</div>
-        <div class="content-box">
+        <div class="wow animate__jello middle-title">APK分析</div>
+        <div class="wow fadeInUp content-box">
             <div class="content-title">
                 <RouterLink active-class="title-active" :to="'/userUploadPage/file'">文件</RouterLink>
                 <RouterLink active-class="title-active" :to="'/userUploadPage/URL'">URL</RouterLink>
@@ -11,11 +11,14 @@
         </div>
     </div>
 </template>
-
 <script setup>
-
+import { onMounted } from 'vue'
+import WOW from "wow.js";
+onMounted(() => {
+    const wow = new WOW({})
+    wow.init();
+})
 </script>
-
 <style lang="scss" scoped>
 .middle-box {
     width: 40%;

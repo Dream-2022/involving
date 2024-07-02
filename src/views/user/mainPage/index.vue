@@ -2,7 +2,7 @@
     <div class="banner"></div>
     <div class="ground">
         <div class="navigation">
-            <div class="navigation-tran">
+            <div class="wow fadeInDown navigation-tran">
                 <div>
                     <img src="@/assets/img/logo2.png" class="navigation-logo"
                         @click="() => $router.push('../../userMainPage')" />
@@ -10,7 +10,7 @@
                 <div class="navigation-title" @click="() => $router.push('../../userMainPage')"></div>
             </div>
             <div class="blank-box"></div>
-            <div class="navigation-icon" v-if="userInfo != null">
+            <div class="wow fadeInDown navigation-icon" v-if="userInfo != null">
                 <div>
                     <span class="iconfont icon-lingdang-xianxing"></span>
                     <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
@@ -39,20 +39,20 @@
                     </template>
                 </el-dropdown>
             </div>
-            <div class="navigation-icon" v-else>
+            <div class="wow fadeInDown navigation-icon" v-else>
                 <div>
                     <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
                     <el-divider direction="vertical" class="divider" />
                 </div>
                 <div class="navigation-portrait">
-                    <div class="navigation-button" @click="loginClick">登录&nbsp;</div>
+                    <div class="navigation-button" @click="signOutClick">登录&nbsp;</div>
                     <span style="font-size: 14px;">&nbsp;&nbsp;或&nbsp;&nbsp;</span>
-                    <div class="navigation-button" @click="loginClick">&nbsp;注册
+                    <div class="navigation-button" @click="signOutClick">&nbsp;注册
                     </div>
                 </div>
             </div>
         </div>
-        <div class="component-box">
+        <div class="wow fadeInLeft component-box">
             <div class="search-word">
                 <img src="@/assets/img/word-special.png" />
             </div>
@@ -61,7 +61,7 @@
                 <el-button color="#065fed">搜索</el-button>
             </div>
         </div>
-        <div class="module-boxes">
+        <div class="wow fadeInRight module-boxes">
             <div class="module-box">
                 <img src="@/assets/3D/3-t.png" @click="staticAnalysis('userRecentPage')" />
                 <div @click="staticAnalysis('userRecentPage')">最近分析</div>
@@ -89,7 +89,7 @@
         </div>
         <div class="middle-box">
             <div class="left-boxes">
-                <div class="chart1" v-if="userInfo != null">
+                <div class="wow fadeInLeft pulse chart1" v-if="userInfo != null">
                     <div id="chart1-content"></div>
                     <el-dropdown @command="handleCommand1">
                         <span class="el-dropdown-link">{{ selectedOption1 }}
@@ -104,11 +104,11 @@
                         </template>
                     </el-dropdown>
                 </div>
-                <div class="chart1" v-else>
+                <div class="wow fadeInLeft chart1" v-else>
                     <span class="chart-title1">检测数量</span>
                     <div class="none-data">暂无数据</div>
                 </div>
-                <div class="chart2" v-if="userInfo != null">
+                <div class="wow fadeInLeft chart2" v-if="userInfo != null">
                     <div id="chart2-content"></div>
                     <el-dropdown @command="handleCommand2">
                         <span class="el-dropdown-link">{{ selectedOption2 }}<span class="iconfont icon-down"></span>
@@ -122,11 +122,11 @@
                         </template>
                     </el-dropdown>
                 </div>
-                <div class="chart2" v-else>
+                <div class="wow fadeInLeft chart2" v-else>
                     <span class="chart-title2">会员积分</span>
                     <div class="none-data">暂无数据</div>
                 </div>
-                <div class="chart3" v-if="userInfo != null">
+                <div class="wow fadeInLeft chart3" v-if="userInfo != null">
                     <div id="chart3-content"></div>
                     <el-dropdown @command="handleCommand3">
                         <span class="el-dropdown-link">{{ selectedOption3 }}<span class="iconfont icon-down"></span>
@@ -140,11 +140,11 @@
                         </template>
                     </el-dropdown>
                 </div>
-                <div class="chart3" v-else>
+                <div class="wow fadeInLeft chart3" v-else>
                     <span class="chart-title3">邀请好友</span>
                     <div class="none-data">暂无数据</div>
                 </div>
-                <div class="chart4" v-if="userInfo != null">
+                <div class="wow fadeInLeft chart4" v-if="userInfo != null">
                     <div id="chart4-content"></div>
                     <el-dropdown @command="handleCommand4">
                         <span class="el-dropdown-link">{{ selectedOption4 }}<span class="iconfont icon-down"></span>
@@ -158,11 +158,11 @@
                         </template>
                     </el-dropdown>
                 </div>
-                <div class="chart4" v-else>
+                <div class="wow fadeInLeft chart4" v-else>
                     <span class="chart-title4">apk检测</span>
                     <div class="none-data">暂无数据</div>
                 </div>
-                <div class="footer1">
+                <div class="wow fadeInUp footer1">
                     <div class="footer-title">
                         <el-divider direction="vertical" />
                         <div class="title-box">范本库</div>
@@ -170,20 +170,25 @@
                     </div>
                     <div class="template-boxes">
                         <div class="template-box" v-for="item in templateList.slice(0, 6)" :key="item">
-                            <div class="template-title">{{ item.essayTitle }}</div>
-                            <div class="template-bottom">
-                                <div class="first-label">{{ item.labelList[0] }}</div>
-                                <div class="second-label">{{ item.labelList[1] }}</div>
-                                <div class="name-label">{{ item.essayWriter }}</div>
-                                <div class="time-label">{{ item.publicationTime }}</div>
-                            </div>
+                            <span class="template-title">{{ item?.essayTitle }}</span>
+                            <span class="template-bottom">
+                                <span class="first-label" v-if="item.labelList && item.labelList.length > 0">{{
+                            item?.labelList[0] }}</span>
+                                <span class="second-label" v-if="item.labelList && item.labelList.length > 0">{{
+                            item?.labelList[1] }}
+                                </span>
+                                <span class="name-label">{{ item?.essayWriter }}
+                                </span>
+                                <span class="time-label">{{ item?.publicationTime }}
+                                </span>
+                            </span>
                         </div>
                     </div>
                     <div>
                         <img src="@/assets/img/book.png" class="template-img">
                     </div>
                 </div>
-                <div class="footer2">
+                <div class="wow fadeInUp footer2">
                     <div class="footer-title">
                         <el-divider direction="vertical" />
                         <div class="title-box">最近分析记录</div>
@@ -191,16 +196,19 @@
                     </div>
                     <div class="analysis-boxes">
                         <div class="analysis-box" v-for="item in recentAnalysisList.slice(0, 6)" :key="item">
-                            <div class="analysis-top">
-                                <div class="analysis-md5">{{ item.fileMd5 }}</div>
-                                <div class="analysis-title">{{ item.fileName }}</div>
-                            </div>
-                            <div class="analysis-bottom">
+                            <span class="analysis-top">
+                                <span class="analysis-md5">{{ item.fileMd5 }}</span>
+                                <span class="analysis-title">{{ item.fileName }}</span>
+                            </span>
+                            <span class="analysis-bottom">
                                 <el-progress :percentage="percentage" :color="customColors" />
-                                <div class="first-label" :class="getLabelColor(item.apkDesc)">{{ item.apkDesc }}</div>
-                                <div class="second-label">冒充领导、熟人类</div>
-                                <div class="time-label">{{ item.detectedTime }}</div>
-                            </div>
+                                <span class="first-label" :class="getLabelColor(item.apkDesc)">{{ item.apkDesc }}
+                                </span>
+                                <span class="second-label">冒充领导、熟人类
+                                </span>
+                                <span class="time-label">{{ item.detectedTime }}
+                                </span>
+                            </span>
                         </div>
                     </div>
                     <div>
@@ -208,7 +216,7 @@
                     </div>
                 </div>
             </div>
-            <div class="right-boxes">
+            <div class="wow fadeInRight right-boxes">
                 <div class="footer-title">
                     <el-divider direction="vertical" />
                     <div class="title-box">签到</div>
@@ -284,12 +292,12 @@
 </template>
 <script setup>
 import "@/assets/fontIcon/iconfont.css";
-import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router';
-import { onUnmounted, onMounted, getCurrentInstance } from "vue";
+import { onUnmounted, onMounted, getCurrentInstance, ref } from "vue";
 import { useUserStore } from '@/stores/userStore.js'
 import { getTemplateAPI, getRecentAnalysisAPI } from '@/apis/mainPage.js'
 import { getDetectionAPI, getMemberAPI, getFriendAPI, getApkAPI } from '@/apis/echarts.js'
+import WOW from "wow.js";
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
 const userStore = useUserStore();
@@ -330,6 +338,8 @@ let friendList = ref([])
 let apkList = ref([])
 let userInfo = ref(null)
 onMounted(async () => {
+    const wow = new WOW({})
+    wow.init();
     userStore.initialize()
     userInfo.value = userStore.user
     //日历上的年月
@@ -343,7 +353,9 @@ onMounted(async () => {
     templateList.value = res.data.data.records
     console.log(templateList.value)
     templateList.value.forEach(item => {
-        item.labelList = item.essayLabel.split(';');
+        if (item.essayLabel && item.essayLabel != '') {
+            item.labelList = item.essayLabel.split(';');
+        }
     })
     //获取最近分析
     const res1 = await getRecentAnalysisAPI('1', 'v')
@@ -365,33 +377,28 @@ onMounted(async () => {
             item.apkDesc = '白名单'
         }
     });
-    //获取签到的天数
-
     setChart()
-    if(userInfo.value!=null){
+    //如果登录了，就将显示表格
+    if (userInfo.value != null) {
         //获取图表
-        const res2 = await getDetectionAPI('2650874158@qq.com', '7', 'v')
+        const res2 = await getDetectionAPI(userStore.user.userMail, '7', 'v')
         detectionList.value = res2.data.data
         console.log(detectionList.value[1][0])
-        const res3 = await getMemberAPI('2650874158@qq.com', '7', 'v')
+        const res3 = await getMemberAPI(userStore.user.userMail, '7', 'v')
         memberList.value = res3.data.data
-        const res4 = await getFriendAPI('2650874158@qq.com', '7', 'v')
+        const res4 = await getFriendAPI(userStore.user.userMail, '7', 'v')
         friendList = res4.data.data
-        const res5 = await getApkAPI('2650874158@qq.com', '7', 'v')
-        console.log(res5.data.data[0])
-        apkList = res5.data.data[0]
-
+        const res5 = await getApkAPI(userStore.user.userMail, '7', 'v')
+        console.log(res5.data.data)
+        console.log(res5.data)
+        apkList = res5.data.data
         setChart1()
         setChart2()
         setChart3()
         setChart4()
     }
-    
+    //获取签到的天数
 });
-//点击登录或者注册
-function loginClick() {
-    router.push('/login')
-}
 //退出登录
 function signOutClick() {
     localStorage.removeItem('user')
@@ -530,9 +537,16 @@ async function handleCommand1(command) {
     detectionList.value = res.data.data
     let chartDom1 = document.getElementById("chart1-content");
     let myChart1 = echarts.init(chartDom1);
-    option1.media[0].option.xAxis[0].data = detectionList.value[0][0]
-    option1.media[0].option.series[0].data = detectionList.value[1][0]
-    console.log(option1)
+    option1.media[0].option.xAxis[0].data = detectionList.value[0]
+    option1.media[0].option.series[0].data = detectionList.value[1]
+    let average = 0
+    detectionList.value[1].forEach((element) => {
+        average = average + parseInt(element)
+    });
+    if (detectionList.value[1].length != 0) {
+        average = average / detectionList.value[1].length;
+    }
+    option1.media[0].option.title.subtext = `{value|平均}{titleSize| ${average} }{value|次}`
     myChart1.setOption(option1);
 }
 async function handleCommand2(command) {
@@ -557,8 +571,14 @@ async function handleCommand2(command) {
     memberList.value = res.data.data
     let chartDom2 = document.getElementById("chart2-content");
     myChart2 = echarts.init(chartDom2);
-    option2.media[0].option.xAxis[0].data = memberList.value[0][0]
-    option2.media[0].option.series[0].data = memberList.value[1][0]
+    option2.media[0].option.xAxis[0].data = memberList.value[0]
+    option2.media[0].option.series[0].data = memberList.value[1]
+    let memberNum = 0
+    memberList.value[1].forEach((element) => {
+        memberNum = memberNum + parseInt(element)
+    })
+    memberNum = memberNum / memberList.value[1].length
+    option2.media[0].option.title.subtext = `{titleSize|${memberNum} }{value|分}`
     myChart2.setOption(option2);
 }
 async function handleCommand3(command) {
@@ -580,11 +600,18 @@ async function handleCommand3(command) {
             console.log('未知命令');
     }
     const res = await getFriendAPI(userStore.user.userMail, flag, 'v')
-    friendList = res.data.data
+    friendList.value = res.data.data
+    console.log(friendList.value)
     let chartDom3 = document.getElementById("chart3-content");
     myChart3 = echarts.init(chartDom3);
-    option3.media[0].option.xAxis[0].data = friendList.value[0][0]
-    option3.media[0].option.series[0].data = friendList.value[1][0]
+    option3.xAxis.data = friendList.value[0]
+    option3.series.data = friendList.value[1]
+    let friendNum = 0
+    friendList[1].forEach((number) => {
+        friendNum = friendNum + parseInt(number)
+    })
+    option3.title.subtext = `{titleSize|${friendNum} }{value|个}`
+    friendNum = friendNum / friendList[1].length
     console.log(option3)
     myChart3.setOption(option3);
 }
@@ -607,14 +634,22 @@ async function handleCommand4(command) {
             console.log('未知命令');
     }
     const res = await getApkAPI(userStore.user.userMail, flag, 'v')
-    apkList = res.data.data
+    apkList.value = res.data.data
+    console.log(apkList.value)
 }
 const setChart1 = () => {
     let chartDom1 = document.getElementById("chart1-content");
     myChart1 = echarts.init(chartDom1);
-    const sum = detectionList.value[1][0].reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const average = sum / detectionList.value[1][0].length;
-    console.log(average)
+    console.log(detectionList.value)
+    console.log(detectionList.value[0])
+    console.log(detectionList.value[1])
+    let average = 0
+    detectionList.value[1].forEach((element) => {
+        average = average + parseInt(element)
+    });
+    if (detectionList.value[1].length != 0) {
+        average = average / detectionList.value[1].length;
+    }
     // 指定图表的配置项和数据
     option1 = {
         media: [
@@ -690,7 +725,7 @@ const setChart1 = () => {
                                 // 坐标轴标签
                                 show: false,
                             },
-                            data: detectionList.value[0][0],
+                            data: detectionList.value[0],
                             boundaryGap: false,
                         },
                     ],
@@ -741,7 +776,7 @@ const setChart1 = () => {
                                 ]),
                             },
                             symbolSize: 5,
-                            data: detectionList.value[1][0],
+                            data: detectionList.value[1],
                         },
                     ],
                 }
@@ -777,6 +812,11 @@ const setChart1 = () => {
 const setChart2 = () => {
     let chartDom2 = document.getElementById("chart2-content");
     myChart2 = echarts.init(chartDom2);
+    let memberNum = 0
+    memberList.value[1].forEach((element) => {
+        memberNum = memberNum + parseInt(element)
+    })
+    memberNum = memberNum / memberList.value[1].length
     // 指定图表的配置项和数据
     option2 = {
         media: [
@@ -785,7 +825,7 @@ const setChart2 = () => {
                     title: {
                         show: true,
                         text: `{value|会员积分}`,
-                        subtext: "{titleSize|1200 }{value|分}",
+                        subtext: `{titleSize|${memberNum} }{value|分}`,
                         textStyle: {
                             color: '#6C54F1',//文字颜色
                             fontSize: '18',//文字大小
@@ -852,7 +892,7 @@ const setChart2 = () => {
                                 // 坐标轴标签
                                 show: false,
                             },
-                            data: memberList.value[0][0],
+                            data: memberList.value[0],
                             boundaryGap: false,
                         },
                     ],
@@ -902,7 +942,7 @@ const setChart2 = () => {
                                     },
                                 ]),
                             },
-                            data: memberList.value[1][0],
+                            data: memberList.value[1],
                         },
                     ],
                 }
@@ -936,11 +976,16 @@ const setChart2 = () => {
 const setChart3 = () => {
     let chartDom3 = document.getElementById("chart3-content");
     myChart3 = echarts.init(chartDom3);
+    let friendNum = 0
+    friendList[1].forEach((number) => {
+        friendNum = friendNum + parseInt(number)
+    })
+    friendNum = friendNum / friendList[1].length
     option3 = {
         title: {
             show: true,
             text: `{value|邀请好友}`,
-            subtext: "{titleSize|12 }{value|个}",
+            subtext: `{titleSize|${friendNum} }{value|个}`,
             textStyle: {
                 color: '#ed8b31',//文字颜色
                 fontSize: '18',//文字大小
@@ -988,7 +1033,7 @@ const setChart3 = () => {
         },
         xAxis: {
             type: 'category',
-            data: friendList[0][0],
+            data: friendList[0],
             axisTick: {
                 show: false, // 坐标轴刻度线
             },
@@ -1026,7 +1071,7 @@ const setChart3 = () => {
             boundaryGap: false,
         },
         series: {
-            data: friendList[1][0],
+            data: friendList[1],
             type: 'bar',
             itemStyle: {
                 color: "#ed8b31",
@@ -1218,14 +1263,17 @@ const setChart = () => {
     });
 }
 onUnmounted(() => {
-    if(userInfo.value!=null){
-    myChart1.dispose();
-    myChart2.dispose();
-    myChart3.dispose();
-    myChart4.dispose();
+    if (userInfo.value != null) {
+        myChart1.dispose();
+        myChart2.dispose();
+        myChart3.dispose();
+        myChart4.dispose();
     }
     myChart.dispose();
 });
+// mounted(() {
+//     new this.$wow.WOW().init()
+// })
 </script>
 <style lang="scss" scoped>
 .banner {
@@ -1385,6 +1433,7 @@ onUnmounted(() => {
 
 .component-box {
     margin: 10px auto;
+    margin-top: 0px;
     width: 80%;
     height: 40px;
     line-height: 40px;
@@ -1630,24 +1679,30 @@ onUnmounted(() => {
             margin-top: 10px;
             margin-left: 5px;
         }
-        .chart-title1{
+
+        .chart-title1 {
             color: #547BF1;
         }
-        .chart-title2{
+
+        .chart-title2 {
             color: #6C54F1;
         }
-        .chart-title3{
+
+        .chart-title3 {
             color: #ed8b31;
         }
-        .chart-title4{
+
+        .chart-title4 {
             color: #7ab25f;
         }
-        .none-data{
+
+        .none-data {
             line-height: 130px;
             align-items: center;
             justify-content: center;
             text-align: center;
         }
+
         .footer1,
         .footer2 {
             border-radius: 10px;
@@ -1691,7 +1746,6 @@ onUnmounted(() => {
                 bottom: 0;
                 right: 10%;
             }
-
         }
 
         .footer1 {
@@ -1700,11 +1754,12 @@ onUnmounted(() => {
             .template-boxes {
                 word-wrap: break-word;
                 font-size: 14px;
-                padding: 15px 10px 0 15px;
+                padding: 10px 5px 0 10px;
 
                 .template-box {
                     margin-bottom: 6px;
-                    padding-bottom: 10px;
+                    padding: 5px 5px 5px 5px;
+                    border-radius: 5px;
                     // border-bottom: 1px solid #ccc;
 
                     .template-title {
@@ -1755,6 +1810,10 @@ onUnmounted(() => {
                     }
 
                 }
+
+                .template-box:hover {
+                    background-color: #f3f5f8;
+                }
             }
         }
 
@@ -1772,12 +1831,12 @@ onUnmounted(() => {
             .analysis-boxes {
                 word-wrap: break-word;
                 font-size: 14px;
-                padding: 15px 10px 0 15px;
+                padding: 10px 5px 0 10px;
 
                 .analysis-box {
                     border-radius: 10px;
                     margin-bottom: 10px;
-                    padding-bottom: 10px;
+                    padding: 5px 5px 5px 5px;
                     // border-bottom: 1px solid #ccc;
 
                     .template-title {
@@ -1793,8 +1852,6 @@ onUnmounted(() => {
                         display: flex;
                         word-wrap: break-word;
                         flex-wrap: wrap;
-                        /* 或者使用white-space属性 */
-                        white-space: pre-wrap;
 
                         .analysis-md5 {
                             word-wrap: break-word;
@@ -1817,12 +1874,14 @@ onUnmounted(() => {
 
                         .el-progress {
                             width: 250px;
+                            border-radius: 10px;
                         }
 
                         .first-label {
                             color: #fff;
                             border-radius: 5px;
                             padding: 0 5px;
+                            margin-left: 8px;
                         }
 
                         .purpleLabel {
@@ -1866,6 +1925,10 @@ onUnmounted(() => {
                         }
                     }
 
+                }
+
+                .analysis-box:hover {
+                    background-color: #f3f5f8;
                 }
             }
         }

@@ -1,5 +1,5 @@
 <template>
-    <div class="my-analysis">
+    <div class="wow animate__fadeInUp my-analysis">
         <div class="middle-box">
             <div class="middle-title">
                 最近分析
@@ -42,7 +42,12 @@
     </div>
 </template>
 <script setup>
-
+import { onMounted } from "vue";
+import WOW from "wow.js";
+onMounted(() => {
+    const wow = new WOW({})
+    wow.init();
+})
 </script>
 <style lang="scss" scoped>
 .my-analysis {

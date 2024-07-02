@@ -120,6 +120,7 @@ async function uploadClick() {
         }
         console.log(res.data.data)
         staticDataStore.staticDataList = res.data.data
+        localStorage.setItem('staticDataList',JSON.stringify(res.data.data))
         ElMessage.success('apk 解析完毕')
         router.push('/userResultPage')
     } catch (error) {

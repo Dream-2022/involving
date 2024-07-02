@@ -1,7 +1,7 @@
 <template>
     <div class="background">
         <div class="banner bg-image1"></div>
-        <div class="navigation-box">
+        <div class="wow animate__fadeInDown navigation-box">
             <span>
                 <img src="@/assets/img/logo2.png" @click="() => $router.push('../../userMainPage')" />
             </span>
@@ -28,7 +28,7 @@
                     </RouterLink>
                 </li>
             </ul>
-            <div class="navigation-icon" v-if='userInfo!=null'>
+            <div class="navigation-icon" v-if='userInfo != null'>
                 <span class="iconfont icon-lingdang-xianxing"></span>
                 <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
                 <el-divider direction="vertical" class="divider" />
@@ -50,7 +50,8 @@
                             <el-dropdown-menu>
                                 <el-dropdown-item>我的资料</el-dropdown-item>
                                 <el-dropdown-item>上传分析</el-dropdown-item>
-                                <el-dropdown-item><span class="iconfont icon-exit"></span>&nbsp;退出登录</el-dropdown-item>
+                                <el-dropdown-item @click="signOutClick"><span
+                                        class="iconfont icon-exit"></span>&nbsp;退出登录</el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
                     </el-dropdown>
@@ -65,10 +66,10 @@
                     <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
                     <el-divider direction="vertical" class="divider" />
                 </span>
-                    <span class="navigation-button" @click="loginClick">登录&nbsp;</span>
-                    <span style="font-size: 14px;">&nbsp;或&nbsp;</span>
-                    <span class="navigation-button" @click="loginClick">&nbsp;注册
-                    </span>
+                <span class="navigation-button" @click="signOutClick">登录&nbsp;</span>
+                <span style="font-size: 14px;">&nbsp;或&nbsp;</span>
+                <span class="navigation-button" @click="signOutClick">&nbsp;注册
+                </span>
             </div>
         </div>
         <RouterView></RouterView>
@@ -76,16 +77,26 @@
 </template>
 <script setup>
 import { onUnmounted, onMounted, getCurrentInstance, ref } from "vue";
+import WOW from "wow.js";
+import { useRouter } from 'vue-router';
 import { useUserStore } from "@/stores/userStore";
+const router = useRouter();
 const userStore = useUserStore()
 let userInfo = ref([])
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
 onMounted(() => {
+    const wow = new WOW({})
+    wow.init();
     userStore.initialize()
     userInfo.value = userStore.user
     setChart()
 })
+//点击登录或者退出登录
+function signOutClick() {
+    localStorage.removeItem('user')
+    router.push('/login')
+}
 function backClick() {
     console.log("点击")
     // 获取.banner元素
@@ -279,9 +290,10 @@ const setChart = () => {
                     margin-left: 10px;
                 }
             }
-                .navigation-button {
-                    cursor: pointer;
-                }
+
+            .navigation-button {
+                cursor: pointer;
+            }
         }
     }
 

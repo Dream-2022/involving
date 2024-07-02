@@ -21,6 +21,7 @@
     </div>
 </template>
 <script setup>
+
 const appRemissionList = [
     {
         data1: 'com.ccb.scchome.thridcall',

@@ -155,7 +155,7 @@
                                 <el-dropdown-menu>
                                     <el-dropdown-item>我的资料</el-dropdown-item>
                                     <el-dropdown-item>上传分析</el-dropdown-item>
-                                    <el-dropdown-item><span class="iconfont icon-exit"></span>退出登录</el-dropdown-item>
+                                    <el-dropdown-item @click="signOutClick"><span class="iconfont icon-exit"></span>退出登录</el-dropdown-item>
                                 </el-dropdown-menu>
                             </template>
                         </el-dropdown>
@@ -165,9 +165,9 @@
                     <div>
                         <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
                         <el-divider direction="vertical" class="divider" />
-                    <span class="navigation-button" @click="loginClick">登录&nbsp;</span>
+                    <span class="navigation-button" @click="signOutClick">登录&nbsp;</span>
                     <span style="font-size: 14px;">&nbsp;&nbsp;或&nbsp;&nbsp;</span>
-                    <span class="navigation-button" @click="loginClick">&nbsp;注册
+                    <span class="navigation-button" @click="signOutClick">&nbsp;注册
                     </span>
                     </div>
                 </div>
@@ -181,12 +181,14 @@
 <script setup>
 import { ref, onUnmounted, onMounted, getCurrentInstance } from "vue";
 import { useUserStore } from '@/stores/userStore.js'
+import { useStaticDataStore } from '@/stores/staticDataStore.js'
 const userStore = useUserStore()
+const staticDataStore = useStaticDataStore()
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
 
 let userInfo = ref(null)
-
+let staticDataList=ref([])
 const isCollapse = ref(false)//导航栏
 let disposed = ref(false)//判断图表是否显示
 let myChart = null
@@ -200,6 +202,13 @@ function handleMenuItemClick(scrollId) {
     }, 0);
 }
 onMounted(() => {
+    if(staticDataStore.staticDataList!=null){
+    staticDataList.value=staticDataStore.staticDataList
+    }
+    else if(localStorage.getItem('staticDataList')!=null){
+        staticDataList.value=JSON.parse(localStorage.getItem('staticDataList'))
+    }
+    console.log(staticDataList.value)
     //判断导航栏是否展开
     userStore.initialize()
     userInfo.value = userStore.user
@@ -216,6 +225,11 @@ onMounted(() => {
         setChart()
     }
 });
+//点击登录或者退出登录
+function signOutClick() {
+    localStorage.removeItem('user')
+    router.push('/login')
+}
 //导航栏的自动收缩
 function displayWindowSize() {
     var w = document.documentElement.clientWidth;
