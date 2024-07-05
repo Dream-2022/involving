@@ -170,10 +170,19 @@
                         <div class="more-view">查看更多<span class="iconfont icon-Rightyou"></span></div>
                     </div>
                     <div class="template-boxes">
-                        <div class="template-box" v-for="item in templateList.slice(0, 6)" :key="item"
-                            @click="templateClick(item.essayId)">
-                            <span class="template-title">{{ item?.essayTitle }}</span>
-                            <span class="template-bottom">
+                        <div class="template-box" v-for="(item, index) in templateList.slice(0, 6)" :key="item"
+                            @mouseenter="isDisable[index] = false" @mouseleave="isDisable[index] = true">
+                            <span style="display: flex;">
+                                <span class="template-title" @click="templateClick(item.essayId)">{{ item?.essayTitle
+                                    }}</span>
+                                <span @click="temLoadClick(item.essayId)"
+                                    style="z-index:10px; color: #4d4d4d;cursor: pointer;"
+                                    :class="(isDisable[index] == true) ? 'disabled' : ''">
+                                    下载
+                                    <i class="iconfont icon-download1" style="margin-left: 5px;"></i>
+                                </span>
+                            </span>
+                            <span class="template-bottom" @click="templateClick(item.essayId)">
                                 <span class="first-label" v-if="item.labelList && item.labelList.length > 0">{{
                             item?.labelList[0] }}</span>
                                 <span class="second-label" v-if="item.labelList && item.labelList.length > 0">{{
@@ -275,7 +284,7 @@ import { onUnmounted, onMounted, getCurrentInstance, ref } from "vue";
 import { useUserStore } from '@/stores/userStore.js'
 import { getTemplateAPI, getRecentAnalysisAPI } from '@/apis/mainPage.js'
 import { getDetectionAPI, getMemberAPI, getFriendAPI, getApkAPI } from '@/apis/echarts.js'
-import { getSearchAPI, getEssayPreviewAPI, getSignInAPI, getSignInDateAPI, getSignInSuccessAPI, getPointAPI } from '@/apis/mainPage.js'
+import { getSearchAPI, getEssayPreviewAPI, getSignInAPI, getSignInDateAPI, getSignInSuccessAPI, getPointAPI, getEssayLoadAPI } from '@/apis/mainPage.js'
 import WOW from "wow.js";
 import { ElMessage } from "element-plus";
 let internalInstance = getCurrentInstance();
@@ -320,6 +329,7 @@ let userInfo = ref(null)
 let signInValue = ref(false)
 let signData = ref([])
 let nowPoints = ref(0)
+let isDisable = ref([])
 onMounted(async () => {
     const wow = new WOW({})
     wow.init();
@@ -335,7 +345,8 @@ onMounted(async () => {
     const res = await getTemplateAPI('1', 'v')
     templateList.value = res.data.data.records
     console.log(templateList.value)
-    templateList.value.forEach(item => {
+    templateList.value.forEach((item, index) => {
+        isDisable.value[index] = true
         if (item.essayLabel && item.essayLabel != '') {
             item.labelList = item.essayLabel.split(';');
         }
@@ -410,6 +421,19 @@ async function templateClick(id) {
     const htmlContent = res.data
     const newWindow = window.open('', `_blank/${id}`);
     newWindow.document.write(htmlContent);
+}
+//点击下载范本
+async function temLoadClick(id) {
+    const res = await getEssayLoadAPI('v', id)
+    if (res.data.message == "下载范文成功") {
+        ElMessage.success('下载中...')
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.href = res.data.data
+        a.click();
+        document.body.removeChild(a);
+    }
 }
 //点击签到
 async function signInClick() {
@@ -502,7 +526,7 @@ function displayWindowSize() {
 }
 //获取最近分析记录的标签颜色
 function getLabelColor(word) {
-    if (word == '黑灰产') {
+    if (word == '黑灰色') {
         return 'greyLabel'
     } else if (word == '涉黄') {
         return 'yellowLabel'

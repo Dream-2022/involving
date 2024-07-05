@@ -213,7 +213,6 @@ onMounted(() => {
     else if (localStorage.getItem('staticDataList') != null) {
         staticDataList.value = JSON.parse(localStorage.getItem('staticDataList'))
     }
-    console.log(staticDataList.value)
     //判断导航栏是否展开
     userStore.initialize()
     userInfo.value = userStore.user
@@ -355,7 +354,7 @@ function expandClick() {
         box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.1);
         height: 100vh;
         overflow-y: auto;
-        z-index: 10;
+        z-index: 20;
 
         .navigation-tran {
             padding: 15px 17px;

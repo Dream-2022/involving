@@ -319,7 +319,6 @@ let setChart = () => {
         trigger: 'item', // 触发类型，默认数据触发，可选为：'item'、'axis'  
         formatter: '{c}' // 格式化提示框内容  
     };
-
     myChart.setOption({
         tooltip: tooltipOption, // 添加 tooltip 组件  
         series: series // 添加 series  

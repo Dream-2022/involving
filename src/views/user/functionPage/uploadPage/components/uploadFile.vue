@@ -118,9 +118,15 @@ async function uploadClick() {
             }, 1000)
             return
         }
+        if (res.data.code == 504) {
+            setTimeout(() => {
+                ElMessage.warning('服务器繁忙，请稍后再试！')
+            }, 1000)
+            return
+        }
         console.log(res.data.data)
         staticDataStore.staticDataList = res.data.data
-        localStorage.setItem('staticDataList',JSON.stringify(res.data.data))
+        localStorage.setItem('staticDataList', JSON.stringify(res.data.data))
         ElMessage.success('apk 解析完毕')
         router.push('/userResultPage')
     } catch (error) {

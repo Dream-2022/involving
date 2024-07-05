@@ -44,6 +44,17 @@ export const getEssayPreviewAPI=(k,essay_id)=>{
         }
     })
 }
+//范本库下载
+export const getEssayLoadAPI=(k,essay_id)=>{
+    return http({
+        url:"/goodan-homepage/EssayDownload",
+        method:"POST",
+        params:{
+            k,
+            essay_id
+        }
+    })
+}
 //获取今日该用户是否签到
 export const getSignInAPI=(user_mail,k)=>{
     return http({
