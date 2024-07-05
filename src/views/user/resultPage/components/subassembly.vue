@@ -1,11 +1,22 @@
 <template>
-    <div class="subassembly-box">
+    <div class="wow animate__fadeInRight subassembly-box">
         <div class="activity">
             <div class="title">活动列表</div>
             <div class="content">
                 <div class="demo-collapse">
                     <el-collapse v-model="activeActivity" @change="handleChange">
                         <el-collapse-item :title="'存在 ' + activityList.length + ' 个 activity'" name="1">
+                            <div>导出</div>
+                            <div v-for="(item, index) in activityList" :key="item"
+                                style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden; width: 95%">
+                                <el-tooltip placement="top-start">
+                                    <template #content>
+                                        {{ item }}
+                                    </template>
+                                    {{ index + 1 + ' . ' + item }}
+                                </el-tooltip>
+                            </div>
+                            <div style="margin-top: 10px;">未导出</div>
                             <div v-for="(item, index) in activityList" :key="item"
                                 style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden; width: 95%">
                                 <el-tooltip placement="top-start">
@@ -83,11 +94,21 @@
     </div>
 </template>
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 const activeActivity = ref()
 const activeService = ref()
 const activeReceiver = ref()
 const activeProvider = ref()
+let subassemblyList = reactive([])
+onMounted(() => {
+    const result = JSON.parse(localStorage.getItem('staticDataList'))
+    console.log(result)
+    subassemblyList.splice(0, subassemblyList.length, ...result.componentInfo);
+    subassemblyList.forEach((item) => {
+        item.componentDesc = JSON.parse(item.componentDesc)
+    })
+    console.log(subassemblyList)
+})
 const handleChange = (val) => {
     console.log(val)
 }

@@ -1,5 +1,5 @@
 <template>
-    <div class="unsullied-box">
+    <div class="wow animate__fadeInRight unsullied-box">
         <div class="unsullied">
             <div class="unsullied-title">证书信息</div>
             <div class="unsullied-content">

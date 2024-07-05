@@ -1,5 +1,5 @@
 <template>
-    <div class="security-box">
+    <div class="wow animate__fadeInRight security-box">
         <div class="security">
             <div id="scrollspyHeading1"></div>
             <div class="title">可浏览的Activities</div>

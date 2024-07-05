@@ -1,36 +1,50 @@
 <template>
-    <div class="certificate-box">
+    <div class="wow animate__fadeInRight certificate-box">
         <div class="certificate">
             <div class="certificate-title">证书信息</div>
             <div class="certificate-content">
                 <div>二进制文件已签名</div>
-                <div><strong>v1 签名: </strong>True</div>
-                <div><strong>v2 签名: </strong>True</div>
-                <div><strong>v3 签名: </strong>False</div>
-                <div><strong>v4 签名: </strong>False</div>
-                <div><strong>主题: </strong>C=CN, ST=北京市, L=北京市, O=中国建设银行股份有限公司, OU=中国建设银行股份有限公司, CN=中国建设银行股份有限公司</div>
-                <div><strong>签名算法: </strong>rsassa_pkcs1v15</div>
-                <div><strong>有效期自: </strong>2011-09-30 07:35:04+00:00</div>
-                <div><strong>有效期至: </strong>3011-01-31 07:35:04+00:00</div>
-                <div><strong>发行人: </strong>C=CN, ST=北京市, L=北京市, O=中国建设银行股份有限公司, OU=中国建设银行股份有限公司, CN=中国建设银行股份有限公司</div>
-                <div><strong>序列号: </strong>0x4e857128</div>
-                <div><strong>哈希算法: </strong>sha1</div>
-                <div><strong>证书MD5: </strong>e911247e7d7aa0ac58e1f2c92702e7b8</div>
-                <div><strong>证书SHA1: </strong>4ce1b6fac00b237babb74f3dee61a80b697600b7</div>
-                <div><strong>证书SHA256: </strong>c8191338f1172be788266fef54bc0c643e9a86b7073b1d3eca2fb787f5bbe0d8</div>
-                <div><strong>证书SHA512:</strong>
-                    3dde7a6e9f845047359ad2342165636b369fc2346ff7fece3a9f38cfdb116180561039484006970eebd2f05a9eaa2d54ec0ba7cc02e118e7b2cc39059967b8d0
+                <div><strong>v1 签名: </strong>{{ certificationList.v1 == true ? 'True' : 'False' }}</div>
+                <div><strong>v2 签名: </strong>{{ certificationList.v2 == true ? 'True' : 'False' }}</div>
+                <div><strong>v3 签名: </strong>{{ certificationList.v3 == true ? 'True' : 'False' }}</div>
+                <div><strong>v4 签名: </strong>{{ certificationList.v4 == true ? 'True' : 'False' }}</div>
+                <div><strong>v31 签名: </strong>{{ certificationList.v31 == true ? 'True' : 'False' }}</div>
+                <div
+                    v-if="certificationList && certificationList.certificateInfo && certificationList.certificateInfo.length > 0">
+                    <div><strong>主题: </strong>{{ certificationList?.certificateInfo[0]?.issuer }}</div>
+                    <div><strong>签名算法: </strong>{{ certificationList?.certificateInfo[0]?.signatureAlgorithm }}</div>
+                    <div><strong>有效期自: </strong>{{ certificationList?.certificateInfo[0]?.startTime }}</div>
+                    <div><strong>有效期至: </strong>{{ certificationList?.certificateInfo[0]?.endTime }}</div>
+                    <div><strong>发行人: </strong>{{ certificationList?.certificateInfo[0]?.owner }}</div>
+                    <div><strong>序列号: </strong>0x{{ certificationList?.certificateInfo[0]?.serialNumber }}</div>
+                    <div><strong>哈希算法: </strong>{{ certificationList?.certificateInfo[0].hashAlgorithm }}</div>
+                    <div><strong>证书MD5: </strong>{{ certificationList?.certificateInfo[0]?.md5 }}</div>
+                    <div><strong>证书SHA1: </strong>{{ certificationList?.certificateInfo[0]?.sha1 }}</div>
+                    <div><strong>证书SHA256: </strong>{{ certificationList?.certificateInfo[0]?.sha256 }}</div>
+                    <div><strong>证书SHA512:</strong>{{ certificationList?.certificateInfo[0]?.sha512 }}</div>
+                    <div><strong>公钥算法: </strong>rsa</div>
+                    <div><strong>密钥长度: </strong>{{ certificationList?.certificateInfo[0]?.keySize }}</div>
+                    <div><strong>指纹: </strong>{{
+                    certificationList.certificateInfo[0].fingerprint != null ?
+                        certificationList?.certificateInfo[0]?.fingerprint
+                        : '暂无' }}</div>
+                    <div>{{ certificationList?.certificateInfo.length == 1 ? '找到 1 个唯一证书' : '获取多个证书' }}</div>
                 </div>
-                <div><strong>公钥算法: </strong>rsa</div>
-                <div><strong>密钥长度: </strong>1024</div>
-                <div><strong>指纹: </strong>bb9fb943dcde399d35e5a91beffaead2980e05f9719e164474d856ea0cfb850c</div>
-                <div>找到 1 个唯一证书</div>
             </div>
         </div>
     </div>
 </template>
 <script setup>
-
+import { ref, onMounted, reactive } from 'vue'
+let certificationList = reactive({})
+onMounted(async () => {
+    const result = JSON.parse(localStorage.getItem('staticDataList'))
+    console.log(result)
+    Object.keys(result.signatureCertificate).forEach(key => {
+        certificationList[key] = result.signatureCertificate[key];
+    });
+    console.log(certificationList)
+})
 </script>
 <style lang="scss" scoped>
 .certificate {

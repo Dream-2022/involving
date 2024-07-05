@@ -1,17 +1,17 @@
 <template>
-    <div class="appRemission-box">
+    <div class="wow animate__fadeInRight appRemission-box">
         <div class="appRemission">
             <div class="appRemission-title">应用权限</div>
             <div class="appRemission-content">
                 <el-table :data="appRemissionList" style="width: 100%" stripe :row-class-name="tableRowClassName">
-                    <el-table-column fixed prop="data1" label="权限名称" width="350" />
-                    <el-table-column prop="data2" label="权限内容" width="150" />
-                    <el-table-column prop="data3" label="权限描述" width="620" />
-                    <el-table-column prop="data4" label="关联代码" width="150" />
-                    <el-table-column fixed="right" prop="data4" label="安全等级" width="90">
+                    <el-table-column fixed prop="permissionApplication" label="权限名称" width="360" />
+                    <el-table-column prop="permissionType" label="权限内容" width="150" />
+                    <el-table-column prop="permissionDetail" label="权限描述" width="580" />
+                    <el-table-column prop="fileMd5" label="MD5" width="290" />
+                    <el-table-column fixed="right" label="安全等级" width="90">
                         <template #default="{ row }">
                             <div class="column" :class="getButtonClass(row.data5)">
-                                {{ row.data5 }}
+                                {{ row.isDangerous }}
                             </div>
                         </template>
                     </el-table-column>
@@ -21,92 +21,14 @@
     </div>
 </template>
 <script setup>
-
-const appRemissionList = [
-    {
-        data1: 'com.ccb.scchome.thridcall',
-        data2: '未知权限',
-        data3: '来自 android 引用的未知权限。',
-        data4: 'Los Angeles',
-        data5: '危险',
-    },
-    {
-        data1: 'com.ccb.scchome.permission.JPUSH_MESSAGE',
-        data2: '未知权限',
-        data3: '来自 android 引用的未知权限。',
-        data4: 'Los Angeles',
-        data5: '警告',
-    },
-    {
-        data1: 'com.ccb.scchome.permission.MIPUSH_RECEIVE',
-        data2: '未知权限',
-        data3: 'Android 11引入与包可见性相关的权限，允许查询设备上的任何普通应用程序，而不考虑清单声明。',
-        data4: 'Los Angeles',
-        data5: '未知',
-    },
-    {
-        data1: 'com.coloros.mcs.permission.RECIEVE_MCS_MESSAGE',
-        data2: '获取已安装应用程序列表',
-        data3: '访问额外位置提供程序命令，恶意应用程序可能会使用它来干扰GPS或其他位置源的操作。',
-        data4: 'Los Angeles',
-        data5: '安全',
-    }, {
-        data1: 'com.ccb.scchome.thridcall',
-        data2: '未知权限',
-        data3: '来自 android 引用的未知权限。',
-        data4: 'Los Angeles',
-        data5: '普通',
-    },
-    {
-        data1: 'com.ccb.scchome.permission.JPUSH_MESSAGE',
-        data2: '未知权限',
-        data3: '来自 android 引用的未知权限。',
-        data4: 'Los Angeles',
-        data5: '安全',
-    },
-    {
-        data1: 'com.ccb.scchome.permission.MIPUSH_RECEIVE',
-        data2: '未知权限',
-        data3: 'Android 11引入与包可见性相关的权限，允许查询设备上的任何普通应用程序，而不考虑清单声明。',
-        data4: 'Los Angeles',
-        data5: '安全',
-    },
-    {
-        data1: 'com.coloros.mcs.permission.RECIEVE_MCS_MESSAGE',
-        data2: '获取已安装应用程序列表',
-        data3: '访问额外位置提供程序命令，恶意应用程序可能会使用它来干扰GPS或其他位置源的操作。',
-        data4: 'Los Angeles',
-        data5: '普通',
-    },
-    {
-        data1: 'com.ccb.scchome.thridcall',
-        data2: '未知权限',
-        data3: '来自 android 引用的未知权限。',
-        data4: 'Los Angeles',
-        data5: '危险',
-    },
-    {
-        data1: 'com.ccb.scchome.permission.JPUSH_MESSAGE',
-        data2: '未知权限',
-        data3: '来自 android 引用的未知权限。',
-        data4: 'Los Angeles',
-        data5: '警告',
-    },
-    {
-        data1: 'com.ccb.scchome.permission.JPUSH_MESSAGE',
-        data2: '未知权限',
-        data3: '来自 android 引用的未知权限。',
-        data4: 'Los Angeles',
-        data5: '安全',
-    },
-    {
-        data1: 'com.coloros.mcs.permission.RECIEVE_MCS_MESSAGE',
-        data2: '获取已安装应用程序列表',
-        data3: '访问额外位置提供程序命令，恶意应用程序可能会使用它来干扰GPS或其他位置源的操作。',
-        data4: 'Los Angeles',
-        data5: '安全',
-    },
-]
+import { ref, onMounted, reactive } from 'vue'
+let appRemissionList = reactive([])
+onMounted(async () => {
+    const result = JSON.parse(localStorage.getItem('staticDataList'))
+    console.log(result)
+    appRemissionList.splice(0, appRemissionList.length, ...result.permissionInfo);
+    console.log(appRemissionList)
+})
 //为不同的安全类型设置类名
 function getButtonClass(securityLevel) {
     if (securityLevel === '安全') {

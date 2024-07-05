@@ -1,5 +1,5 @@
 <template>
-    <div class="thirdParty-box">
+    <div class="wow animate__fadeInRight thirdParty-box">
         <div class="thirdParty">
             <div class="thirdParty-title">第三方SDK</div>
             <div class="thirdParty-content">

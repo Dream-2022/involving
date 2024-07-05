@@ -1,6 +1,6 @@
 <template>
     <div class="result-page">
-        <div class="left-box">
+        <div class="wow animate__fadeInLeft left-box">
             <div class="navigation-tran">
                 <div>
                     <img src="@/assets/img/logo2.png" class="navigation-logo"
@@ -131,9 +131,9 @@
             </el-menu>
         </div>
         <div class="right-box">
-            <div class="navigation">
+            <div class="wow animate__fadeInDown navigation">
                 <span class="iconfont icon-bars" @click="expandClick"></span>
-                <div class="navigation-icon" v-if="userInfo!=null">
+                <div class="navigation-icon" v-if="userInfo != null">
                     <span class="iconfont icon-lingdang-xianxing"></span>
                     <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
                     <el-divider direction="vertical" class="divider" />
@@ -155,7 +155,8 @@
                                 <el-dropdown-menu>
                                     <el-dropdown-item>我的资料</el-dropdown-item>
                                     <el-dropdown-item>上传分析</el-dropdown-item>
-                                    <el-dropdown-item @click="signOutClick"><span class="iconfont icon-exit"></span>退出登录</el-dropdown-item>
+                                    <el-dropdown-item @click="signOutClick"><span
+                                            class="iconfont icon-exit"></span>退出登录</el-dropdown-item>
                                 </el-dropdown-menu>
                             </template>
                         </el-dropdown>
@@ -165,10 +166,10 @@
                     <div>
                         <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
                         <el-divider direction="vertical" class="divider" />
-                    <span class="navigation-button" @click="signOutClick">登录&nbsp;</span>
-                    <span style="font-size: 14px;">&nbsp;&nbsp;或&nbsp;&nbsp;</span>
-                    <span class="navigation-button" @click="signOutClick">&nbsp;注册
-                    </span>
+                        <span class="navigation-button" @click="signOutClick">登录&nbsp;</span>
+                        <span style="font-size: 14px;">&nbsp;&nbsp;或&nbsp;&nbsp;</span>
+                        <span class="navigation-button" @click="signOutClick">&nbsp;注册
+                        </span>
                     </div>
                 </div>
             </div>
@@ -180,15 +181,17 @@
 </template>
 <script setup>
 import { ref, onUnmounted, onMounted, getCurrentInstance } from "vue";
+import { useRouter } from 'vue-router';
+import WOW from "wow.js";
 import { useUserStore } from '@/stores/userStore.js'
 import { useStaticDataStore } from '@/stores/staticDataStore.js'
 const userStore = useUserStore()
 const staticDataStore = useStaticDataStore()
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
-
+const router = useRouter();
 let userInfo = ref(null)
-let staticDataList=ref([])
+let staticDataList = ref([])
 const isCollapse = ref(false)//导航栏
 let disposed = ref(false)//判断图表是否显示
 let myChart = null
@@ -202,11 +205,13 @@ function handleMenuItemClick(scrollId) {
     }, 0);
 }
 onMounted(() => {
-    if(staticDataStore.staticDataList!=null){
-    staticDataList.value=staticDataStore.staticDataList
+    const wow = new WOW({})
+    wow.init();
+    if (staticDataStore.staticDataList != null) {
+        staticDataList.value = staticDataStore.staticDataList
     }
-    else if(localStorage.getItem('staticDataList')!=null){
-        staticDataList.value=JSON.parse(localStorage.getItem('staticDataList'))
+    else if (localStorage.getItem('staticDataList') != null) {
+        staticDataList.value = JSON.parse(localStorage.getItem('staticDataList'))
     }
     console.log(staticDataList.value)
     //判断导航栏是否展开
@@ -214,9 +219,7 @@ onMounted(() => {
     userInfo.value = userStore.user
     let diva = document.querySelector(".navigation-icon")
     var w = document.documentElement.clientWidth;
-    console.log(diva)
     if (diva && w > 800) {
-        console.log(diva)
         diva.classList.remove('navigation-icon-length')
     } else if (diva && w <= 800) {
         diva.classList.add('navigation-icon-length')
@@ -227,6 +230,7 @@ onMounted(() => {
 });
 //点击登录或者退出登录
 function signOutClick() {
+    console.log('login')
     localStorage.removeItem('user')
     router.push('/login')
 }
@@ -249,9 +253,7 @@ function displayWindowSize() {
     } else if (w >= 800) {
         isCollapse.value = false
         if (disposed.value == false) {
-            console.log(diva)
             if (diva) {
-                console.log(diva)
                 diva.classList.remove('navigation-icon-length')
                 setChart()
             }
@@ -264,7 +266,6 @@ window.addEventListener("resize", displayWindowSize);
 
 let setChart = () => {
     let chartDom = document.querySelector(".navigation-title");
-    console.log(chartDom)
     myChart = echarts.init(chartDom);
     let option = {
         graphic: {
@@ -345,10 +346,12 @@ function expandClick() {
 </script>
 <style lang="scss" scoped>
 .result-page {
+    background-color: rgb(235, 242, 255);
     display: flex;
     height: 100vh;
 
     .left-box {
+        background-color: #fff;
         box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.1);
         height: 100vh;
         overflow-y: auto;
@@ -506,7 +509,8 @@ function expandClick() {
                         border: none;
                     }
                 }
-                .navigation-button:hover{
+
+                .navigation-button:hover {
                     cursor: pointer;
                 }
             }

@@ -1,5 +1,5 @@
 <template>
-    <div class="traceability-box">
+    <div class="wow animate__fadeInRight traceability-box">
         <div class="abuseAuthority">
             <div id="traceabilityHeading1"></div>
             <div class="abuseAuthority-title">滥用权限</div>

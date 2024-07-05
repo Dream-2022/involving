@@ -1,9 +1,9 @@
 <template>
-    <div class="warn-box">
+    <div class="wow animate__fadeInRight warn-box">
         <span class="iconfont icon-gantanhao"></span>
         本平台仅供研究软件风险、安全评估，禁止用于非法用途。由于展示的数据过于全面，请耐心等待加载完成。
     </div>
-    <div class="foundation-box">
+    <div class="wow animate__fadeInRight foundation-box">
         <div class="foundation">
             <div class="left-box">
                 <div class="box-title">
@@ -11,16 +11,16 @@
                     APP评分
                 </div>
                 <div class="left-content">
-                    <div><img src="@/assets/img/app-icon.png" class="left-img"></div>
+                    <div class="left-img-box"><img :src='foundationList.apkIconPath' class="left-img"></div>
                     <div class="left-score">
                         <div class="score-word score-word-green">安全评分</div>
-                        <div class="score">65/100</div>
+                        <div class="score"><strong>65/100</strong></div>
                     </div>
                     <div class="left-tracker">
-                        <div class="tracker-word">追踪器检测</div>
-                        <div class="tracker">65/100</div>
+                        <div class="tracker-word">APK类型</div>
+                        <div class="tracker"><strong>涉诈APK</strong></div>
                     </div>
-                    <el-button color="#065fed" :dark="isDark" plain>安全检测</el-button>
+                    <el-button color="#065fed" plain>安全评分</el-button>
                 </div>
             </div>
             <div class="middle-box">
@@ -31,23 +31,23 @@
                 <div class="middle-content">
                     <div>
                         <div class="middle-title">文件名称</div>
-                        <div>影子来了.apk</div>
+                        <div>{{ foundationList.fileName }}</div>
                     </div>
                     <div>
                         <div class="middle-title">文件大小</div>
-                        <div>21.63MB</div>
+                        <div>{{ foundationList.fileSize }}</div>
                     </div>
                     <div>
                         <div class="middle-title">MD5</div>
-                        <div>34f8fa6cb6ce887512e2f658c94d630b</div>
+                        <div>{{ foundationList.fileMd5 }}</div>
                     </div>
                     <div>
                         <div class="middle-title">SHA1</div>
-                        <div>402c019b128a5ef02d3364f93d3e0e26943a31b1</div>
+                        <div>{{ foundationList.fileSha1 }}</div>
                     </div>
                     <div>
                         <div class="middle-title">SHA256</div>
-                        <div>4e894ec0e2a6f880bfcf74528abaaf5e5fce67d4155335a3d9ef4a74a6cf4540</div>
+                        <div>{{ foundationList.fileSha256 }}</div>
                     </div>
                 </div>
             </div>
@@ -59,27 +59,27 @@
                 <div class="right-content">
                     <div>
                         <div class="right-title">应用名称</div>
-                        <div>影子来了</div>
+                        <div>{{ foundationList.apkName }}</div>
                     </div>
                     <div>
                         <div class="right-title">包名</div>
-                        <div>com.gjzstudio.shadowrunner</div>
+                        <div>{{ foundationList.apkPackageName }}</div>
                     </div>
                     <div>
                         <div class="right-title">主活动</div>
-                        <div>com.unity3d.player.UnityPlayerActivity</div>
+                        <div>{{ foundationList.primaryActivities }}</div>
                     </div>
                     <div>
                         <div class="right-title">目标SDK</div>
-                        <div>29</div>
+                        <div>{{ foundationList.targetSdkVersion }}</div>
                         <div class="right-title right-right">最小SDK</div>
-                        <div>21</div>
+                        <div>{{ foundationList.minSdkVersion }}</div>
                     </div>
                     <div>
                         <div class="right-title">版本号</div>
-                        <div>2.3.1</div>
+                        <div>{{ foundationList.versionName }}</div>
                         <div class="right-title right-right">子版本号</div>
-                        <div>55</div>
+                        <div>{{ foundationList.versionCode }}</div>
                     </div>
                     <div>
                         <div class="right-title">加固信息</div>
@@ -91,26 +91,26 @@
         <div class="export">
             <div class="export-title">组件导出信息</div>
             <div class="export-top">
-                <div>Activity组件: 32</div>
-                <div>Service组件: 12</div>
-                <div>Receiver组件:14</div>
-                <div>Provider组件:78</div>
+                <div>Activity组件: {{ data[0]?.NotExportTotal + data[0]?.exportTotal }}</div>
+                <div>Service组件: {{ data[1]?.NotExportTotal + data[1]?.exportTotal }}</div>
+                <div>Receiver组件: {{ data[2]?.NotExportTotal + data[2]?.exportTotal }}</div>
+                <div>Provider组件: {{ data[3]?.NotExportTotal + data[3]?.exportTotal }}</div>
             </div>
             <div class="export-chart"></div>
             <div class="export-bottom">
-                <el-button color="#368eec" :dark="isDark">
+                <el-button color="#368eec">
                     查看
                     <span class="iconfont icon-direction-down-circle"></span>
                 </el-button>
-                <el-button color="#368eec" :dark="isDark">
+                <el-button color="#368eec">
                     查看
                     <span class="iconfont icon-direction-down-circle"></span>
                 </el-button>
-                <el-button color="#368eec" :dark="isDark">
+                <el-button color="#368eec">
                     查看
                     <span class="iconfont icon-direction-down-circle"></span>
                 </el-button>
-                <el-button color="#368eec" :dark="isDark">
+                <el-button color="#368eec">
                     查看
                     <span class="iconfont icon-direction-down-circle"></span>
                 </el-button>
@@ -125,9 +125,13 @@
                     </div>
                     <div class="box-right">
                         <div>Manifest文件</div>
-                        <el-button color="#368eec" :dark="isDark" plain>
+                        <el-button color="#368eec" plain @click="manifestLookClick">
                             <span class="iconfont icon-eye"></span>
                             查看
+                        </el-button>
+                        <el-button color="#368eec" @click="manifestLoadClick">
+                            <span class="iconfont icon-download"></span>
+                            下载
                         </el-button>
                     </div>
                 </div>
@@ -137,9 +141,9 @@
                     </div>
                     <div class="box-right">
                         <div>APK文件</div>
-                        <el-button color="#368eec" :dark="isDark" plain>
-                            <span class="iconfont icon-eye"></span>
-                            查看
+                        <el-button color="#368eec" plain @click="apkLoadClick">
+                            <span class="iconfont icon-download"></span>
+                            下载
                         </el-button>
                     </div>
                 </div>
@@ -149,11 +153,11 @@
                     </div>
                     <div class="box-right">
                         <div>Java源代码</div>
-                        <el-button color="#368eec" :dark="isDark" plain>
+                        <el-button color="#368eec" plain @click="javaLookClick">
                             <span class="iconfont icon-eye"></span>
                             查看
                         </el-button>
-                        <el-button color="#368eec" :dark="isDark" plain>
+                        <el-button color="#368eec" plain @click="javaLoadClick">
                             <span class="iconfont icon-download"></span>
                             下载
                         </el-button>
@@ -162,15 +166,75 @@
             </div>
         </div>
     </div>
-
 </template>
 <script setup>
-import { ref, onUnmounted, onMounted, getCurrentInstance } from "vue";
+import { ref, onUnmounted, onMounted, getCurrentInstance, reactive } from "vue";
+import { useRouter } from 'vue-router';
+const router = useRouter();
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
+let foundationList = reactive({})
+let targetData = ref([])
+let data = ref([])
 onMounted(() => {
+    //将apk数据赋值给foundationList
+    const result = JSON.parse(localStorage.getItem('staticDataList'))
+    console.log(result)
+    Object.keys(result).forEach(key => {
+        foundationList[key] = result[key];
+    });
+    console.log(foundationList)
+    //获取四个图表的数据
+    foundationList.componentInfo.forEach(item => {
+        let descObject = JSON.parse(item.componentDesc);
+        let { NotExportTotal, exportTotal } = descObject;
+        let newDataItem = { NotExportTotal, exportTotal };
+        data.value.push(newDataItem);
+    });
+    const typeMapping = {
+        activity: 'activity',
+        service: 'service',
+        receiver: 'receiver',
+        provider: 'provider'
+    };
+    targetData.value = [
+        ['export', 'Sales', 'type']
+    ];
+    console.log(data.value)
+    console.log(data.value[0].NotExportTotal)
+    data.value.forEach((item, index) => {
+        const typeName = Object.keys(typeMapping)[index]
+        targetData.value.push(['notExported', item.NotExportTotal, typeMapping[typeName]])
+        targetData.value.push(['export', item.exportTotal, typeMapping[typeName]]);
+    });
+    console.log(targetData.value)
     setChart()
 });
+//点击查看和下载
+function manifestLookClick() {
+    router.push('/userFileDetail')
+}
+function manifestLoadClick() {
+    loadFunction(foundationList.apkAndroidmanifestUrl)
+}
+function apkLoadClick() {
+    loadFunction(foundationList.apkLinkUrl)
+}
+function javaLookClick() {
+    console.log("跳转页面")
+}
+function javaLoadClick() {
+    loadFunction(foundationList.apkSourceUrl)
+}
+//生成a标签，并下载的函数
+function loadFunction(url) {
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.href = url
+    a.click();
+    document.body.removeChild(a);
+}
 let setChart = () => {
     let chartDom = document.querySelector(".export-chart");
     console.log(chartDom)
@@ -205,17 +269,7 @@ let setChart = () => {
             datasetIndex: i
         });
     }
-    let source = [
-        ['export', 'Sales', 'type'],
-        ['notExported', 123, "activity"],
-        ['export', 231, "activity"],
-        ['notExported', 143, "service"],
-        ['export', 201, "service"],
-        ['notExported', 153, "receiver"],
-        ['export', 181, "receiver"],
-        ['notExported', 120, "provider"],
-        ['export', 60, "provider"],
-    ]
+    let source = targetData.value
     source = source.map(item => {
         return item.map(value => {
             if (value === 'notExported') {
@@ -340,7 +394,6 @@ let setChart = () => {
     }
 
     .foundation {
-
         @media (max-width: 765px) {}
 
         @media (min-width: 765px) and (max-width: 1024px) {}
@@ -392,10 +445,14 @@ let setChart = () => {
                     @media (min-width: 1024px) {}
                 }
 
-                .left-img {
+                .left-img-box {
                     padding-top: 15px;
-                    width: 60px;
-                    height: 60px;
+
+                    .left-img {
+                        border-radius: 8px;
+                        width: 60px;
+                        height: 60px;
+                    }
                 }
 
                 .left-score {

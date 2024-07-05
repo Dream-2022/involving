@@ -1,5 +1,5 @@
 <template>
-    <div class="listOfFiles-box">
+    <div class="wow animate__fadeInRight listOfFiles-box">
         <div class="listOfFiles">
             <div class="listOfFiles-title">文件列表</div>
             <div class="listOfFiles-content">
@@ -15,18 +15,15 @@
     </div>
 </template>
 <script setup>
-import { ref, reactive } from 'vue'
+import { onMounted, ref, reactive } from 'vue'
 let disabled = ref(false)
-let fileList = reactive([
-    "9mxcvASDF9sdP",
-    "9mxcvASDF9sdP.xml",
-    "9mxcvASDF9sdP/ۖۖ",
-    "9mxcvASDF9sdP/ۖۖ.xml",
-    "9mxcvASDF9sdP/ۖۖۗ.xml",
-    "9mxcvASDF9sdP.xml",
-    "9mxcvASDF9sdP.xml",
-    "assets/ZwnblfFf578LUJMy.properties"
-])
+let fileList = reactive({})
+onMounted(() => {
+    const result = JSON.parse(localStorage.getItem('staticDataList'))
+    console.log(result)
+    // fileList.splice(0, fileList.length, ...result.permissionInfo);
+    // console.log(fileList)
+})
 function toggleDisabled() {
     disabled.value = !disabled.value
 }

@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "4503681",
+      "name": "left",
+      "font_class": "left",
+      "unicode": "e6cb",
+      "unicode_decimal": 59083
+    },
+    {
+      "icon_id": "284379",
+      "name": "支付宝",
+      "font_class": "zhifubao",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "3769199",
+      "name": "支付",
+      "font_class": "zhifu",
+      "unicode": "e8f9",
+      "unicode_decimal": 59641
+    },
+    {
       "icon_id": "4936613",
       "name": "file-pdf-fill",
       "font_class": "file-pdf-fill",

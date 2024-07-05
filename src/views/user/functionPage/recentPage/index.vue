@@ -43,12 +43,9 @@
 </template>
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import WOW from "wow.js";
 import { getRecentAnalysisAPI } from '@/apis/mainPage.js'
 let recentAnalysisList = ref([])
 onMounted(async () => {
-    const wow = new WOW({})
-    wow.init();
     //获取最近分析
     const res1 = await getRecentAnalysisAPI('1', 'v')
     console.log(res1.data)

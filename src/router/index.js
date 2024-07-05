@@ -26,6 +26,10 @@ import Unsullied from "@/views/user/resultPage/components/unsullied.vue";
 
 import LoginPage from "@/views/login/login.vue";
 
+import UserFileDetail from "@/views/user/resultPage/components/filePage/index.vue";
+
+import UserSearchPage from "@/views/user/searchPage/index.vue";
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -87,6 +91,16 @@ const router = createRouter({
         {path:'unsullied',component:Unsullied},
       ]
       
+    },
+    {
+      path: '/userFileDetail',
+      name: 'userFileDetail',
+      component: UserFileDetail
+    },
+    {
+      path: '/userSearchPage',
+      name: 'userSearchPage',
+      component: UserSearchPage
     },
     // {
     //   path: '/UserUploadPage',

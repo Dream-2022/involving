@@ -57,8 +57,9 @@
                 <img src="@/assets/img/word-special.png" />
             </div>
             <div class="search-box">
-                <el-input v-model="searchValue" class="search-content" placeholder="MD5，包名，文件名，APP名称" />
-                <el-button color="#065fed">搜索</el-button>
+                <el-input v-model="searchValue" @keyup.enter="searchClick" class="search-content"
+                    placeholder="MD5，包名，文件名，APP名称" />
+                <el-button color="#065fed" @click="searchClick">搜索</el-button>
             </div>
         </div>
         <div class="wow fadeInRight module-boxes">
@@ -169,7 +170,8 @@
                         <div class="more-view">查看更多<span class="iconfont icon-Rightyou"></span></div>
                     </div>
                     <div class="template-boxes">
-                        <div class="template-box" v-for="item in templateList.slice(0, 6)" :key="item">
+                        <div class="template-box" v-for="item in templateList.slice(0, 6)" :key="item"
+                            @click="templateClick(item.essayId)">
                             <span class="template-title">{{ item?.essayTitle }}</span>
                             <span class="template-bottom">
                                 <span class="first-label" v-if="item.labelList && item.labelList.length > 0">{{
@@ -221,9 +223,7 @@
                     <el-divider direction="vertical" />
                     <div class="title-box">签到</div>
                     <div class="iconfont icon-jinbi1"></div>
-                    <div class="Gold">
-                        1200
-                    </div>
+                    <div class="wow fadeInRight Gold">{{ nowPoints }}</div>
                 </div>
                 <el-calendar ref="calendar">
                     <template #header="{ }">
@@ -246,48 +246,26 @@
                         <el-row :class="data.isSelected ? 'is-selected' : 'sds'">
                             {{ data.day.split('-').slice(2).join('-') }}
                         </el-row>
-                        <div class="iconfont icon-weibiaoti1"></div>
-                        <!-- <div v-for="(item, index) in textContent(data.day)" :key="index">
-                            <e-row>
-                                <el-col class="center">
-                                    <el-tag type="warning" class="tag">
-                                        <el-row v-if="item.xianyue == 0">
-                                            <el-col :span="17" class="tag">
-                                                <span>当日限约</span>
-                                            </el-col>
-                                        </el-row>
-                                    </el-tag>
-                                </el-col>
-                            </e-row>
-                        </div> -->
+                        <div v-for="(item) in signData" :key=item>
+                            <div v-if="data.day == item.time && item.data == 1">
+                                <div class="iconfont icon-weibiaoti1"></div>
+                            </div>
+                        </div>
                     </template>
                 </el-calendar>
                 <div class="button-box">
-                    <el-button color="#065fed">签到</el-button>
+                    <el-button :disabled="signInValue == true" @click="signInClick" color="#065fed"
+                        class="wow fadeInRight">{{
+                            signInValue ==
+                                true ? '已签到' : '签到'
+                        }}</el-button>
                     <div class="prompt">
                         <span>连续签到6天, </span>
-                        <span>再签到1天可获取100积分</span>
+                        <span>签到1天可获取100积分</span>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- <div class="footer-box">
-            <div class="top-box">
-                <div class="top-left">
-                    <div>
-                        <img src="@/assets/img/logo2.png" class="footer-img">
-                        GoodAn
-                    </div>
-                    <div>
-                        GoodAn 致力于
-                    </div>
-                </div>
-                <div class="top-middle">
-
-                </div>
-                <div class="top-left"></div>
-            </div>
-        </div> -->
     </div>
 </template>
 <script setup>
@@ -297,7 +275,9 @@ import { onUnmounted, onMounted, getCurrentInstance, ref } from "vue";
 import { useUserStore } from '@/stores/userStore.js'
 import { getTemplateAPI, getRecentAnalysisAPI } from '@/apis/mainPage.js'
 import { getDetectionAPI, getMemberAPI, getFriendAPI, getApkAPI } from '@/apis/echarts.js'
+import { getSearchAPI, getEssayPreviewAPI, getSignInAPI, getSignInDateAPI, getSignInSuccessAPI, getPointAPI } from '@/apis/mainPage.js'
 import WOW from "wow.js";
+import { ElMessage } from "element-plus";
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
 const userStore = useUserStore();
@@ -313,7 +293,7 @@ let percentage = ref(44)
 let calendarDate = ref(new Date())
 let calendarString = ref()
 const calendar = ref()
-let searchValue = ref('')
+let searchValue = ref('')//搜索框内容
 let templateList = ref([])//范本库
 let recentAnalysisList = ref([])//最近分析
 //charts图表数据
@@ -337,6 +317,9 @@ let memberList = ref([])
 let friendList = ref([])
 let apkList = ref([])
 let userInfo = ref(null)
+let signInValue = ref(false)
+let signData = ref([])
+let nowPoints = ref(0)
 onMounted(async () => {
     const wow = new WOW({})
     wow.init();
@@ -380,25 +363,77 @@ onMounted(async () => {
     setChart()
     //如果登录了，就将显示表格
     if (userInfo.value != null) {
+        //获取签到的天数
+        await getSignInDate()
         //获取图表
         const res2 = await getDetectionAPI(userStore.user.userMail, '7', 'v')
         detectionList.value = res2.data.data
-        console.log(detectionList.value[1][0])
-        const res3 = await getMemberAPI(userStore.user.userMail, '7', 'v')
-        memberList.value = res3.data.data
         const res4 = await getFriendAPI(userStore.user.userMail, '7', 'v')
         friendList = res4.data.data
         const res5 = await getApkAPI(userStore.user.userMail, '7', 'v')
         console.log(res5.data.data)
-        console.log(res5.data)
-        apkList = res5.data.data
+        apkList.value = res5.data.data
         setChart1()
         setChart2()
         setChart3()
         setChart4()
     }
-    //获取签到的天数
+    //获取今日该用户是否签到
+    const res2 = await getSignInAPI(userStore.user.userMail, 'v')
+    if (res2.data.message == "当天未签到") {
+        signInValue.value = false
+        console.log('当天未签到')
+    } else {
+        signInValue.value = true
+        console.log('当天签到了')
+    }
 });
+//获取签到的天数和会员积分
+async function getSignInDate() {
+    const year = calendarDate.value.getFullYear();
+    const month = calendarDate.value.getMonth() + 1;
+    const res1 = await getSignInDateAPI(year, month, userStore.user.userMail, 'v')
+    signData.value = res1.data.data
+    console.log(signData.value)
+    const res2 = await getPointAPI(userStore.user.userMail, 'v')
+    nowPoints.value = res2.data.data
+    //获取第二个图表的内容
+    const res3 = await getMemberAPI(userStore.user.userMail, '7', 'v')
+    console.log(res3.data.data)
+    memberList.value = res3.data.data
+}
+//点击查看范本
+async function templateClick(id) {
+    console.log(id)
+    const res = await getEssayPreviewAPI('v', id)
+    console.log(res)
+    const htmlContent = res.data
+    const newWindow = window.open('', `_blank/${id}`);
+    newWindow.document.write(htmlContent);
+}
+//点击签到
+async function signInClick() {
+    const res = await getSignInSuccessAPI(userStore.user.userMail, 'v')
+    console.log(res.data)
+    if (res.data.message == '签到成功') {
+        ElMessage.success('签到成功！获得100积分')
+    }
+    //获取签到的天数,就是更改日历上面的已签到的日期
+    await getSignInDate()
+    //图表更新
+    setChart2()
+    //将今天的签到按钮禁用
+    signInValue.value = true
+}
+//点击搜索
+async function searchClick() {
+    if (searchValue.value == '' || searchValue.value == null) {
+        ElMessage.warning("输入内容不能为空！")
+        return
+    }
+    const res = await getSearchAPI(searchValue.value, 'v', 1)
+    console.log(res.data)
+}
 //退出登录
 function signOutClick() {
     localStorage.removeItem('user')
@@ -546,6 +581,7 @@ async function handleCommand1(command) {
     if (detectionList.value[1].length != 0) {
         average = average / detectionList.value[1].length;
     }
+    average = average.toFixed(1)
     option1.media[0].option.title.subtext = `{value|平均}{titleSize| ${average} }{value|次}`
     myChart1.setOption(option1);
 }
@@ -577,8 +613,8 @@ async function handleCommand2(command) {
     memberList.value[1].forEach((element) => {
         memberNum = memberNum + parseInt(element)
     })
-    memberNum = memberNum / memberList.value[1].length
-    option2.media[0].option.title.subtext = `{titleSize|${memberNum} }{value|分}`
+    memberNum = (memberNum / memberList.value[1].length).toFixed(1)
+    option2.media[0].option.title.subtext = `{value|平均}{titleSize|${memberNum} }{value|分}`
     myChart2.setOption(option2);
 }
 async function handleCommand3(command) {
@@ -611,7 +647,6 @@ async function handleCommand3(command) {
         friendNum = friendNum + parseInt(number)
     })
     option3.title.subtext = `{titleSize|${friendNum} }{value|个}`
-    friendNum = friendNum / friendList[1].length
     console.log(option3)
     myChart3.setOption(option3);
 }
@@ -650,6 +685,7 @@ const setChart1 = () => {
     if (detectionList.value[1].length != 0) {
         average = average / detectionList.value[1].length;
     }
+    average = average.toFixed(1)
     // 指定图表的配置项和数据
     option1 = {
         media: [
@@ -690,9 +726,6 @@ const setChart1 = () => {
                                 backgroundColor: "#6a7985",
                             },
                         },
-                    },
-                    legend: {
-                        // data: ['Email']
                     },
                     toolbox: {
                         feature: {
@@ -752,7 +785,6 @@ const setChart1 = () => {
                     ],
                     series: [
                         {
-                            // name: 'Email',
                             type: "line",
                             stack: "Total",
                             smooth: true,
@@ -807,7 +839,6 @@ const setChart1 = () => {
     window.addEventListener("resize", () => {
         myChart1.resize();
     });
-
 };
 const setChart2 = () => {
     let chartDom2 = document.getElementById("chart2-content");
@@ -816,7 +847,7 @@ const setChart2 = () => {
     memberList.value[1].forEach((element) => {
         memberNum = memberNum + parseInt(element)
     })
-    memberNum = memberNum / memberList.value[1].length
+    memberNum = (memberNum / memberList.value[1].length).toFixed(1)
     // 指定图表的配置项和数据
     option2 = {
         media: [
@@ -825,7 +856,7 @@ const setChart2 = () => {
                     title: {
                         show: true,
                         text: `{value|会员积分}`,
-                        subtext: `{titleSize|${memberNum} }{value|分}`,
+                        subtext: `{value|平均}{titleSize|${memberNum} }{value|分}`,
                         textStyle: {
                             color: '#6C54F1',//文字颜色
                             fontSize: '18',//文字大小
@@ -857,9 +888,6 @@ const setChart2 = () => {
                                 backgroundColor: "#6a7985",
                             },
                         },
-                    },
-                    legend: {
-                        // data: ['Email']
                     },
                     toolbox: {
                         feature: {
@@ -919,7 +947,6 @@ const setChart2 = () => {
                     ],
                     series: [
                         {
-                            // name: 'Email',
                             type: "line",
                             stack: "Total",
                             smooth: true,
@@ -980,7 +1007,6 @@ const setChart3 = () => {
     friendList[1].forEach((number) => {
         friendNum = friendNum + parseInt(number)
     })
-    friendNum = friendNum / friendList[1].length
     option3 = {
         title: {
             show: true,
@@ -1087,9 +1113,46 @@ const setChart3 = () => {
         myChart3.resize();
     });
 }
+// 转换函数
+function transformData(data) {
+    const nameMap = {
+        'scam': '涉诈',
+        'black': '黑灰产',
+        'sex': '涉黄',
+        'gamble': '涉赌',
+        'white': '安全',
+    };
+    return data.map(item => {
+        const chineseName = nameMap[item.name] || item.name;
+        const value = item.value || 0;
+        const itemStyle = { color: '#000000' }
+        switch (chineseName) {
+            case '安全':
+                itemStyle.color = '#7ab25f';
+                break;
+            case '黑灰产':
+                itemStyle.color = '#cccccc';
+                break;
+            case '涉黄':
+                itemStyle.color = '#FF915A';
+                break;
+            case '涉诈':
+                itemStyle.color = '#5470C6';
+                break;
+            case '涉毒':
+                itemStyle.color = '#FAC858';
+                break;
+            default:
+                break;
+        }
+        return { value, name: chineseName, itemStyle };
+    });
+}
 const setChart4 = () => {
     let chartDom4 = document.getElementById("chart4-content");
     myChart4 = echarts.init(chartDom4);
+    const transformedData = transformData(apkList.value);
+    console.log(transformedData);
     option4 = {
         title: {
             show: true,
@@ -1194,7 +1257,7 @@ const setChart4 = () => {
                     { value: 221, name: '黑灰产', itemStyle: { color: '#cccccc' } },
                     { value: 520, name: '涉黄', itemStyle: { color: '#FF915A' } },
                     { value: 100, name: '涉诈', itemStyle: { color: '#5470C6' } },
-                    { value: 159, name: '涉毒', itemStyle: { color: '#FAC858' } },
+                    { value: 159, name: '涉赌', itemStyle: { color: '#FAC858' } },
                 ]
             }
         ]
@@ -1271,931 +1334,7 @@ onUnmounted(() => {
     }
     myChart.dispose();
 });
-// mounted(() {
-//     new this.$wow.WOW().init()
-// })
 </script>
 <style lang="scss" scoped>
-.banner {
-    padding-top: 30px;
-    background-image: url("@/assets/img/home-bg.png");
-    background-size: cover;
-    background-position: top;
-    height: 500px;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    text-align: center;
-}
-
-.ground {
-    flex-wrap: wrap;
-    position: absolute;
-    top: 0%;
-    // transform: translateY(-44.3%);
-    background-size: cover;
-    background: linear-gradient(rgba(0, 103, 221, 0.3) 0%,
-            rgb(205, 226, 252) 45%,
-            rgb(174, 208, 244) 100%);
-    /* background-image: url('@/assets/img/ju.png'); */
-}
-
-.navigation {
-    padding: 10px 0 10px 60px;
-    display: flex;
-    flex-flow: row;
-
-    @media (max-width: 765px) {
-        padding-left: 20px;
-    }
-
-    @media (min-width: 765px) and (max-width: 1024px) {
-        padding-left: 20px;
-    }
-
-    @media (min-width: 1024px) {}
-
-    .navigation-tran {
-        height: 40px;
-        display: flex;
-        flex: 0.9;
-
-        @media (max-width: 765px) {
-            flex: 1;
-        }
-
-        @media (min-width: 765px) and (max-width: 1024px) {
-            margin-left: 25px;
-        }
-
-        @media (min-width: 1024px) {
-            margin-left: 50px;
-        }
-
-        .navigation-logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-        }
-
-        .navigation-title {
-            height: 50px;
-            width: 120px;
-        }
-    }
-
-    .blank-box {
-        flex: 3;
-
-        @media (max-width: 765px) {
-            display: none;
-        }
-
-        @media (min-width: 765px) and (max-width: 1024px) {
-            flex: 1;
-        }
-
-        @media (min-width: 1024px) and (max-width: 1300px) {
-            flex: 1;
-        }
-
-        @media (min-width: 1300px) {
-            flex: 2;
-        }
-    }
-
-    .navigation-icon {
-        display: flex;
-        flex: 0.7;
-        line-height: 40px;
-
-        @media (max-width: 600px) {
-            flex: 1;
-        }
-
-        @media (min-width: 600px) and (max-width: 765px) {}
-
-        @media (min-width: 765px) and (max-width: 1024px) {
-            flex: 1;
-        }
-
-        @media (min-width: 1024px) {}
-
-        .el-dropdown-link {
-            color: #000;
-            line-height: 40px;
-            padding-left: 5px;
-        }
-
-        .el-divider {
-            background-color: #414141;
-            height: 40px;
-            margin-right: 25px;
-            border-left: 1px solid #414141;
-        }
-
-        .iconfont {
-            margin-right: 15px;
-        }
-
-        .icon-down1::before {
-            font-size: 14px;
-            margin-left: 3px;
-        }
-    }
-
-    .navigation-portrait {
-        display: flex;
-        line-height: 40px;
-        height: 40px;
-
-        .portrait-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 35px;
-        }
-
-        .portrait-nickname {
-            font-size: 14px;
-            margin-left: 10px;
-        }
-
-        .navigation-button {
-            cursor: pointer;
-        }
-
-        .navigation-button:hover {
-            color: #000;
-        }
-    }
-}
-
-.component-box {
-    margin: 10px auto;
-    margin-top: 0px;
-    width: 80%;
-    height: 40px;
-    line-height: 40px;
-    display: flex;
-
-    .search-word {
-        margin-top: 5px;
-        margin-right: 20px;
-
-        @media (max-width: 765px) {}
-
-        @media (min-width: 765px) and (max-width: 1024px) {}
-
-        @media (min-width: 1024px) {}
-    }
-
-    .search-box {
-        display: flex;
-        width: 75%;
-
-        @media (max-width: 765px) {}
-
-        @media (min-width: 765px) and (max-width: 1024px) {
-            width: 60%;
-        }
-
-        @media (min-width: 1024px) {}
-
-        .search-content {
-            --el-border-radius-base: 10px 0 0 10px;
-        }
-
-        .el-button {
-            border-radius: 0 10px 10px 0;
-            border: 0;
-            height: 40px;
-            width: 80px;
-        }
-    }
-}
-
-.module-boxes {
-    width: 70%;
-    font-size: 15px;
-    margin: 0 auto;
-    margin-top: 45px;
-    display: grid;
-    grid-template-columns: repeat(6, 10%);
-    grid-gap: 10px 8%;
-
-    @media (max-width: 765px) {
-        margin-top: 45px;
-        width: 70%;
-        grid-template-columns: repeat(3, 23%);
-        grid-gap: 15px 15%;
-        grid-template-rows: repeat(2, 40%);
-    }
-
-    @media (min-width: 765px) and (max-width: 1024px) {
-        grid-template-columns: repeat(6, 12%);
-        grid-gap: 10px 5%;
-        margin-top: 50px;
-        width: 92%;
-    }
-
-    @media (min-width: 1024px) {}
-
-    .module-box {
-        background-color: #fff;
-        border-radius: 10px;
-        height: 65%;
-        font-size: 14px;
-        text-align: center;
-
-        img {
-            cursor: pointer;
-            transform: translateY(-50%);
-            width: 80%;
-        }
-
-        div {
-            cursor: pointer;
-            height: 100%;
-            transform: translateY(-70%);
-
-            @media (max-width: 765px) {
-                transform: translateY(-90%);
-            }
-
-            @media (min-width: 765px) and (max-width: 1024px) {}
-
-            @media (min-width: 1024px) {}
-        }
-    }
-}
-
-.middle-box {
-    width: 97%;
-    margin: 0 auto;
-    transform: translateY(-15px);
-    display: flex;
-    background-color: rgb(174, 208, 244, 0);
-
-    @media (max-width: 765px) {
-        transform: translateY(-36px);
-    }
-
-    @media (min-width: 765px) and (max-width: 1024px) {}
-
-    @media (min-width: 1024px) {}
-
-    .left-boxes {
-        flex: 10;
-        display: grid;
-        grid-template-areas:
-            "chart1 chart1 chart2 chart2 chart3 chart3 chart4 chart4"
-            "footer1 footer1 footer1 footer2 footer2 footer2 footer2 footer2";
-        grid-template-rows: 175px 450px;
-        grid-template-columns: repeat(8, 11%);
-        grid-gap: 10px 1.7%;
-        margin-right: 10px;
-        background-color: #fff;
-        background-color: rgb(174, 208, 244, 0);
-
-        @media (max-width: 765px) {
-            flex: 4;
-            grid-template-rows: 175px 175px 500px;
-            grid-template-areas:
-                "chart1 chart1 chart1 chart1 chart2 chart2 chart2 chart2"
-                " chart3 chart3 chart3 chart3 chart4 chart4 chart4 chart4"
-                "footer1 footer1 footer1 footer1 footer1 footer1 footer1 footer1";
-        }
-
-        @media (min-width: 765px) and (max-width: 1024px) {
-            flex: 4;
-            grid-template-rows: 175px 175px 500px;
-            grid-template-areas:
-                "chart1 chart1 chart1 chart1 chart2 chart2 chart2 chart2"
-                " chart3 chart3 chart3 chart3 chart4 chart4 chart4 chart4"
-                "footer1 footer1 footer1 footer1 footer2 footer2 footer2 footer2";
-        }
-
-        @media (min-width: 1024px) {}
-
-        div {
-            background-color: #fff;
-        }
-
-        .el-dropdown {
-            cursor: pointer;
-        }
-
-        .chart1,
-        .chart2,
-        .chart3,
-        .chart4 {
-            padding-bottom: 3%;
-            border-radius: 10px;
-
-            @media (max-width: 765px) {}
-
-            @media (min-width: 765px) and (max-width: 1300px) {
-                padding-bottom: 0%;
-            }
-
-            @media (min-width: 1300px) {}
-
-            #chart1-content,
-            #chart2-content,
-            #chart3-content,
-            #chart4-content {
-                height: 75%;
-                width: 94%;
-                padding: 0 3%;
-                margin-top: 3%;
-                border-radius: 10%;
-            }
-
-            .el-dropdown {
-                border-radius: 10px;
-                margin: 3% 3% 0 3%;
-                padding: 0px 5px 3px 5px;
-                font-size: 12px;
-
-                // display: flex;
-                // justify-content: center;
-                // align-content: center;
-                #el-id-5859-0 {
-                    display: flex;
-                    justify-content: center;
-                    align-content: center;
-                }
-
-                .icon-down::before {
-                    font-size: 12px;
-                }
-            }
-        }
-
-        .chart1 {
-            grid-area: chart1;
-
-            .el-dropdown {
-                border: 1.5px solid #547BF1;
-                color: #547BF1;
-            }
-        }
-
-        .chart2 {
-            grid-area: chart2;
-
-            .el-dropdown {
-                border: 1.5px solid #6C54F1;
-                color: #6C54F1;
-            }
-        }
-
-        .chart3 {
-            grid-area: chart3;
-
-            .el-dropdown {
-                border: 1.5px solid #ed8b31;
-                color: #ed8b31;
-            }
-        }
-
-        .chart4 {
-            grid-area: chart4;
-
-            .el-dropdown {
-                border: 1.5px solid #7ab25f;
-                color: #7ab25f;
-            }
-        }
-
-        .chart-title1,
-        .chart-title2,
-        .chart-title3,
-        .chart-title4 {
-            font-size: 18px;
-            font-weight: 600;
-            display: block;
-            margin-top: 10px;
-            margin-left: 5px;
-        }
-
-        .chart-title1 {
-            color: #547BF1;
-        }
-
-        .chart-title2 {
-            color: #6C54F1;
-        }
-
-        .chart-title3 {
-            color: #ed8b31;
-        }
-
-        .chart-title4 {
-            color: #7ab25f;
-        }
-
-        .none-data {
-            line-height: 130px;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .footer1,
-        .footer2 {
-            border-radius: 10px;
-            position: relative;
-
-            .footer-title {
-                display: flex;
-                align-items: center;
-                border-radius: 10px 10px 0 0;
-                height: 40px;
-                line-height: 25px;
-                border-bottom: 1px solid #ccc;
-
-                .el-divider {
-                    height: 13px;
-                    border-left: 5px solid $title-color;
-                    margin-right: 4px;
-                }
-
-                .title-box {
-                    color: $title-color;
-                    font-weight: 600;
-                    margin-right: auto
-                }
-
-                .more-view {
-                    font-size: 12px;
-                    color: #7a7a7a;
-                    margin-right: 8px;
-                    cursor: pointer;
-                }
-
-                .iconfont::before {
-                    font-size: 12px;
-                }
-            }
-
-            .template-img {
-                height: 60px;
-                position: absolute;
-                bottom: 0;
-                right: 10%;
-            }
-        }
-
-        .footer1 {
-            grid-area: footer1;
-
-            .template-boxes {
-                word-wrap: break-word;
-                font-size: 14px;
-                padding: 10px 5px 0 10px;
-
-                .template-box {
-                    margin-bottom: 6px;
-                    padding: 5px 5px 5px 5px;
-                    border-radius: 5px;
-                    // border-bottom: 1px solid #ccc;
-
-                    .template-title {
-                        margin-bottom: 5px;
-                        overflow: hidden;
-                        display: -webkit-box;
-                        -webkit-box-orient: vertical;
-                        -webkit-line-clamp: 2;
-                        text-overflow: ellipsis;
-                    }
-
-                    .template-bottom {
-                        font-size: 12px;
-                        display: flex;
-                        flex-wrap: wrap;
-                        line-height: 20px;
-                        align-items: center;
-
-                        .first-label {
-                            background-color: $button-color;
-                            color: #fff;
-                            border-radius: 5px;
-                            padding: 0 5px;
-                        }
-
-                        .second-label {
-                            margin-left: 5px;
-                            margin-right: 8px;
-                            background-color: #e6eaf2;
-                            color: $button-color;
-                            border-radius: 5px;
-                            padding: 0 5px;
-                        }
-
-                        .name-label {
-                            margin-right: auto;
-                        }
-
-                        .time-label {
-                            @media (max-width: 765px) {}
-
-                            @media (min-width: 765px) and (max-width: 1024px) {
-                                display: none;
-                            }
-
-                            @media (min-width: 1024px) {}
-                        }
-                    }
-
-                }
-
-                .template-box:hover {
-                    background-color: #f3f5f8;
-                }
-            }
-        }
-
-        .footer2 {
-            grid-area: footer2;
-
-            @media (max-width: 765px) {
-                display: none;
-            }
-
-            @media (min-width: 765px) and (max-width: 1024px) {}
-
-            @media (min-width: 1024px) {}
-
-            .analysis-boxes {
-                word-wrap: break-word;
-                font-size: 14px;
-                padding: 10px 5px 0 10px;
-
-                .analysis-box {
-                    border-radius: 10px;
-                    margin-bottom: 10px;
-                    padding: 5px 5px 5px 5px;
-                    // border-bottom: 1px solid #ccc;
-
-                    .template-title {
-                        margin-bottom: 5px;
-                        overflow: hidden;
-                        display: -webkit-box;
-                        -webkit-box-orient: vertical;
-                        -webkit-line-clamp: 2;
-                        text-overflow: ellipsis;
-                    }
-
-                    .analysis-top {
-                        display: flex;
-                        word-wrap: break-word;
-                        flex-wrap: wrap;
-
-                        .analysis-md5 {
-                            word-wrap: break-word;
-                            white-space: pre-wrap;
-                            margin-right: auto;
-                        }
-
-                        .analysis-title {
-                            margin-right: 5px;
-                        }
-                    }
-
-                    .analysis-bottom {
-                        margin-top: 5px;
-                        font-size: 12px;
-                        display: flex;
-                        flex-wrap: wrap;
-                        line-height: 20px;
-                        align-items: center;
-
-                        .el-progress {
-                            width: 250px;
-                            border-radius: 10px;
-                        }
-
-                        .first-label {
-                            color: #fff;
-                            border-radius: 5px;
-                            padding: 0 5px;
-                            margin-left: 8px;
-                        }
-
-                        .purpleLabel {
-                            background-color: $purple;
-                        }
-
-                        .yellowLabel {
-                            background-color: $yellow;
-                        }
-
-                        .greenLabel {
-                            background-color: $green;
-                        }
-
-                        .greyLabel {
-                            background-color: $grey;
-                        }
-
-                        .redLabel {
-                            background-color: $red;
-                        }
-
-                        .second-label {
-                            margin-left: 5px;
-                            margin-right: 8px;
-                            background-color: #FFE5D6;
-                            color: #ff5e00;
-                            border-radius: 5px;
-                            padding: 0 5px;
-                            margin-right: auto;
-                        }
-
-                        .time-label {
-                            @media (max-width: 765px) {}
-
-                            @media (min-width: 765px) and (max-width: 1024px) {
-                                display: none;
-                            }
-
-                            @media (min-width: 1024px) {}
-                        }
-                    }
-
-                }
-
-                .analysis-box:hover {
-                    background-color: #f3f5f8;
-                }
-            }
-        }
-    }
-
-    .right-boxes {
-        flex: 3;
-        background-color: #fff;
-        border-radius: 10px;
-
-        .footer-title {
-            display: flex;
-            align-items: center;
-            border-radius: 10px 10px 0 0;
-            height: 40px;
-            line-height: 25px;
-            border-bottom: 1px solid #ccc;
-
-            .el-divider {
-                height: 13px;
-                border-left: 5px solid $title-color;
-                margin-right: 4px;
-            }
-
-            .title-box {
-                color: $title-color;
-                font-weight: 600;
-                margin-right: auto
-            }
-
-            .more-view {
-                font-size: 12px;
-                color: #7a7a7a;
-                margin-right: 8px;
-                cursor: pointer;
-            }
-
-            .iconfont::before {
-                font-size: 16px;
-            }
-
-            .icon-jinbi1 {
-                color: #F6A71B;
-            }
-
-            .Gold {
-                margin-left: 5px;
-                margin-right: 20px;
-                color: #EA8930;
-            }
-        }
-
-        .icon-weibiaoti1 {
-            text-align: center;
-        }
-
-        .icon-weibiaoti1::before {
-            color: #86C368;
-            font-size: 6px;
-        }
-
-
-        .el-calendar {
-            .is-selected {
-                color: #1989fa;
-            }
-
-            .tag {
-                display: flex;
-                align-items: center;
-                // height: 10px;
-                justify-content: center;
-            }
-
-            .tag2 {
-                display: flex;
-                align-items: center;
-                // height: 10px;
-                justify-content: center;
-                font-size: 18px;
-            }
-
-            .aaa {
-                .is-selected {
-                    .yuyue {
-                        color: #E6F3FF;
-                    }
-
-                    .datastyle {
-                        color: #E6F3FF;
-                    }
-                }
-
-                .datastyle {
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    font-size: 3rem;
-                    color: #353636;
-                    font-weight: 600;
-                }
-
-                .prev .datastyle {
-                    color: #c4c5c8;
-                }
-
-                .next .datastyle {
-                    color: #c4c5c8;
-                }
-            }
-
-
-
-            :deep {
-                --el-calendar-selected-bg-color: #E6F3FF;
-                --el-calendar-cell-width: 60px;
-
-                .date-content {
-                    margin-left: auto;
-                    margin-right: auto;
-                    font-size: 14px;
-
-                    @media (max-width: 765px) {
-                        font-size: 12px;
-                    }
-
-                    @media (min-width: 765px) {}
-                }
-
-                .el-row {
-                    align-items: center;
-                    justify-content: center;
-                }
-
-                .el-calendar__header {
-                    justify-content: center;
-                    align-items: center;
-                    padding-top: 20px;
-
-                    @media (max-width: 765px) {
-                        padding-left: 10px;
-                        padding-right: 10px;
-                    }
-
-                    @media (min-width: 765px) {}
-
-                    .el-button--small {
-                        @media (max-width: 765px) {
-                            padding-left: 3px;
-                            padding-right: 3px;
-                        }
-
-                        @media (min-width: 765px) {}
-                    }
-                }
-
-                .el-calendar__body {
-                    padding-bottom: 30px;
-
-                    @media (max-width: 765px) {
-                        padding-left: 10px;
-                        padding-right: 10px;
-                    }
-
-                    @media (min-width: 765px) {}
-
-                }
-
-
-                .el-calendar-table {
-                    .el-calendar-day:hover {
-                        background-color: #E6F3FF;
-                    }
-
-                    thead th {
-                        color: $title-color;
-                        font-weight: bold;
-                        font-size: 14px;
-                    }
-                }
-            }
-
-            .center {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .center2 {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                color: #E6F3FF;
-                margin-left: 5px;
-                font-size: 20px;
-            }
-        }
-
-        .button-box {
-            text-align: center;
-
-            .prompt {
-                font-size: 12px;
-                color: $word-black-color;
-            }
-
-            .el-button {
-                width: 200px;
-                display: inline-block;
-                margin-bottom: 10px;
-            }
-        }
-    }
-}
-
-.footer-box {
-    margin-top: 50px;
-    height: 250px;
-    color: #fff;
-    background-color: #304a76;
-
-    .footer-img {
-        width: 30px;
-    }
-}
-
-@font-face {
-    font-family: "iconfont";
-    /* Project id 4533157 */
-    src: url("//at.alicdn.com/t/c/font_4533157_qzpmw0z66r9.woff2?t=1715863438264") format("woff2"),
-        url("//at.alicdn.com/t/c/font_4533157_qzpmw0z66r9.woff?t=1715863438264") format("woff"),
-        url("//at.alicdn.com/t/c/font_4533157_qzpmw0z66r9.ttf?t=1715863438264") format("truetype");
-}
-
-.iconfont::before {
-    font-size: 20px;
-    font-weight: 600;
-}
-
-.display-none {
-    display: none;
-}
-
-.display-none1 {
-    display: none;
-}
-
-.el-scrollbar {
-    .avatar {
-        display: flex;
-        text-align: center;
-
-        .avatar-box {
-            margin: 5px auto;
-            margin-top: 20px;
-
-            .drop-img {
-                width: 50px;
-                height: 50px;
-                text-align: center;
-                border-radius: 50px;
-            }
-        }
-
-        .menu-item {
-            margin-left: 20px;
-        }
-    }
-}
+@import '@/views/user/mainPage/scss/index.scss';
 </style>
