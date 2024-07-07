@@ -4,7 +4,7 @@
             <div class="middle-title">
                 黑白名单库
             </div>
-            <div class="middle-word">以下内容是访客的分析记录，如果您不希望公开自己的分析记录，请在上传分析前登录用户账号</div>
+            <div class="middle-word"> </div>
             <el-table :data="[]" style="width: 100%" stripe>
                 <el-table-column prop="data1" label="应用程序" width="220">
                     <template #default="{ row }">

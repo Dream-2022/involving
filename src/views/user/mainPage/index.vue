@@ -26,7 +26,7 @@
                     <template #dropdown>
                         <div class="avatar">
                             <div class="avatar-box">
-                                <img :src="imgPath" class="drop-img">
+                                <img :src="userInfo.userIconPath" class="drop-img">
                                 <div>{{ userInfo.userName }}</div>
                             </div>
                         </div>
@@ -85,7 +85,7 @@
             </div>
             <div class="module-box" @click="staticAnalysis('userMemberPage')">
                 <img src="@/assets/3D/2-t.png" />
-                <div @click="staticAnalysis('userMemberPage')">会员信息</div>
+                <div @click="staticAnalysis('userMemberPage')">{{ userStore?.user?.isVip == 0 ? '成为会员' : '我的会员' }}</div>
             </div>
         </div>
         <div class="middle-box">

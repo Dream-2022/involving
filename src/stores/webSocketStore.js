@@ -1,5 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
+// import { useUserStore } from '@/stores/userStore.js'
+// const userStore = useUserStore()
 import { useRouter } from 'vue-router'
 export const useWebSocketStore = defineStore('webSocket', () => {
     let websocket = null;

@@ -2,10 +2,11 @@
     <div class="wow animate__fadeInUp my-analysis">
         <div class="middle-box">
             <div class="middle-title">
-                最近分析
+                我的分析
             </div>
-            <div class="middle-word">以下内容是访客的分析记录，如果您不希望公开自己的分析记录，请在上传分析前登录用户账号</div>
-            <el-table :data="recentAnalysisList" style="width: 100%" stripe>
+            <div class="middle-word">以下内容是我的的分析记录，如果您不希望公开自己的分析记录，请在上传分析前登录用户账号</div>
+            <el-table :data="myAnalysisList" style="width: 100%" stripe :header-cell-style="{ 'text-align': 'center' }"
+                :cell-style="{ 'text-align': 'center' }">
                 <el-table-column prop="data1" label="应用程序" width="220">
                     <template #default="{ row }">
                         <div><img :src="row.apkIconPath" class="apk-img"></div>
@@ -15,8 +16,8 @@
                 <el-table-column prop="fileName" label="文件名称" width="240" />
                 <el-table-column label="风险评估" width="180">
                     <template #default="{ row }">
-                        <el-button color="#547BF1" @click="CodeFileDisplay(row.id)" size="small">{{ row.apkDesc
-                            }}</el-button>
+                        <span class="first-label" :class="getLabelColor(row?.apkDesc)">{{ row?.apkDesc }}
+                        </span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="fileMd5" label="MD5值" width="360" />
@@ -42,9 +43,34 @@
     </div>
 </template>
 <script setup>
-import { onMounted } from "vue";
-onMounted(() => {
+import { onMounted, ref } from "vue";
+import { useUserStore } from '@/stores/userStore.js'
+import { getMyAnalysisAPI } from '@/apis/mainPage.js'
+const userStore = useUserStore()
+let myAnalysisList = ref([])
+onMounted(async () => {
+    //获取我的分析
+    userStore.initialize()
+    const res1 = await getMyAnalysisAPI('1', userStore.user.userMail, 'v')
+    console.log(res1.data)
+    myAnalysisList.value = res1.data.data.records
 })
+//获取我的分析记录的标签颜色
+function getLabelColor(word) {
+    if (word == '黑灰色') {
+        return 'blackLabel'
+    } else if (word == '色情') {
+        return 'yellowLabel'
+    } else if (word == '诈骗') {
+        return 'redLabel'
+    } else if (word == '涉赌') {
+        return 'purpleLabel'
+    } else if (word == '正常') {
+        return 'greenLabel'
+    } else {
+        return 'greyLabel'
+    }
+}
 </script>
 <style lang="scss" scoped>
 .my-analysis {
@@ -79,6 +105,39 @@ onMounted(() => {
             width: 80px;
             height: 80px;
             border-radius: 5px;
+        }
+
+        .el-table {
+            .first-label {
+                color: #fff;
+                border-radius: 5px;
+                padding: 0 5px;
+                margin-left: 8px;
+            }
+
+            .purpleLabel {
+                background-color: $purple;
+            }
+
+            .yellowLabel {
+                background-color: $yellow;
+            }
+
+            .greenLabel {
+                background-color: $green;
+            }
+
+            .blackLabel {
+                background-color: $word-black-color;
+            }
+
+            .greyLabel {
+                background-color: $grey;
+            }
+
+            .redLabel {
+                background-color: $red;
+            }
         }
     }
 }

@@ -15,11 +15,11 @@
         </el-upload>
         <el-switch size="large" v-model="isActiveAnalysis" active-text="开启动态分析" /><br>
         <div class="button-box">
-            <el-button color="#547BF1" @click="uploadClick">
+            <el-button color="#547BF1" @click="uploadClick" :disabled="isUploadClick">
                 {{ isActiveAnalysis ? '开始动态分析' : '开始静态分析' }}
             </el-button>
         </div>
-        <div class="wow fadeInUp" style="margin-top: 20px;" v-if="isProgress != 0 && isProgress != 100">
+        <div class="wow fadeInUp" style="margin-top: 20px;" v-if="isProgress != -1">
             <div style="margin-bottom: 10px; font-size: 14px;">正在分析请耐心等待...</div>
             <div style="display: flex;">
                 <span style="font-size: 14px;">分析进度：</span>
@@ -46,9 +46,10 @@ const userStore = useUserStore()
 const webSocketStore = useWebSocketStore();
 const isActiveAnalysis = ref(false)
 const uploadList = ref([])//el-upload组件中的文件列表
+const isUploadClick = ref(false)
 let fileX = ref(null)
 //是否显示进度条
-let isProgress = ref(0)
+let isProgress = ref(-1)
 const chunkSize = 1 * 1024 * 1024;
 const webSocket = ref(null)
 onMounted(async () => {
@@ -61,7 +62,9 @@ onMounted(async () => {
         if (!isNaN(parseInt(event.data))) {
             isProgress.value = event.data
             if (isProgress.value == 100) {
-                isProgress.value = 0
+                setTimeout(() => {
+                    isProgress.value = -1
+                })
             }
         }
     }
@@ -88,6 +91,7 @@ async function uploadClick() {
         ElMessage.error('上传文件不能为空！');
         return;
     }
+    isUploadClick.value = true
     console.log(fileX.value.raw);
     const file = fileX.value.raw;
     const extension = file.name.split('.').pop();
@@ -143,6 +147,7 @@ async function uploadClick() {
             uploadList.value = []
         }
         ElMessage.success("上传成功，等待分析. . .")
+        isProgress.value = 0
         //静态分析的请求(上传文件完毕后)
         const res = await finishUploadAPI(fileMd5, 'v')
         if (res.data.code == 415) {
@@ -162,6 +167,7 @@ async function uploadClick() {
         localStorage.setItem('staticDataList', JSON.stringify(res.data.data))
         ElMessage.success('apk 解析完毕')
         router.push('/userResultPage')
+        isUploadClick.value = false
     } catch (error) {
         console.error('上传过程中出现错误:', error);
     }

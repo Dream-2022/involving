@@ -36,8 +36,9 @@
         </div>
         <div class="button-box">
             <div class="in-box">
-                <div class="button-word">您当前为 普通 用户，支付即可享受会员权限 >></div>
-                <el-button color="#547BF1" @click="payClick">
+                <div class="button-word">您当前为 {{ userStore?.user?.isVip == 0 ? '普通 用户 ，支付即可享受会员权限 >>' : '会员 用户，已成功支付' }}
+                </div>
+                <el-button color="#547BF1" @click="payClick" :disabled="userStore?.user?.isVip == 1">
                     立即支付<span class="iconfont icon-zhifu"></span>
                 </el-button>
             </div>
@@ -52,6 +53,7 @@ import { useUserStore } from '@/stores/userStore.js'
 const userStore = useUserStore();
 let userInfo = ref([])
 onMounted(() => {
+    userStore.initialize()
     userInfo.value = userStore.user
 })
 async function payClick() {

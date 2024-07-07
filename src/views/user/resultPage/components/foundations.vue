@@ -14,7 +14,7 @@
                     <div class="left-img-box"><img :src='foundationList.apkIconPath' class="left-img"></div>
                     <div class="left-score">
                         <div class="score-word score-word-green">安全评分</div>
-                        <div class="score"><strong>65/100</strong></div>
+                        <div class="score"><strong>{{ foundationList.secureScore }}/100</strong></div>
                     </div>
                     <div class="left-tracker">
                         <div class="tracker-word">APK类型</div>
@@ -98,19 +98,19 @@
             </div>
             <div class="export-chart"></div>
             <div class="export-bottom">
-                <el-button color="#368eec">
+                <el-button color="#368eec" @click="() => $router.push('/userResultPage/subassembly')">
                     查看
                     <span class="iconfont icon-direction-down-circle"></span>
                 </el-button>
-                <el-button color="#368eec">
+                <el-button color="#368eec" @click="() => $router.push('/userResultPage/subassembly')">
                     查看
                     <span class="iconfont icon-direction-down-circle"></span>
                 </el-button>
-                <el-button color="#368eec">
+                <el-button color="#368eec" @click="() => $router.push('/userResultPage/subassembly')">
                     查看
                     <span class="iconfont icon-direction-down-circle"></span>
                 </el-button>
-                <el-button color="#368eec">
+                <el-button color="#368eec" @click="() => $router.push('/userResultPage/subassembly')">
                     查看
                     <span class="iconfont icon-direction-down-circle"></span>
                 </el-button>

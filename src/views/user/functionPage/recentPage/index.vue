@@ -5,7 +5,8 @@
                 最近分析
             </div>
             <div class="middle-word">以下内容是访客的分析记录，如果您不希望公开自己的分析记录，请在上传分析前登录用户账号</div>
-            <el-table :data="recentAnalysisList" style="width: 100%" stripe>
+            <el-table :data="recentAnalysisList" style="width: 100%" stripe
+                :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
                 <el-table-column prop="data1" label="应用程序" width="220">
                     <template #default="{ row }">
                         <div><img :src="row.apkIconPath" class="apk-img"></div>
@@ -15,7 +16,7 @@
                 <el-table-column prop="fileName" label="文件名称" width="240" />
                 <el-table-column label="风险评估" width="180">
                     <template #default="{ row }">
-                        <span class="first-label" :class="getLabelColor(row.apkDesc)">{{ item.apkDesc }}
+                        <span class="first-label" :class="getLabelColor(row?.apkDesc)">{{ row?.apkDesc }}
                         </span>
                     </template>
                 </el-table-column>
@@ -23,15 +24,15 @@
                 <el-table-column prop="detectedTime" label="最后分析时间" width="220" />
                 <el-table-column label="操作" width="120" fixed="right">
                     <template #default="{ row }">
-                        <el-button color="#547BF1" size="small" plain @click="safeClick(row)"
+                        <el-button color="#547BF1" size="small" plain @click="safeClick(row.fileMd5)"
                             style="margin-left:12px; margin-bottom: 10px; ">
                             安全评分
                         </el-button>
-                        <el-button color="#547BF1" size="small" @click="safeClick(row)"
+                        <el-button color="#547BF1" size="small" @click="safeClick(row.fileMd5)"
                             style="margin-bottom: 10px; color:#fff;">
                             静态报告
                         </el-button>
-                        <el-button color="#547BF1" size="small" plain @click="safeClick(row)"
+                        <el-button color="#547BF1" size="small" plain @click="safeClick(row.fileMd5)"
                             style="margin-bottom: 10px;">
                             PDF报告
                         </el-button>
@@ -54,26 +55,15 @@ onMounted(async () => {
         const date = new Date(item.detectedTime);
         const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
         item.detectedTime = formattedDate;
-        if (item.apkDesc == 'scam') {
-            item.apkDesc = '涉诈'
-        } else if (item.apkDesc == 'sex') {
-            item.apkDesc = '涉黄'
-        } else if (item.apkDesc == 'gamble') {
-            item.apkDesc = '涉赌'
-        } else if (item.apkDesc == 'black') {
-            item.apkDesc = '黑灰色'
-        } else if (item.apkDesc == 'white') {
-            item.apkDesc = '白名单'
-        }
     });
 })
 //获取最近分析记录的标签颜色
 function getLabelColor(word) {
     if (word == '黑灰色') {
         return 'blackLabel'
-    } else if (word == '涉黄') {
+    } else if (word == '色情') {
         return 'yellowLabel'
-    } else if (word == '涉诈') {
+    } else if (word == '诈骗') {
         return 'redLabel'
     } else if (word == '涉赌') {
         return 'purpleLabel'

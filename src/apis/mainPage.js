@@ -21,6 +21,18 @@ export const getRecentAnalysisAPI=(pageNum,k)=>{
         }
     })
 }
+//获取我的分析
+export const getMyAnalysisAPI=(pageNum,user_mail,k)=>{
+    return http({
+        url:"/goodan-homepage/get_MyAnalysisRecords",
+        method:"POST",
+        params:{
+            pageNum,
+            user_mail,
+            k
+        }
+    })
+}
 //搜索
 export const getSearchAPI=(select,k,pageNum)=>{
     return http({

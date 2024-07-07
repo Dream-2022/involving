@@ -76,6 +76,7 @@ import { useRoute } from 'vue-router';
 import { getSearchAPI } from '@/apis/mainPage.js'
 import { getApkInfoAPI } from '@/apis/apkInfo.js'
 import WOW from "wow.js";
+import { ElMessage } from 'element-plus';
 const router = useRouter();
 const route = useRoute();
 let searchValue = ref('')
@@ -120,7 +121,13 @@ async function staticClick(md5) {
     // formData.append('fileMd5', md5)
     // console.log(formData)
     const res = await getApkInfoAPI(md5, 'v')
-    console.log(res)
+    console.log(res.data.data)
+    if (res.data.code == '200') {
+        localStorage.setItem('staticDataList', JSON.stringify(res.data.data))
+        router.push('/userResultPage')
+    } else {
+        ElMessage.warning(res.data.message)
+    }
 }
 function exitClick() {
     console.log('点击')
