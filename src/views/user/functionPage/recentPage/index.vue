@@ -15,8 +15,8 @@
                 <el-table-column prop="fileName" label="文件名称" width="240" />
                 <el-table-column label="风险评估" width="180">
                     <template #default="{ row }">
-                        <el-button color="#547BF1" @click="CodeFileDisplay(row.id)" size="small">{{ row.apkDesc
-                            }}</el-button>
+                        <span class="first-label" :class="getLabelColor(row.apkDesc)">{{ item.apkDesc }}
+                        </span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="fileMd5" label="MD5值" width="360" />
@@ -42,7 +42,7 @@
     </div>
 </template>
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { getRecentAnalysisAPI } from '@/apis/mainPage.js'
 let recentAnalysisList = ref([])
 onMounted(async () => {
@@ -67,6 +67,22 @@ onMounted(async () => {
         }
     });
 })
+//获取最近分析记录的标签颜色
+function getLabelColor(word) {
+    if (word == '黑灰色') {
+        return 'blackLabel'
+    } else if (word == '涉黄') {
+        return 'yellowLabel'
+    } else if (word == '涉诈') {
+        return 'redLabel'
+    } else if (word == '涉赌') {
+        return 'purpleLabel'
+    } else if (word == '正常') {
+        return 'greenLabel'
+    } else {
+        return 'greyLabel'
+    }
+}
 // window.addEventListener('scroll', () => {
 //     // 当滚动到页面底部时执行函数
 //     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
@@ -108,6 +124,39 @@ onMounted(async () => {
             width: 80px;
             height: 80px;
             border-radius: 5px;
+        }
+
+        .el-table {
+            .first-label {
+                color: #fff;
+                border-radius: 5px;
+                padding: 0 5px;
+                margin-left: 8px;
+            }
+
+            .purpleLabel {
+                background-color: $purple;
+            }
+
+            .yellowLabel {
+                background-color: $yellow;
+            }
+
+            .greenLabel {
+                background-color: $green;
+            }
+
+            .blackLabel {
+                background-color: $word-black-color;
+            }
+
+            .greyLabel {
+                background-color: $grey;
+            }
+
+            .redLabel {
+                background-color: $red;
+            }
         }
     }
 }

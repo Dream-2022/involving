@@ -23,18 +23,19 @@ axios.defaults.withCredentials = true;
 // 拦截器
 
 // axios请求拦截器
-
-
 http.interceptors.request.use(config => {
-
-    showLoading()
+    
 
     const userStore=useUserStore()
     const user=userStore.getUserInfo()
     if(user!==null){
         // console.log(user.shortToken)
         config.headers.set("Authorization",user.Accesstoken)
+    }if (config.url === '/apk-info/checkFile') {
+        // 如果是登录接口，不显示 loading 效果
+        return config;
     }
+    showLoading()
     return config
 }, e => Promise.reject(e))
 
@@ -63,7 +64,6 @@ http.interceptors.response.use((response=>{
             router.push('/login')
             break
     }
-
     return response
 
 }), e => {

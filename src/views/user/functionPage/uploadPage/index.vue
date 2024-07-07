@@ -13,7 +13,8 @@
 </template>
 <script setup>
 import { onMounted } from 'vue'
-onMounted(() => {
+onMounted(async () => {
+
 })
 </script>
 <style lang="scss" scoped>
@@ -25,7 +26,7 @@ onMounted(() => {
     position: relative;
 
     .middle-title {
-        height: 120px;
+        height: 90px;
         font-weight: 600;
         font-size: 24px;
         color: #404040;
@@ -39,7 +40,7 @@ onMounted(() => {
         box-shadow: 2px 20px 50px 12px rgba(0, 0, 0, 0.1);
         margin-bottom: 30px;
         background-color: #fff;
-        padding: 40px 30px 25px 30px;
+        padding: 40px 30px 35px 30px;
 
         .content-title {
             height: 40px;

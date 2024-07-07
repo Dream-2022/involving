@@ -6,28 +6,34 @@
                 <img src="@/assets/img/logo2.png" @click="() => $router.push('../../userMainPage')" />
             </span>
             <span class="navigation-title" @click="() => $router.push('../../userMainPage')"></span>
-            <ul class="navigation-options">
-                <li>
-                    <RouterLink active-class="option-active" :to="'/userRecentPage'" @click="backClick">最近分析
-                    </RouterLink>
-                </li>
-                <li>
-                    <RouterLink active-class="option-active" :to="'/userMyAnalysisPage'" @click="backClick">我的分析
-                    </RouterLink>
-                </li>
-                <li>
-                    <RouterLink active-class="option-active" :to="'/userUploadPage'" @click="backClick">apk分析
-                    </RouterLink>
-                </li>
-                <li>
-                    <RouterLink active-class="option-active" :to="'/userBlackWhitePage'" @click="backClick">黑白名单库
-                    </RouterLink>
-                </li>
-                <li>
-                    <RouterLink active-class="option-active" :to="'/userMemberPage'" @click="backClick">会员信息
-                    </RouterLink>
-                </li>
-            </ul>
+            <span :class="widthValue == true ? '' : 'disabled'">
+                <ul class="navigation-options">
+                    <li>
+                        <RouterLink active-class="option-active" :to="'/userRecentPage'" @click="backClick">最近分析
+                        </RouterLink>
+                    </li>
+                    <li>
+                        <RouterLink active-class="option-active" :to="'/userMyAnalysisPage'" @click="backClick">我的分析
+                        </RouterLink>
+                    </li>
+                    <li>
+                        <RouterLink active-class="option-active" :to="'/userUploadPage'" @click="backClick">apk分析
+                        </RouterLink>
+                    </li>
+                    <li>
+                        <RouterLink active-class="option-active" :to="'/userBlackWhitePage'" @click="backClick">黑白名单库
+                        </RouterLink>
+                    </li>
+                    <li>
+                        <RouterLink active-class="option-active" :to="'/userTemplatePage'" @click="backClick">范本库
+                        </RouterLink>
+                    </li>
+                    <li>
+                        <RouterLink active-class="option-active" :to="'/userMemberPage'" @click="backClick">会员信息
+                        </RouterLink>
+                    </li>
+                </ul>
+            </span>
             <div class="navigation-icon" v-if='userInfo != null'>
                 <span class="iconfont icon-lingdang-xianxing"></span>
                 <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
@@ -43,23 +49,58 @@
                         <template #dropdown>
                             <div class="avatar">
                                 <div class="avatar-box">
-                                    <img :src="imgPath" class="drop-img">
+                                    <img :src="userInfo.userIconPath" class="drop-img">
                                     <div>{{ userInfo.userName }}</div>
                                 </div>
                             </div>
                             <el-dropdown-menu>
-                                <el-dropdown-item>我的资料</el-dropdown-item>
-                                <el-dropdown-item>上传分析</el-dropdown-item>
-                                <el-dropdown-item @click="signOutClick"><span
-                                        class="iconfont icon-exit"></span>&nbsp;退出登录</el-dropdown-item>
+                                <el-dropdown-item @click="personVisible = true">我的资料</el-dropdown-item>
+                                <span :class="widthValue == true ? 'disabled' : ''">
+                                    <el-dropdown-item>
+                                        <RouterLink active-class="option-active" :to="'/userRecentPage'"
+                                            @click="backClick">
+                                            最近分析
+                                        </RouterLink>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <RouterLink active-class="option-active" :to="'/userRecentPage'"
+                                            @click="backClick">
+                                            我的分析
+                                        </RouterLink>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <RouterLink active-class="option-active" :to="'/userRecentPage'"
+                                            @click="backClick">
+                                            apk分析
+                                        </RouterLink>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <RouterLink active-class="option-active" :to="'/userRecentPage'"
+                                            @click="backClick">
+                                            黑白名单库
+                                        </RouterLink>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <RouterLink active-class="option-active" :to="'/userRecentPage'"
+                                            @click="backClick">
+                                            范本库
+                                        </RouterLink>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                        <RouterLink active-class="option-active" :to="'/userRecentPage'"
+                                            @click="backClick">
+                                            会员信息
+                                        </RouterLink>
+                                    </el-dropdown-item>
+                                </span>
+                                <el-dropdown-item @click="signOutClick">
+                                    <span class="iconfont icon-exit"></span>
+                                    &nbsp;退出登录
+                                </el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
                     </el-dropdown>
                 </span>
-                <!-- <span class="portrait-box">
-                    <span class="portrait-nickname">李华</span>
-                    <span class="iconfont icon-down1"></span>
-                </span> -->
             </div>
             <div class="navigation-icon" v-else>
                 <span>
@@ -73,6 +114,55 @@
             </div>
         </div>
         <RouterView></RouterView>
+        <el-dialog v-model="personVisible" title="绑定关系" width="500">
+            <div class="bindBox">
+                <div class="left">
+                    <img :src="userInfo.userIconPath" alt="">
+                </div>
+                <div class="right">
+                    <span>{{ userInfo.userName }}</span>请求与你绑定<span></span>关系
+                </div>
+            </div>
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button @click="personVisible = false">关闭</el-button>
+                </div>
+            </template>
+        </el-dialog>
+        <el-dialog draggable="true" top="30vh" style="width: 400px;" v-model="innerVisible" width="500" title="修改"
+            append-to-body>
+            <div v-if="modifyUserInfoStatus === 1">
+                <el-form>
+                    <el-form-item>
+                        <el-input v-model="newName" size="large" placeholder="请输入新名字">
+                        </el-input>
+                    </el-form-item>
+                    <br>
+                    <div style="display: flex;justify-content: right;">
+                        <el-button @click="innerVisible = false">取消</el-button>
+                        <el-button @click="changeName" type="primary">修改</el-button>
+                    </div>
+                </el-form>
+            </div>
+            <div v-else>
+                <el-form>
+                    <el-form-item>
+                        <el-input :model="newEmail.email" size="large" placeholder="请输入邮箱">
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-input :model="newEmail.code" style="width: 228px;" size="large" placeholder="请输入验证码">
+                        </el-input>
+                        <el-button type="primary" style="margin-left:30px;" size="large">获取验证码</el-button>
+                    </el-form-item>
+                    <br>
+                    <div style="display: flex;justify-content: right;">
+                        <el-button @click="innerVisible = false">取消</el-button>
+                        <el-button @click="innerVisible = false" type="primary">修改</el-button>
+                    </div>
+                </el-form>
+            </div>
+        </el-dialog>
     </div>
 </template>
 <script setup>
@@ -83,15 +173,26 @@ import { useUserStore } from "@/stores/userStore";
 const router = useRouter();
 const userStore = useUserStore()
 let userInfo = ref([])
+let widthValue = ref(true)
+let personVisible = ref(false)
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
 onMounted(() => {
+    handleResize()
     const wow = new WOW({})
     wow.init();
     userStore.initialize()
     userInfo.value = userStore.user
     setChart()
 })
+window.addEventListener('resize', handleResize)
+function handleResize() {
+    if (window.innerWidth < 1370) {
+        widthValue.value = false
+    } else if (window.innerWidth >= 1370) {
+        widthValue.value = true
+    }
+}
 //点击登录或者退出登录
 function signOutClick() {
     localStorage.removeItem('user')
@@ -355,5 +456,19 @@ const setChart = () => {
             margin-left: 20px;
         }
     }
+
+    a {
+        display: inline-block;
+        text-decoration: none;
+        color: $word-black-color;
+        width: 100px;
+        padding: 0;
+        text-align: center;
+        cursor: pointer;
+    }
+}
+
+.disabled {
+    display: none;
 }
 </style>

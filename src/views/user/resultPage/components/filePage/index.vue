@@ -3,7 +3,7 @@
         <div class="wow fadeInDown file-box">
             <div class="icon-box" @click="exitClick">
                 <span class="iconfont icon-left"
-                    style="border-radius:0 25px 25px 0;padding:22px;padding-left: 40px;"></span>
+                    style="border-radius:0 25px 25px 0;padding:22px;padding-left: 20px;"></span>
             </div>
             <span class="file-title">Manifest 文件</span>
         </div>

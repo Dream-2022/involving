@@ -623,6 +623,9 @@
                         .greenLabel {
                             background-color: $green;
                         }
+                        .blackLabel{
+                            background-color: $word-black-color;
+                        }
 
                         .greyLabel {
                             background-color: $grey;
@@ -632,27 +635,10 @@
                             background-color: $red;
                         }
 
-                        .second-label {
-                            margin-left: 5px;
-                            margin-right: 8px;
-                            background-color: #FFE5D6;
-                            color: #ff5e00;
-                            border-radius: 5px;
-                            padding: 0 5px;
-                            margin-right: auto;
-                        }
-
                         .time-label {
-                            @media (max-width: 765px) {}
-
-                            @media (min-width: 765px) and (max-width: 1024px) {
-                                display: none;
-                            }
-
-                            @media (min-width: 1024px) {}
+                            margin-left: auto;
                         }
                     }
-
                 }
 
                 .analysis-box:hover {

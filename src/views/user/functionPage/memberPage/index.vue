@@ -46,6 +46,7 @@
 </template>
 <script setup>
 import { onMounted, ref } from "vue";
+import { ElMessage } from "element-plus";
 import { payAPI } from '@/apis/member.js'
 import { useUserStore } from '@/stores/userStore.js'
 const userStore = useUserStore();
@@ -59,8 +60,14 @@ async function payClick() {
         return
     }
     console.log('点击支付')
-    const res = await payAPI('1', '1', '399', 'v', userStore.user.userMail)
+    const res = await payAPI('1', userStore.user.id, '399', 'v', userStore.user.userMail)
     console.log(res.data)
+    ElMessage.success('即将跳转支付页面...')
+    setTimeout(() => {
+        const htmlContent = res.data
+        const newWindow = window.open('', `_blank`);
+        newWindow.document.write(htmlContent);
+    }, 1000)
 }
 </script>
 <style lang="scss" scoped>

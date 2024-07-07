@@ -32,7 +32,7 @@
                         </div>
                         <el-dropdown-menu>
                             <el-dropdown-item>我的资料</el-dropdown-item>
-                            <el-dropdown-item @click="staticAnalysis('userMyAnalysisPage')">上传分析</el-dropdown-item>
+                            <el-dropdown-item @click="staticAnalysis('userMemberPage')">开通会员</el-dropdown-item>
                             <el-dropdown-item @click="signOutClick"><span
                                     class="iconfont icon-exit"></span>&nbsp;退出登录</el-dropdown-item>
                         </el-dropdown-menu>
@@ -167,7 +167,8 @@
                     <div class="footer-title">
                         <el-divider direction="vertical" />
                         <div class="title-box">范本库</div>
-                        <div class="more-view">查看更多<span class="iconfont icon-Rightyou"></span></div>
+                        <div class="more-view" @click="() => $router.push('/userTemplatePage')">查看更多<span
+                                class="iconfont icon-Rightyou"></span></div>
                     </div>
                     <div class="template-boxes">
                         <div class="template-box" v-for="(item, index) in templateList.slice(0, 6)" :key="item"
@@ -203,7 +204,8 @@
                     <div class="footer-title">
                         <el-divider direction="vertical" />
                         <div class="title-box">最近分析记录</div>
-                        <div class="more-view">查看更多<span class="iconfont icon-Rightyou"></span></div>
+                        <div class="more-view" @click="() => $router.push('/userRecentPage')">查看更多<span
+                                class="iconfont icon-Rightyou"></span></div>
                     </div>
                     <div class="analysis-boxes">
                         <div class="analysis-box" v-for="item in recentAnalysisList.slice(0, 6)" :key="item">
@@ -214,8 +216,6 @@
                             <span class="analysis-bottom">
                                 <el-progress :percentage="percentage" :color="customColors" />
                                 <span class="first-label" :class="getLabelColor(item.apkDesc)">{{ item.apkDesc }}
-                                </span>
-                                <span class="second-label">冒充领导、熟人类
                                 </span>
                                 <span class="time-label">{{ item.detectedTime }}
                                 </span>
@@ -282,14 +282,16 @@ import "@/assets/fontIcon/iconfont.css";
 import { useRouter } from 'vue-router';
 import { onUnmounted, onMounted, getCurrentInstance, ref } from "vue";
 import { useUserStore } from '@/stores/userStore.js'
+import { useWebSocketStore } from '@/stores/webSocketStore.js';
 import { getTemplateAPI, getRecentAnalysisAPI } from '@/apis/mainPage.js'
 import { getDetectionAPI, getMemberAPI, getFriendAPI, getApkAPI } from '@/apis/echarts.js'
-import { getSearchAPI, getEssayPreviewAPI, getSignInAPI, getSignInDateAPI, getSignInSuccessAPI, getPointAPI, getEssayLoadAPI } from '@/apis/mainPage.js'
+import { getEssayPreviewAPI, getSignInAPI, getSignInDateAPI, getSignInSuccessAPI, getPointAPI, getEssayLoadAPI } from '@/apis/mainPage.js'
 import WOW from "wow.js";
 import { ElMessage } from "element-plus";
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
 const userStore = useUserStore();
+const webSocketStore = useWebSocketStore();
 const router = useRouter();
 //进度条的颜色
 const customColors = [
@@ -330,11 +332,21 @@ let signInValue = ref(false)
 let signData = ref([])
 let nowPoints = ref(0)
 let isDisable = ref([])
+let webSocket = ref(null)
 onMounted(async () => {
     const wow = new WOW({})
     wow.init();
     userStore.initialize()
     userInfo.value = userStore.user
+    //判断有没有连接webSocket
+    webSocket.value = await webSocketStore.initialize(userStore.user.userMail)
+    console.log(webSocket.value)
+    webSocket.value.onmessage = function (event) {
+        console.log("websocket.onmessage: " + event.data);
+    }
+    webSocket.value.onclose = function () {
+        console.log("websocket.onclose: WebSocket连接关闭");
+    }
     //日历上的年月
     const year = calendarDate.value.getFullYear();
     const month = calendarDate.value.getMonth() + 1;
@@ -369,6 +381,8 @@ onMounted(async () => {
             item.apkDesc = '黑灰色'
         } else if (item.apkDesc == 'white') {
             item.apkDesc = '白名单'
+        } else if (item.apkDesc == 'unknown') {
+            item.apkDesc = '未知'
         }
     });
     setChart()
@@ -419,7 +433,7 @@ async function templateClick(id) {
     const res = await getEssayPreviewAPI('v', id)
     console.log(res)
     const htmlContent = res.data
-    const newWindow = window.open('', `_blank/${id}`);
+    const newWindow = window.open('', `_blank`);
     newWindow.document.write(htmlContent);
 }
 //点击下载范本
@@ -455,8 +469,7 @@ async function searchClick() {
         ElMessage.warning("输入内容不能为空！")
         return
     }
-    const res = await getSearchAPI(searchValue.value, 'v', 1)
-    console.log(res.data)
+    router.push(`/userSearchPage/${searchValue.value}`)
 }
 //退出登录
 function signOutClick() {
@@ -527,15 +540,17 @@ function displayWindowSize() {
 //获取最近分析记录的标签颜色
 function getLabelColor(word) {
     if (word == '黑灰色') {
-        return 'greyLabel'
+        return 'blackLabel'
     } else if (word == '涉黄') {
         return 'yellowLabel'
     } else if (word == '涉诈') {
         return 'redLabel'
     } else if (word == '涉赌') {
         return 'purpleLabel'
-    } else if (word == '白名单') {
+    } else if (word == '正常') {
         return 'greenLabel'
+    } else {
+        return 'greyLabel'
     }
 }
 //监听页面
@@ -1144,14 +1159,14 @@ function transformData(data) {
         'black': '黑灰产',
         'sex': '涉黄',
         'gamble': '涉赌',
-        'white': '安全',
+        'white': '正常',
     };
     return data.map(item => {
         const chineseName = nameMap[item.name] || item.name;
         const value = item.value || 0;
         const itemStyle = { color: '#000000' }
         switch (chineseName) {
-            case '安全':
+            case '正常':
                 itemStyle.color = '#7ab25f';
                 break;
             case '黑灰产':

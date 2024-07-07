@@ -7,6 +7,7 @@ import UserRecentPage from "@/views/user/functionPage/recentPage/index.vue";
 import UserBlackWhitePage from "@/views/user/functionPage/blackWhitePage/index.vue";
 import UserMyAnalysisPage from "@/views/user/functionPage/myAnalysisPage/index.vue";
 import UserMemberPage from "@/views/user/functionPage/memberPage/index.vue";
+import UserTemplatePage from "@/views/user/functionPage/templatePage/index.vue";
 
 import UserUploadPage from "@/views/user/functionPage/uploadPage/index.vue";
 import fileComponents from "@/views/user/functionPage/uploadPage/components/uploadFile.vue";
@@ -27,6 +28,8 @@ import Unsullied from "@/views/user/resultPage/components/unsullied.vue";
 import LoginPage from "@/views/login/login.vue";
 
 import UserFileDetail from "@/views/user/resultPage/components/filePage/index.vue";
+
+import UserIntroducePage from "@/views/user/introducePage/index.vue";
 
 import UserSearchPage from "@/views/user/searchPage/index.vue";
 
@@ -72,6 +75,7 @@ const router = createRouter({
           props: true
         },
         {path: '/userMemberPage',component: UserMemberPage},
+        {path: '/userTemplatePage',component: UserTemplatePage},
       ]
     },
     {
@@ -98,7 +102,12 @@ const router = createRouter({
       component: UserFileDetail
     },
     {
-      path: '/userSearchPage',
+      path: '/userIntroducePage',
+      name: 'userIntroducePage',
+      component: UserIntroducePage
+    },
+    {
+      path: `/userSearchPage/:searchValue`,
       name: 'userSearchPage',
       component: UserSearchPage
     },

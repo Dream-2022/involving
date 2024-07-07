@@ -19,25 +19,55 @@
                 {{ isActiveAnalysis ? '开始动态分析' : '开始静态分析' }}
             </el-button>
         </div>
+        <div class="wow fadeInUp" style="margin-top: 20px;" v-if="isProgress != 0 && isProgress != 100">
+            <div style="margin-bottom: 10px; font-size: 14px;">正在分析请耐心等待...</div>
+            <div style="display: flex;">
+                <span style="font-size: 14px;">分析进度：</span>
+                <el-progress style="flex:1;" :text-inside="true" :stroke-width="17" :percentage="isProgress"
+                    :color="customColors" />
+            </div>
+        </div>
     </div>
 </template>
 <script setup>
 import { UploadFilled } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router';
-import { reactive, ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useUserStore } from '@/stores/userStore.js'
+import { useWebSocketStore } from '@/stores/webSocketStore.js';
 import { useStaticDataStore } from '@/stores/staticDataStore.js';
 import { multipartUploadAPI, finishUploadAPI } from '@/apis/multipartUpload.js'
 import '@/utils/spark-md5.min.js'
 const router = useRouter();
 const route = useRoute();
 const staticDataStore = useStaticDataStore();
-
+const userStore = useUserStore()
+const webSocketStore = useWebSocketStore();
 const isActiveAnalysis = ref(false)
 const uploadList = ref([])//el-upload组件中的文件列表
 let fileX = ref(null)
+//是否显示进度条
+let isProgress = ref(0)
 const chunkSize = 1 * 1024 * 1024;
-onMounted(() => {
+const webSocket = ref(null)
+onMounted(async () => {
+    userStore.initialize()
+    //判断有没有连接webSocket
+    webSocket.value = await webSocketStore.initialize(userStore.user.userMail)
+    console.log(webSocket.value)
+    webSocket.value.onmessage = function (event) {
+        console.log("websocket.onmessage: " + event.data);
+        if (!isNaN(parseInt(event.data))) {
+            isProgress.value = event.data
+            if (isProgress.value == 100) {
+                isProgress.value = 0
+            }
+        }
+    }
+    webSocket.value.onclose = function () {
+        console.log("websocket.onclose: WebSocket连接关闭");
+    }
     if (route.query.value == 'true') {
         isActiveAnalysis.value = true;
     } else if (route.query.value == 'false') {
@@ -45,6 +75,13 @@ onMounted(() => {
     }
     console.log(isActiveAnalysis.value)
 })
+const customColors = [
+    { color: 'linear-gradient(to right,#7dc15b,#3d801b', percentage: 100 },
+    { color: 'linear-gradient(to right,#DDFA9D,#9BD420', percentage: 80 },
+    { color: 'linear-gradient(to right,#BDF1FF,#1B79D1', percentage: 60 },
+    { color: 'linear-gradient(to right,#F2DCAA,#e7823c', percentage: 40 },
+    { color: 'linear-gradient(to right,#FFD4BD,#D6573E', percentage: 20 },
+]
 //点击上传文件
 async function uploadClick() {
     if (!fileX.value || !fileX.value.raw || fileX.value.size === 0) {
@@ -67,8 +104,6 @@ async function uploadClick() {
         return;
     }
     console.log(fileMd5)
-
-
     if (!file) return;
     if (!fileMd5) return;
     //断点续传,判断是否中断传输，中断的话从中断处开始
@@ -89,7 +124,6 @@ async function uploadClick() {
     console.log(fileName)
     const uploadPromises = [];
     for (let i = flag; i < fileArr.length; i++) {
-        console.log('创建 formdata 对象');
         let data = new FormData();
         data.append("totalNumber", fileArr.length);
         data.append("chunkSize", chunkSize);
@@ -97,8 +131,7 @@ async function uploadClick() {
         data.append("md5", fileMd5);
         data.append("file", new File([fileArr[i]], fileName));
         const uploadPromise = upload(fileArr.length, i, fileMd5, new File([fileArr[i]], fileName), 'v');
-        uploadPromises.push(uploadPromise);
-        console.log(uploadPromise);
+        uploadPromises.push(uploadPromise)
     }
     try {
         // 等待所有上传请求完成
@@ -205,17 +238,10 @@ function sliceFile(file) {
     }
     return chunks;
 }
-
-// async function uploadClick() {
-//     console.log("点击")
-//     console.log(uploadClick.value)
-//     router.push('../../userResultPage')
-// }
 </script>
 <style lang="scss" scoped>
 .upload-box {
-    padding: 20px 0 30px 0;
-
+    padding: 20px 0 10px 0;
 
     .el-upload__tip {
         margin-top: 10px;

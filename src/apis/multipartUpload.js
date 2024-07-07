@@ -19,7 +19,7 @@ export const multipartUploadAPI=(totalNumber,chunkNumber,md5,file,k)=>{
         }
     })
 }
-//分片上传
+//检查是否成功上传和静态分析
 export const finishUploadAPI=(md5,k)=>{
     return http({
         url:"/apk-info/checkFile",

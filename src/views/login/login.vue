@@ -79,6 +79,7 @@ import { ElMessage } from 'element-plus';
 import { nextTick, onMounted, ref } from 'vue'
 import WOW from 'wow.js'
 import { useUserStore } from '@/stores/userStore.js';
+import { useWebSocketStore } from '@/stores/webSocketStore.js';
 import { loginAPI, getCodeAPI, registerAPI, modifyAPI } from '@/apis/login';
 import { useRoute, useRouter } from 'vue-router'
 
@@ -87,8 +88,8 @@ const loginOptions = ref(true)
 const signUpMode = ref(false)
 const router = useRouter()
 const route = useRoute()
-
 const userStore = useUserStore();
+const webSocketStore = useWebSocketStore();
 const loginData = ref({
     account: '87247104', password: '123'
 })
@@ -125,15 +126,12 @@ const toIdLogin = () => {
 const toEmailLogin = () => {
     loginOptions.value = false
 }
-
 const toRegister = () => {
     signUpMode.value = true
 }
-
 const toLogin = () => {
     signUpMode.value = false
 }
-
 const login = async () => {
     const res = await loginAPI(loginData.value.account, loginData.value.password, 'v');
     console.log(res)
@@ -142,6 +140,7 @@ const login = async () => {
         userStore.setUserInfo(res.data.data, res.headers.get('Accesstoken'), res.headers.get('Refreshtoken'))
         ElMessage.success(res.data.message)
         localStorage.setItem('user', JSON.stringify(userStore.user))
+        webSocketStore.initialize(userStore.user.userMail)
         setTimeout(() => {
             router.push('/')
         }, 500)
@@ -150,27 +149,21 @@ const login = async () => {
         ElMessage.error(res.data.message)
     }
 }
-
 const register = async () => {
     const res = await registerAPI(registerData.value.email, registerData.value.code, registerData.value.password, 'v');
-
     if (res.data.code == 200) {
         userStore.setUserInfo(res.data.data, res.headers.authorization, res.headers['authorization-refresh'])
         ElMessage.success(res.data.message)
-
         setTimeout(() => {
             router.push('/')
         }, 2000)
-
     }
     else {
         ElMessage.error(res.data.message)
     }
 }
-
 const modify = async () => {
     const res = await modifyAPI(modifyData.value.email, modifyData.value.password, modifyData.code)
-
     if (res.data.code === 200) {
         userStore.setUserInfo(res.data.data)
         ElMessage.success(res.data.message)
@@ -182,7 +175,6 @@ const modify = async () => {
         ElMessage.error(res.data.message)
     }
 }
-
 const getModifyCode = async () => {
     let regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
     console.log(regex.test(modifyData.value.email))
@@ -193,7 +185,6 @@ const getModifyCode = async () => {
     const res = await getCodeAPI(modifyData.value.email, 'v');
     console.log(res)
 }
-
 const getRegisterCode = async () => {
     let regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
     if (!regex.test(registerData.value.email)) {
@@ -203,14 +194,10 @@ const getRegisterCode = async () => {
     const res = await getCodeAPI(registerData.value.email, 'v');
     console.log(res)
 }
-
-
 onMounted(() => {
     new WOW().init()
 })
-
 </script>
-
 <style lang="scss" scoped>
 * {
     padding: 0;
