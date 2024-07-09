@@ -8,10 +8,9 @@
                     <el-table-column prop="permissionType" label="权限内容" width="150" />
                     <el-table-column prop="permissionDetail" label="权限描述" width="580" />
                     <el-table-column prop="fileMd5" label="MD5" width="290" />
-                    <el-table-column fixed="right" label="安全等级" width="90">
+                    <el-table-column fixed="right" label="安全等级" width="120">
                         <template #default="{ row }">
-                            <div class="column" :class="getButtonClass(row.data5)">
-                                {{ row.isDangerous }}
+                            <div class="column" :class="getButtonClass(row.data5)" v-html="row.isDangerous">
                             </div>
                         </template>
                     </el-table-column>
@@ -92,33 +91,9 @@ function getButtonClass(securityLevel) {
         cursor: default;
         font-weight: 600;
     }
+}
 
-    .table-column1 {
-        color: $green;
-    }
-
-    .table-column2 {
-        color: $back-color;
-    }
-
-    .table-column3 {
-        color: $yellow;
-    }
-
-    .table-column4 {
-        color: $red;
-    }
-
-    .table-column5 {
-        color: $grey;
-    }
-
-    .table-column6 {
-        color: $blue;
-    }
-
-    .table-column7 {
-        color: $word-black-color;
-    }
+::-webkit-scrollbar {
+    width: 2.5px;
 }
 </style>

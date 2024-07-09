@@ -18,13 +18,14 @@
             <el-button color="#547BF1" @click="uploadClick" :disabled="isUploadClick">
                 {{ isActiveAnalysis ? '开始动态分析' : '开始静态分析' }}
             </el-button>
+            <div style="font-size:12px;margin-top: 8px; color: #4d4d4d">非会员用户，进行{{ isActiveAnalysis ? '动态分析消耗 100 积分' : '静态分析消耗 20 积分' }}</div>
         </div>
         <div class="wow fadeInUp" style="margin-top: 20px;" v-if="isProgress != -1">
             <div style="margin-bottom: 10px; font-size: 14px;">正在分析请耐心等待...</div>
             <div style="display: flex;">
                 <span style="font-size: 14px;">分析进度：</span>
-                <el-progress style="flex:1;" :text-inside="true" :stroke-width="17" :percentage="isProgress"
-                    :color="customColors" />
+                <el-progress :percentage="isProgress" style="flex:1;" :stroke-width="18" :text-inside="true" striped
+                    striped-flow :duration="10" />
             </div>
         </div>
     </div>
@@ -157,6 +158,12 @@ async function uploadClick() {
             return
         }
         if (res.data.code == 504) {
+            setTimeout(() => {
+                ElMessage.warning('服务器繁忙，请稍后再试！')
+            }, 1000)
+            return
+        }
+        if (res.data.code == 500) {
             setTimeout(() => {
                 ElMessage.warning('服务器繁忙，请稍后再试！')
             }, 1000)

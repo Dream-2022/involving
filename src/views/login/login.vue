@@ -5,28 +5,28 @@
                 <h2 class="form-title">登录</h2>
                 <el-form :model="loginData" :rules="loginRules" size="large" v-if="loginOptions" class="wow slideInUp">
                     <el-form-item prop="account">
-                        <el-input v-model="loginData.account" style="width: 300px;height: 50px;"
-                            placeholder="请输入账号id"></el-input>
+                        <el-input v-model="loginData.account" style="width: 300px;height: 50px;" placeholder="请输入账号id"
+                            :prefix-icon="User"></el-input>
                     </el-form-item>
                     <el-form-item prop="password">
                         <el-input v-model="loginData.password" style="width: 300px;height: 50px;" type="password"
-                            placeholder="请输入密码"></el-input>
+                            placeholder="请输入密码" :prefix-icon="Lock"></el-input>
                     </el-form-item>
                     <div class="submit-btn" @click="login">立即登录</div>
                     <span @click="toEmailLogin" style="color:#6266f5;text-decoration: underline;">忘记密码？邮箱登录</span>
                 </el-form>
                 <el-form :model="modifyData" :rules="modifyRules" size="large" v-else class="wow fadeInUp">
                     <el-form-item prop="email">
-                        <el-input v-model="modifyData.email" style="width: 300px;height: 50px;"
+                        <el-input v-model="modifyData.email" style="width: 300px;height: 50px;" :prefix-icon="User"
                             placeholder="请输入email"></el-input>
                     </el-form-item>
                     <el-form-item prop="password">
                         <el-input v-model="modifyData.password" style="width: 300px;height: 50px;" type="password"
-                            placeholder="请输入新密码"></el-input>
+                            placeholder="请输入新密码" :prefix-icon="Lock"></el-input>
                     </el-form-item>
                     <el-form-item prop="code" style="display: flex;height: 50px;">
-                        <el-input v-model="modifyData.code" style="width: 170px;height: 50px;"
-                            placeholder="验证码"></el-input>
+                        <el-input v-model="modifyData.code" style="width: 170px;height: 50px;" placeholder="验证码"
+                            :prefix-icon="Clock"></el-input>
                         <el-button @click="getModifyCode" class="codeButton"
                             style="padding: 12px 19px; height: 50px; margin-left: 20px;">获取验证码</el-button>
                     </el-form-item>
@@ -39,18 +39,22 @@
                 <h2 class="form-title">注册</h2>
                 <el-form :model="registerData" :rules="registerRules" size="large">
                     <el-form-item prop="email">
-                        <el-input v-model="registerData.email" style="width: 300px;height: 50px;"
+                        <el-input v-model="registerData.email" style="width: 300px;height: 50px;" :prefix-icon="User"
                             placeholder="请输入邮箱"></el-input>
                     </el-form-item>
                     <el-form-item prop="password">
                         <el-input v-model="registerData.password" style="width: 300px;height: 50px;" type="password"
-                            placeholder="请输入密码"></el-input>
+                            :prefix-icon="Lock" placeholder="请输入密码"></el-input>
                     </el-form-item>
                     <el-form-item prop="code" style="display: flex;height: 50px;">
-                        <el-input v-model="registerData.code" style="width: 170px;height: 50px;"
+                        <el-input v-model="registerData.code" style="width: 170px;height: 50px;" :prefix-icon="Clock"
                             placeholder="验证码"></el-input>
                         <el-button @click="getRegisterCode" class="codeButton"
                             style="padding:12px 19px;height: 50px;margin-left:20px">获取验证码</el-button>
+                    </el-form-item>
+                    <el-form-item prop="invitationCode">
+                        <el-input v-model="registerData.invitationCode" style="width: 300px;height: 50px;"
+                            :prefix-icon="CircleCheck" placeholder="选填邀请码"></el-input>
                     </el-form-item>
                     <div @click="register" class="submit-btn">注册</div>
                 </el-form>
@@ -80,9 +84,9 @@ import { nextTick, onMounted, ref } from 'vue'
 import WOW from 'wow.js'
 import { useUserStore } from '@/stores/userStore.js';
 import { useWebSocketStore } from '@/stores/webSocketStore.js';
-import { loginAPI, getCodeAPI, registerAPI, modifyAPI } from '@/apis/login';
+import { loginAPI, getCodeAPI, registerAPI, login2API, modifyAPI } from '@/apis/login';
 import { useRoute, useRouter } from 'vue-router'
-
+import { Lock, Clock, User, CircleCheck } from '@element-plus/icons-vue';
 // id 还是邮箱登录 true 是id,false 是邮箱
 const loginOptions = ref(true)
 const signUpMode = ref(false)
@@ -94,7 +98,7 @@ const loginData = ref({
     account: '87247104', password: '123'
 })
 const registerData = ref({
-    email: '', code: '', password: ''
+    email: '', code: '', password: '', invitationCode: ''
 })
 const modifyData = ref({
     email: '', password: '', code: ''
@@ -150,10 +154,16 @@ const login = async () => {
     }
 }
 const register = async () => {
-    const res = await registerAPI(registerData.value.email, registerData.value.code, registerData.value.password, 'v');
+    const res = await registerAPI(registerData.value.email, registerData.value.code, registerData.value.password, registerData.value.invitationCode, 'v');
     if (res.data.code == 200) {
         userStore.setUserInfo(res.data.data, res.headers.authorization, res.headers['authorization-refresh'])
         ElMessage.success(res.data.message)
+        const res1 = await login2API(registerData.value.email, registerData.value.password, 'v');
+        console.log(res1.data)
+        userStore.setUserInfo(res1.data.data, res1.headers.get('Accesstoken'), res1.headers.get('Refreshtoken'))
+        ElMessage.success(res1.data.message)
+        localStorage.setItem('user', JSON.stringify(userStore.user))
+        webSocketStore.initialize(userStore.user.userMail)
         setTimeout(() => {
             router.push('/')
         }, 2000)

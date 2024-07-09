@@ -36,7 +36,8 @@
             </span>
             <div class="navigation-icon" v-if='userInfo != null'>
                 <span class="iconfont icon-lingdang-xianxing"></span>
-                <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
+                <span class="iconfont icon-wenhao-xianxingyuankuang"
+                    @click="() => $router.push('/userIntroducePage')"></span>
                 <el-divider direction="vertical" class="divider" />
                 <span>
                     <el-dropdown>
@@ -49,7 +50,8 @@
                         <template #dropdown>
                             <div class="avatar">
                                 <div class="avatar-box">
-                                    <img :src="userInfo.userIconPath" class="drop-img">
+                                    <img :src="userInfo?.userIconPath == '' ? require('@/assets/img/title.png') : avatar"
+                                        class="drop-img">
                                     <div>{{ userInfo.userName }}</div>
                                 </div>
                             </div>
@@ -114,13 +116,30 @@
             </div>
         </div>
         <RouterView></RouterView>
-        <el-dialog v-model="personVisible" title="绑定关系" width="500">
+        <el-dialog v-model="personVisible" title="个人资料" width="500">
             <div class="bindBox">
-                <div class="left">
-                    <img :src="userInfo.userIconPath" alt="">
-                </div>
-                <div class="right">
-                    <span>{{ userInfo.userName }}</span>请求与你绑定<span></span>关系
+                <table class="table">
+                    <tr class="tr">
+                        <td class="td">头像</td>
+                        <td class="td"><img class="iconImg" :src="avatar" alt=""></td>
+                        <td class="td">
+                            <el-button type="small" color="#547BF1" @click="updateClick">更换头像</el-button>
+                            <input class="fileInput" type="file" accept="image/*" style="display: none;" @change="handleAvatarChange">
+                        </td>
+                    </tr>
+                    <tr class="tr">
+                        <td class="td">账号</td>
+                        <td class="td">486465444545</td>
+                        <td class="td"></td>
+                    </tr>
+                    <tr class="tr">
+                        <td class="td">邮箱</td>
+                        <td class="td">21712204141@qq.com</td>
+                        <td class="td"></td>
+                    </tr>
+                </table>
+                <div style="line-height: 35px; margin-top: 20px;">已成功邀请 <strong style="font-size: 18px;">{{friendNum}}</strong>
+                    个好友，累计获得 <strong style="font-size: 18px;">{{friendNum*200}}</strong> 积分
                 </div>
             </div>
             <template #footer>
@@ -129,40 +148,6 @@
                 </div>
             </template>
         </el-dialog>
-        <el-dialog draggable="true" top="30vh" style="width: 400px;" v-model="innerVisible" width="500" title="修改"
-            append-to-body>
-            <div v-if="modifyUserInfoStatus === 1">
-                <el-form>
-                    <el-form-item>
-                        <el-input v-model="newName" size="large" placeholder="请输入新名字">
-                        </el-input>
-                    </el-form-item>
-                    <br>
-                    <div style="display: flex;justify-content: right;">
-                        <el-button @click="innerVisible = false">取消</el-button>
-                        <el-button @click="changeName" type="primary">修改</el-button>
-                    </div>
-                </el-form>
-            </div>
-            <div v-else>
-                <el-form>
-                    <el-form-item>
-                        <el-input :model="newEmail.email" size="large" placeholder="请输入邮箱">
-                        </el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-input :model="newEmail.code" style="width: 228px;" size="large" placeholder="请输入验证码">
-                        </el-input>
-                        <el-button type="primary" style="margin-left:30px;" size="large">获取验证码</el-button>
-                    </el-form-item>
-                    <br>
-                    <div style="display: flex;justify-content: right;">
-                        <el-button @click="innerVisible = false">取消</el-button>
-                        <el-button @click="innerVisible = false" type="primary">修改</el-button>
-                    </div>
-                </el-form>
-            </div>
-        </el-dialog>
     </div>
 </template>
 <script setup>
@@ -170,21 +155,55 @@ import { onUnmounted, onMounted, getCurrentInstance, ref } from "vue";
 import WOW from "wow.js";
 import { useRouter } from 'vue-router';
 import { useUserStore } from "@/stores/userStore";
+import { getFriendAPI, editAvatarAPI } from '@/apis/mainPage.js'
+import { ElMessage } from "element-plus";
 const router = useRouter();
 const userStore = useUserStore()
 let userInfo = ref([])
 let widthValue = ref(true)
-let personVisible = ref(false)
+let personVisible = ref(false)//个人资料的弹窗是否显示
+let avatar=ref('')//头像
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
-onMounted(() => {
+let friendNum=ref(0)
+onMounted(async() => {
     handleResize()
     const wow = new WOW({})
     wow.init();
     userStore.initialize()
     userInfo.value = userStore.user
+    avatar.value=userInfo.value.userIconPath
     setChart()
+    //获取邀请好友个数
+    const res=await getFriendAPI(userInfo.value.userMail,'v')
+    friendNum.value=res.data.data
 })
+//点击更换头像
+function updateClick(){
+    let fileInput=document.querySelector('.fileInput')
+      if (fileInput) {
+        fileInput.click();
+      }
+}
+const handleAvatarChange = (async(event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            avatar.value= e.target.result; // 更新头像图片
+            console.log(avatar.value)
+            var blob = new Blob([avatar.value], { type: 'image/jpeg' });
+            const res =editAvatarAPI(new File([blob], '123.png', { type: 'image/jpeg' }),userInfo.value.userMail,'v')
+            console.log(res.data)
+            ElMessage.success('头像更换成功！')
+            userInfo.value.userIconPath=avatar.value
+            console.log(userInfo.value)
+            localStorage.setItem("user",JSON.stringify(userInfo.value))
+            userStore.initialize()
+        };
+        reader.readAsDataURL(file);
+    }
+});
 window.addEventListener('resize', handleResize)
 function handleResize() {
     if (window.innerWidth < 1370) {
@@ -202,7 +221,6 @@ function backClick() {
     console.log("点击")
     // 获取.banner元素
     var banner = document.querySelector('.banner');
-
     // 定义背景图片类数组
     var backgroundImageClasses = ['bg-image1', 'bg-image2', 'bg-image3', 'bg-image4', 'bg-image5', 'bg-image6'];
     backgroundImageClasses.forEach(function (className) {
@@ -470,5 +488,60 @@ const setChart = () => {
 
 .disabled {
     display: none;
+}
+
+.table {
+    border: 1px solid #eceffe;
+    border-radius: 10px;
+    border-collapse: collapse;
+    box-sizing: border-box;
+    width: 100%;
+
+    .tr:last-child {
+        border: 0px;
+    }
+
+    .tr {
+        display: flex;
+        justify-content: space-between;
+        height: 80px;
+        line-height: 80px;
+        border-bottom: 1px solid #eceffe;
+        margin-left: 20px;
+        margin-right: 20px;
+
+        .td {
+            flex: 1;
+            .iconImg{
+                border-radius: 50px;
+            }
+        }
+
+        .td:nth-child(1),
+        .td:nth-child(2) {
+            display: flex;
+            justify-content: left;
+        }
+
+        .td:nth-child(3) {
+            display: flex;
+            justify-content: right;
+            align-items: center;
+        }
+
+        .homeUserInfoAvatar {
+            width: 50px;
+            height: 50px;
+            margin-top: 15px;
+            border-radius: 50%;
+        }
+
+        .fileTd {
+            line-height: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: left;
+        }
+    }
 }
 </style>

@@ -18,7 +18,7 @@
                     </div>
                     <div class="left-tracker">
                         <div class="tracker-word">APK类型</div>
-                        <div class="tracker"><strong>涉诈APK</strong></div>
+                        <div class="tracker"><strong>{{ foundationList.apkDesc }}APK</strong></div>
                     </div>
                     <el-button color="#065fed" plain>安全评分</el-button>
                 </div>
@@ -83,7 +83,7 @@
                     </div>
                     <div>
                         <div class="right-title">加固信息</div>
-                        <div>未加固</div>
+                        <div>{{ foundationList.hardeningInfo }}</div>
                     </div>
                 </div>
             </div>
@@ -212,7 +212,7 @@ onMounted(() => {
 });
 //点击查看和下载
 function manifestLookClick() {
-    router.push('/userFileDetail')
+    router.push(`/userFileDetail/${foundationList.fileMd5}`)
 }
 function manifestLoadClick() {
     loadFunction(foundationList.apkAndroidmanifestUrl)
@@ -221,7 +221,7 @@ function apkLoadClick() {
     loadFunction(foundationList.apkLinkUrl)
 }
 function javaLookClick() {
-    console.log("跳转页面")
+    router.push(`/userJavaDetail/${foundationList.fileMd5}`)
 }
 function javaLoadClick() {
     loadFunction(foundationList.apkSourceUrl)

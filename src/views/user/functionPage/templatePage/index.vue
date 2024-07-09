@@ -34,6 +34,7 @@
 </template>
 <script setup>
 import { onMounted, ref } from "vue";
+import { ElMessage } from "element-plus";
 import { getTemplateAPI } from '@/apis/mainPage.js'
 import { getEssayPreviewAPI, getEssayLoadAPI } from '@/apis/mainPage.js'
 let templateList = ref([])

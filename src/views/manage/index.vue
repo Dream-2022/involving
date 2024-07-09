@@ -10,226 +10,58 @@
                 </div>
             </div>
             <el-menu default-active="1" class="el-menu-vertical-demo" :collapse="isCollapse">
-                <RouterLink :to="'foundation'">
+                <RouterLink :to="'userManage'">
                     <el-menu-item index="1">
-                        <span class="iconfont icon-info1"></span>
-                        <template #title>基本信息</template>
+                        <span class="iconfont icon-user" style="font-size: 21px;"></span>
+                        <template #title>用户管理</template>
                     </el-menu-item>
                 </RouterLink>
-                <RouterLink :to="'certificate'">
+                <RouterLink :to="'analysisManage'">
                     <el-menu-item index="2">
-                        <span class="iconfont icon-Certificate"></span>
-                        <template #title>证书信息</template>
+                        <span class="iconfont icon-analysis"></span>
+                        <template #title>分析管理</template>
                     </el-menu-item>
                 </RouterLink>
-                <RouterLink :to="'application'">
-                    <el-menu-item index="3">
-                        <span class="iconfont icon-list"></span>
-                        <template #title>应用权限</template>
-                    </el-menu-item>
-                </RouterLink>
-                <el-sub-menu index="4">
+                <el-sub-menu index="3">
                     <template #title>
-                        <span class="iconfont icon-safety1"></span>
-                        <span>安全分析</span>
+                        <span class="iconfont icon-book"></span>
+                        <span>范本管理</span>
                     </template>
-                    <RouterLink :to="'security'">
-                        <el-menu-item index="4-1" @click="handleMenuItemClick('scrollspyHeading1')">
-                            可浏览的Activity
-                        </el-menu-item>
-                        <el-menu-item index="4-2" @click="handleMenuItemClick('scrollspyHeading2')">
-                            网络安全配置
-                        </el-menu-item>
-                        <el-menu-item index="4-3" @click="handleMenuItemClick('scrollspyHeading3')">
-                            证书分析
-                        </el-menu-item>
-                        <el-menu-item index="4-4" @click="handleMenuItemClick('scrollspyHeading4')">
-                            Manifest分析
-                        </el-menu-item>
-                        <el-menu-item index="4-5" @click="handleMenuItemClick('scrollspyHeading5')">
-                            API调用分析
-                        </el-menu-item>
-                        <el-menu-item index="4-6" @click="handleMenuItemClick('scrollspyHeading6')">
-                            源代码分析
-                        </el-menu-item>
-                        <el-menu-item index="4-7" @click="handleMenuItemClick('scrollspyHeading7')">
-                            动态库分析
-                        </el-menu-item>
-                        <el-menu-item index="4-8" @click="handleMenuItemClick('scrollspyHeading8')">
-                            文件分析
+                    <RouterLink :to="''">
+                        <el-menu-item index="3-1">
+                            范本查看
                         </el-menu-item>
                     </RouterLink>
-                </el-sub-menu>
-                <el-sub-menu index="5">
-                    <template #title>
-                        <span class="iconfont icon-plus"></span>
-                        <span>溯源取证</span>
-                    </template>
-                    <RouterLink :to="'traceability'">
-                        <el-menu-item index="5-1" @click="handleMenuItemClick('traceabilityHeading1')">
-                            滥用权限
-                        </el-menu-item>
-                        <el-menu-item index="5-2" @click="handleMenuItemClick('traceabilityHeading2')">
-                            IP地图
-                        </el-menu-item>
-                        <el-menu-item index="5-3" @click="handleMenuItemClick('traceabilityHeading3')">
-                            域名检测
-                        </el-menu-item>
-                        <el-menu-item index="5-4" @click="handleMenuItemClick('traceabilityHeading4')">
-                            手机号码
-                        </el-menu-item>
-                        <el-menu-item index="5-5" @click="handleMenuItemClick('traceabilityHeading5')">
-                            网址
-                        </el-menu-item>
-                        <el-menu-item index="5-7" @click="handleMenuItemClick('traceabilityHeading7')">
-                            邮箱
-                        </el-menu-item>
-                        <el-menu-item index="5-9" @click="handleMenuItemClick('traceabilityHeading9')">
-                            密钥凭证
-                        </el-menu-item>
-                    </RouterLink>
-                </el-sub-menu>
-                <el-sub-menu index="6">
-                    <template #title>
-                        <span class="iconfont icon-thlarge"></span>
-                        <span>组件信息</span>
-                    </template>
-                    <RouterLink :to="'subassembly'">
-                        <el-menu-item index="6-1">Activity组件</el-menu-item>
-                        <el-menu-item index="6-2">Service组件</el-menu-item>
-                        <el-menu-item index="6-3">Receiver组件</el-menu-item>
-                        <el-menu-item index="6-4">Provider组件</el-menu-item>
-                    </RouterLink>
-                </el-sub-menu>
-                <RouterLink :to="'thirdParty'">
-                    <el-menu-item index="7">
-                        <span class="iconfont icon-buffer1"></span>
-                        <template #title>第三方SDK</template>
+                    <el-menu-item index="3-2">
+                        范本上传
                     </el-menu-item>
-                </RouterLink>
-                <RouterLink :to="'listOfFiles'">
-                    <el-menu-item index="8">
-                        <span class="iconfont icon-copy"></span>
-                        <template #title>文件列表</template>
-                    </el-menu-item>
-                </RouterLink>
-                <RouterLink :to="'unsullied'">
-                    <el-menu-item index="9">
-                        <span class="iconfont icon-bar-chart-2"></span>
-                        <template #title>污点分析</template>
-                    </el-menu-item>
-                </RouterLink>
+                </el-sub-menu>
             </el-menu>
         </div>
         <div class="right-box">
             <div class="wow animate__fadeInDown navigation">
                 <span class="iconfont icon-bars" @click="expandClick"></span>
-                <div class="navigation-icon" v-if="userInfo != null">
-                    <span class="iconfont icon-lingdang-xianxing"></span>
-                    <span class="iconfont icon-wenhao-xianxingyuankuang"
-                        @click="() => $router.push('/userIntroducePage')"></span>
-                    <el-divider direction="vertical" class="divider" />
-                    <el-col :span="8">
-                        <el-dropdown>
-                            <span class="el-dropdown-link">
-                                <span class="portrait-box">
-                                    <span class="portrait-nickname">{{ userInfo?.userName }}</span>
-                                    <span class="iconfont icon-down1"></span>
-                                </span>
-                            </span>
-                            <template #dropdown>
-                                <div class="avatar">
-                                    <div class="avatar-box">
-                                        <img :src="(userInfo?.userIconPath == '') ? require('@/assets/img/title.png') : userInfo?.userIconPath"
-                                            class="drop-img">
-                                        <div>{{ userInfo?.userName }}</div>
-                                    </div>
-                                </div>
-                                <el-dropdown-menu>
-                                    <el-dropdown-item @click="personVisible = true">我的资料</el-dropdown-item>
-                                    <el-dropdown-item @click="signOutClick"><span
-                                            class="iconfont icon-exit"></span>退出登录</el-dropdown-item>
-                                </el-dropdown-menu>
-                            </template>
-                        </el-dropdown>
-                    </el-col>
-                </div>
-                <div class="navigation-icon" v-else>
-                    <div>
-                        <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
-                        <el-divider direction="vertical" class="divider" />
-                        <span class="navigation-button" @click="signOutClick">登录&nbsp;</span>
-                        <span style="font-size: 14px;">&nbsp;&nbsp;或&nbsp;&nbsp;</span>
-                        <span class="navigation-button" @click="signOutClick">&nbsp;注册
-                        </span>
-                    </div>
-                </div>
+                <div class="navigation-icon">亲爱的管理员，欢迎进入 GoodAn 管理端</div>
             </div>
             <div class="content-box">
                 <RouterView></RouterView>
             </div>
         </div>
     </div>
-    <el-dialog v-model="personVisible" title="个人资料" width="500">
-        <div class="bindBox">
-            <table class="table">
-                <tr class="tr">
-                    <td class="td">头像</td>
-                    <td class="td"><img class="iconImg" :src="userInfo.userIconPath" alt=""></td>
-                    <td class="td">
-                        <el-button type="small" color="#547BF1" @click="updateClick">
-                            更换头像
-                        </el-button>
-                    </td>
-                </tr>
-                <tr class="tr">
-                    <td class="td">账号</td>
-                    <td class="td">486465444545</td>
-                    <td class="td"></td>
-                </tr>
-                <tr class="tr">
-                    <td class="td">邮箱</td>
-                    <td class="td">21712204141@qq.com</td>
-                    <td class="td"></td>
-                </tr>
-            </table>
-            <div style="line-height: 35px; margin-top: 20px;">已成功邀请 <strong style="font-size: 18px;">10</strong>
-                个好友，获得 <strong style="font-size: 18px;">1000</strong> 积分
-            </div>
-        </div>
-        <template #footer>
-            <div class="dialog-footer">
-                <el-button @click="personVisible = false">关闭</el-button>
-            </div>
-        </template>
-    </el-dialog>
 </template>
 <script setup>
 import { ref, onUnmounted, onMounted, getCurrentInstance } from "vue";
 import { useRouter } from 'vue-router';
 import WOW from "wow.js";
-import { useUserStore } from '@/stores/userStore.js'
 import { useStaticDataStore } from '@/stores/staticDataStore.js'
-const userStore = useUserStore()
 const staticDataStore = useStaticDataStore()
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
 const router = useRouter();
-let userInfo = ref(null)
 let staticDataList = ref([])
 const isCollapse = ref(false)//导航栏
 let disposed = ref(false)//判断图表是否显示
 let myChart = null
-let personVisible = ref(false)//个人资料的弹窗
-function handleMenuItemClick(scrollId) {
-    // 通过 Vue Router 导航到了目标页面  
-    setTimeout(() => {
-        const element = document.getElementById(scrollId);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, 0);
-}
 onMounted(() => {
     const wow = new WOW({})
     wow.init();
@@ -240,8 +72,6 @@ onMounted(() => {
         staticDataList.value = JSON.parse(localStorage.getItem('staticDataList'))
     }
     //判断导航栏是否展开
-    userStore.initialize()
-    userInfo.value = userStore.user
     let diva = document.querySelector(".navigation-icon")
     var w = document.documentElement.clientWidth;
     if (diva && w > 800) {
@@ -252,13 +82,7 @@ onMounted(() => {
     if (isCollapse.value == false) {
         setChart()
     }
-});
-//点击登录或者退出登录
-function signOutClick() {
-    console.log('login')
-    localStorage.removeItem('user')
-    router.push('/login')
-}
+})
 //导航栏的自动收缩
 function displayWindowSize() {
     var w = document.documentElement.clientWidth;
@@ -288,7 +112,6 @@ function displayWindowSize() {
 // 监听页面宽度（调整页面导航）
 displayWindowSize();
 window.addEventListener("resize", displayWindowSize);
-
 let setChart = () => {
     let chartDom = document.querySelector(".navigation-title");
     myChart = echarts.init(chartDom);
@@ -342,7 +165,6 @@ let setChart = () => {
     };
     // 使用刚指定的配置项和数据显示图表。
     myChart.setOption(option);
-
     onUnmounted(() => {
         myChart.dispose();
         myChart = null;
@@ -382,8 +204,6 @@ function expandClick() {
         overflow-y: auto;
         z-index: 20;
 
-
-
         .navigation-tran {
             padding: 15px 17px;
             height: 40px;
@@ -413,6 +233,7 @@ function expandClick() {
         }
 
         .el-menu {
+            height: 100%;
             border: none;
 
             a {
@@ -433,6 +254,8 @@ function expandClick() {
                     visibility: visible;
                     height: auto;
                 }
+
+                color: #fff;
             }
 
             .is-active {
@@ -470,7 +293,7 @@ function expandClick() {
             display: flex;
             height: 70px;
             width: 100%;
-            background-color: rgb(255, 255, 255);
+            background-color: $back-color;
             line-height: 70px;
             padding: 0 20px;
             position: fixed;
@@ -482,11 +305,12 @@ function expandClick() {
                 font-size: 24px;
                 color: $title-color;
                 cursor: pointer;
+                color: #fff;
             }
 
             .navigation-icon {
                 display: inline-block;
-                color: $title-color;
+                color: #fff;
                 line-height: 70px;
                 flex: auto;
                 margin-right: 260px;
@@ -553,17 +377,17 @@ function expandClick() {
     }
 
     ::-webkit-scrollbar {
-        width: 5px;
+        width: 2.5px;
     }
 
     /* 滚动条轨道 */
     ::-webkit-scrollbar-track {
-        background: #bebebe;
+        background: #f1f1f1;
     }
 
     /* 滚动条滑块 */
     ::-webkit-scrollbar-thumb {
-        background: rgb(104, 174, 255);
+        background: rgb(189, 198, 207);
     }
 
     /* 当鼠标移上滚动条时，滑块的样式 */
@@ -618,53 +442,7 @@ function expandClick() {
         }
 
     }
-}
 
-.table {
-    border: 1px solid #eceffe;
-    border-radius: 10px;
-    border-collapse: collapse;
-    box-sizing: border-box;
-    width: 100%;
 
-    .tr:last-child {
-        border: 0px;
-    }
-
-    .tr {
-        display: flex;
-        justify-content: space-between;
-        height: 80px;
-        line-height: 80px;
-        border-bottom: 1px solid #eceffe;
-        margin-left: 20px;
-        margin-right: 20px;
-
-        .td {
-            flex: 1;
-            .iconImg{
-                border-radius: 50px;
-            }
-        }
-
-        .td:nth-child(1),
-        .td:nth-child(2) {
-            display: flex;
-            justify-content: left;
-        }
-
-        .td:nth-child(3) {
-            display: flex;
-            justify-content: right;
-            align-items: center;
-        }
-
-        .homeUserInfoAvatar {
-            width: 50px;
-            height: 50px;
-            margin-top: 15px;
-            border-radius: 50%;
-        }
-    }
 }
 </style>

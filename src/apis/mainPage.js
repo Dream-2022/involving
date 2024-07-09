@@ -113,3 +113,32 @@ export const getPointAPI=(user_mail,k)=>{
         }
     })
 }
+//获取好友总数
+export const getFriendAPI=(userMail,k)=>{
+    return http({
+        url:"/goodan-homepage/getTotalFriends",
+        method:"POST",
+        params:{
+            userMail,
+            k
+        }
+    })
+}
+//上传头像
+export const editAvatarAPI=(IconFile,email ,k)=>{
+    return http({
+        url:"/goodan-homepage/IconUpload",
+        method:"POST",
+        headers: {
+            "Content-Type": 'multipart/form-data'
+        },
+        data:{
+            email,
+            IconFile
+
+        },
+        params:{
+            k
+        }
+    })
+}

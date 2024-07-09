@@ -22,3 +22,37 @@ export const getApkInfoAPI=(fileMd5,k)=>{
         }
     })
 }
+//获取Manifest
+export const getManifestAPI=(fileMd5,k)=>{
+    return http({
+        url:`/apk-info/getAndroidManifest`,
+        method:"GET",
+        params:{
+            k,
+            fileMd5
+        }
+    })
+}
+//获取Java源代码
+export const getJavaAPI=(fileMd5,k)=>{
+    return http({
+        url:`/apk-info/getSource`,
+        method:"GET",
+        params:{
+            k,
+            fileMd5
+        }
+    })
+}
+//获取Java源代码详细
+export const getJavaInfoAPI=(k,fileMd5,path)=>{
+    return http({
+        url:`/apk-info/getSourceInfo`,
+        method:"GET",
+        params:{
+            k,
+            fileMd5,
+            path
+        }
+    })
+}

@@ -5,12 +5,24 @@
                 <span class="iconfont icon-left"
                     style="border-radius:0 25px 25px 0;padding:22px;padding-left: 20px;"></span>
             </div>
-            <span class="file-title">Manifest 配置文件</span>
+            <span class="file-title">Java 文件</span>
         </div>
         <div class="wow fadeInUp file-content">
             <div class="file-content-main">
-                <div class="main-title">源代码</div>
-                <highlightjs language="JavaScript" :autodetect="false" :code="code"></highlightjs>
+                <div class="main-title">Java 源代码</div>
+                <div style="display: flex; width: 100%;">
+                    <div class="content-left">
+                        <div style="font-size: 14px;margin-bottom: 10px;">目录</div>
+                        <el-tree style="max-width: 600px; " node-key="id" :default-checked-keys="treeArr"
+                            @check="currentChecked" :data="userJavaDetail" :props="defaultProps" accordion
+                            @node-click="handleNodeClick" />
+                    </div>
+                    <div class="content-right" v-if="isCode">
+                        <div style="margin-right: 10px;">&nbsp;</div>
+                        <highlightjs language="JavaScript" :autodetect="false" :code="code" style="max-width:900px">
+                        </highlightjs>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -23,19 +35,34 @@ import { useRoute } from 'vue-router';
 import 'highlight.js/styles/stackoverflow-light.css';// 可以切换其它样式风格，例如黑色主题
 import 'highlight.js/lib/common';
 import WOW from "wow.js";
-import { getManifestAPI } from '@/apis/apkInfo.js'
+import { getJavaAPI, getJavaInfoAPI } from '@/apis/apkInfo.js'
 const router = useRouter();
 const route = useRoute();
+const userJavaDetail = ref([])
 let code = ref('')
+let isCode = ref(false)
 onMounted(async () => {
     const wow = new WOW({})
     wow.init();
     let md5 = route.params.md5;
     console.log(md5)
-    const res = await getManifestAPI(md5, 'v')
+    const res = await getJavaAPI(md5, 'v')
     console.log(res.data)
-    code.value = res.data.data
+    userJavaDetail.value = JSON.parse(res.data.data)
+    userJavaDetail.value = userJavaDetail.value.children
+    console.log(userJavaDetail.value)
 })
+//点击结点
+async function handleNodeClick(SelectedObj) {
+    let md5 = route.params.md5
+    console.log(SelectedObj.path)
+    if(SelectedObj.path.endsWith('.java')==true){
+        const res = await getJavaInfoAPI('v', md5, SelectedObj.path)
+        console.log(res.data.data)
+        code.value = res.data.data
+        isCode.value = true
+    }
+}
 function exitClick() {
     console.log('点击')
     router.push('/userResultPage/foundation')
@@ -88,7 +115,22 @@ function exitClick() {
         .main-title {
             font-weight: 600;
             margin-left: 7px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .content-left {
+            height:1000px;
+            overflow-y:auto;
+            padding: 10px 0;
+            flex: 1;
+            border-right: 1.5px solid #ccc;
+        }
+
+        .content-right {
+            display: flex;
+            height:1000px;
+            overflow-y:auto;
+            flex: 2;
         }
     }
 }

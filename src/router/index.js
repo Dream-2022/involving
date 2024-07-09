@@ -97,9 +97,14 @@ const router = createRouter({
       
     },
     {
-      path: '/userFileDetail',
+      path: '/userFileDetail/:md5',
       name: 'userFileDetail',
       component: UserFileDetail
+    },
+    {
+      path: '/userJavaDetail/:md5',
+      name: 'userJavaDetail',
+      component: () => import('@/views/user/resultPage/components/javaPage/index.vue'),
     },
     {
       path: '/userIntroducePage',
@@ -110,6 +115,16 @@ const router = createRouter({
       path: `/userSearchPage/:searchValue`,
       name: 'userSearchPage',
       component: UserSearchPage
+    },
+    {
+      path: '/adminManagePage',
+      name: 'adminManagePage',
+      component: () => import('@/views/manage/index.vue'),
+      redirect: "/adminManagePage/analysisManage",
+      children:[
+        {path:'analysisManage',component:() => import('@/views/manage/components/analysisManage.vue')},
+        {path:'userManage',component:() => import('@/views/manage/components/userManage.vue')},
+      ]
     },
     // {
     //   path: '/UserUploadPage',

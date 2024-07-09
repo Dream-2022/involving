@@ -7,28 +7,33 @@
                 <div class="content-left">
                     <div class="content-top">
                         <div>恶意软件常用权限</div>
-                        <div class="content-top-number">1/20</div>
+                        <div class="content-top-number">{{ safeItemNum + '/' + appRemissionList?.permissionInfo?.length
+                            }}</div>
                     </div>
-                    <el-progress :percentage="percentage1" :color="customColors" />
+                    <el-progress :percentage="percentage1" :color="customColors1" />
                     <div class="permission-list">
-                        <div>android.permission.VIBRATE</div>
+                        <div v-for="item in appRemissionList?.permissionInfo" :key="item">
+                            <div v-if="item.abc">
+                                {{ item.permissionApplication }}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="content-right">
                     <div class="content-top">
                         <div>其它常用权限</div>
-                        <div class="content-top-number">5/8</div>
+                        <div class="content-top-number">{{ appRemissionList?.permissionInfo?.length - safeItemNum + '/'
+                            + appRemissionList?.permissionInfo?.length }}</div>
                     </div>
                     <el-progress :percentage="percentage2" :color="customColors" />
                     <div class="permission-list">
-                        <div>android.permission.INTERNET</div>
-                        <div>android.permission.WRITE_EXTERNAL_STORAGE</div>
-                        <div>android.permission.READ_EXTERNAL_STORAGE</div>
-                        <div>android.permission.ACCESS_NETWORK_STATE</div>
-                        <div>android.permission.ACCESS_WIFI_STATE</div>
+                        <div v-for="item in appRemissionList?.permissionInfo" :key="item">
+                            <div v-if="!item.abc">
+                                {{ item.permissionApplication }}
+                            </div>
+                        </div>
                     </div>
                 </div>
-
             </div>
             <el-divider>
                 <el-icon><star-filled /></el-icon>
@@ -100,33 +105,40 @@
             <div id="traceabilityHeading4"></div>
             <div class="phone-title">手机号码</div>
             <div class="phone-content">
+                <el-table :data="appRemissionList?.phoneDto" style="width: 100%" stripe>
+                    <el-table-column label="序号" :min-width="50" fixed>
+                        <template v-slot="{ $index }">
+                            <span>{{ $index + 1 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="data1" label="手机号" :min-width="200" />
+                </el-table>
             </div>
         </div>
         <div class="URL">
             <div id="traceabilityHeading5"></div>
             <div class="URL-title">网址</div>
             <div class="URL-content">
-                <el-table :data="URLList" style="width: 100%" stripe>
-                    <el-table-column prop="data1" label="网址信息" :min-width="200" />
-                    <el-table-column label="源码文件" :min-width="200">
+                <el-table :data="appRemissionList?.urlVoList" style="width: 100%" stripe>
+                    <el-table-column label="序号" :min-width="80">
+                        <template v-slot="{ $index }">
+                            <span>{{ $index + 1 }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="url" label="网址信息" :min-width="400" />
+                    <el-table-column label="分析" :min-width="200">
                         <template #default="{ row }">
-                            <a :href="row.data2" target="_blank">{{ row.data2 }}</a>
+                            <div :class="row.res == '正常请求' ? 'greenLabel' : 'redLabel'">{{ row.res }}</div>
                         </template>
                     </el-table-column>
                 </el-table>
-            </div>
-        </div>
-        <div class="firebase">
-            <div id="traceabilityHeading6"></div>
-            <div class="firebase-title">Firebase实例</div>
-            <div class="firebase-content">
             </div>
         </div>
         <div class="email">
             <div id="traceabilityHeading7"></div>
             <div class="email-title">邮箱</div>
             <div class="email-content">
-                <el-table :data="URLList" style="width: 100%" stripe :row-class-name="tableRowClassName">
+                <el-table :data="appRemissionList?.mailDto" style="width: 100%" stripe>
                     <el-table-column label="序号" :min-width="50" fixed>
                         <template v-slot="{ $index }">
                             <span>{{ $index + 1 }}</span>
@@ -136,50 +148,18 @@
                 </el-table>
             </div>
         </div>
-        <div class="tracker">
-            <div id="traceabilityHeading8"></div>
-            <div class="tracker-title">追踪器</div>
-            <div class="tracker-content">
-                <el-table :data="trackerList" style="width: 100%" stripe :row-class-name="tableRowClassName">
-                    <el-table-column prop="data1" label="名称" :min-width="100" />
-                    <el-table-column prop="data2" label="类别" :min-width="100" />
-                    <el-table-column label="网址" :min-width="200">
-                        <template #default="{ row }">
-                            <a :href="row.data3" target="_blank">{{ row.data3 }}</a>
-                        </template>
-                    </el-table-column>
-                </el-table>
-            </div>
-        </div>
         <div class="key">
             <div id="traceabilityHeading9"></div>
-            <div class="key-title">密钥凭证<div class="key-unfold">点击展开</div>
+            <div class="key-title">硬编码敏感信息<div class="key-unfold">点击展开</div>
             </div>
             <div class="key-content">
                 <div class="demo-collapse">
                     <el-collapse v-model="activeName" accordion>
-                        <el-collapse-item v-for="(item) in keyList" :key="item" :title="item.data1" :name="item.data1">
-                            <div v-if="item.data2 != ''">{{ item.data2 }}</div>
+                        <el-collapse-item v-for="item in stringList" :key="item" :title="item.data" :name="item.data1">
+                            <div v-if="item.value != ''">{{ item.value }}</div>
                             <div v-else>暂无</div>
                         </el-collapse-item>
                     </el-collapse>
-                </div>
-            </div>
-        </div>
-        <div class="strings">
-            <div id="traceabilityHeading10"></div>
-            <div class="strings-title">字符串列表</div>
-            <div class="strings-content">
-                <div style="margin-bottom: 10px;">建议导出为TXT，方便查看。</div>
-                <div>
-                    <el-button color="#368eec">
-                        <span class="iconfont icon-txt-full" style="margin-right: 5px;"></span>
-                        <div>导出TXT</div>
-                    </el-button>
-                    <el-button color="#368eec">
-                        <span class="iconfont icon-excel-filled" style="margin-right: 5px; font-size: 18px;"></span>
-                        <div>导出Excel</div>
-                    </el-button>
                 </div>
             </div>
         </div>
@@ -187,19 +167,22 @@
 </template>
 <script setup>
 import { ref, reactive, onUnmounted, onMounted, getCurrentInstance } from 'vue'
+import { StarFilled } from '@element-plus/icons-vue';
 import AMapLoader from "@amap/amap-jsapi-loader";
 import 'echarts/extension/bmap/bmap';
-let internalInstance = getCurrentInstance();
-const percentage1 = ref((100 * 1 / 20).toFixed(2))
-const percentage2 = ref((100 * 5 / 8).toFixed(2))
+const percentage1 = ref(0)
+const percentage2 = ref(0)
 const activeName = ref('1')
 let appRemissionList = reactive({})
+let stringList = ref([])
 //进度条的颜色
 const customColors = [
-    { color: '#368eec', percentage: 30 },
-    { color: '#9a9a9a', percentage: 50 },
-    { color: '#e6a23c', percentage: 70 },
+    { color: '#e6a23c', percentage: 50 },
     { color: '#F56C6C', percentage: 100 },
+]
+const customColors1 = [
+    { color: '#368eec', percentage: 50 },
+    { color: '#9a9a9a', percentage: 100 },
 ]
 const domainList = ref([])
 const URLList = [
@@ -222,39 +205,15 @@ const trackerList = [
         data3: 'https://reports.exodus-privacy.eu.org/trackers/448',
     }
 ]
-let keyList = reactive([
-    {
-        data1: '"composite_sdk_key" ',
-        data2: '"4F521E8A6AAB77CF386A10579F976115FAB1EBC3BB3A0E513D29F9BF65D87100225F7C8E717A1EF27ADF4EAC85E0544EBDCBE9A54B16C33D8858A204E76A6301E3393354FB58B9BB8CE028FABDAB13B9DF95179B463F5CC3C6EDB3BFC4D9E3504F44CA375B0A84D732A1D2A1453F9B8C559048CD79B18DD04146CE93A24DB8C2D89FB34407BE4125B460CCC79B84548F531E9311A16FD5B17B5AAA3979EC518F9A461B7DB3063B0D34DB61788AB2CFD3DF391DF49C6AE5542DEE736F654285F220F100A5CBA97FFB0A468ED6A81B60FEB7001E262862371A709FE7058F6BDA2D0097BB0D8A62FDDDE8616151F3D60532E9360EB499226F70424A1DFA98A4854A8B5F87BC43BA4516C9EF5E55F0979F2B7463186E74B9B3D8DA12CD78FEA943CE272CDEA66DBDD433087A3D2C980EA1A913A30C48653153F75D50ADC1DFC16E3D93E63FA8820959AE8882C8EFA889492C7AB7F8E9141DCE96314CF0D8EA56612"',
-    },
-    {
-        data1: ' "composite_sdk_param_Secret"',
-        data2: '"Secret"',
-    },
-    {
-        data1: '413872524d9a10bb1537009834992',
-        data2: '',
-    },
-    {
-        data1: 'gYBXs4GuUnLN7McYO37akhyLyKLeW99I02gaxgdU1U8=',
-        data2: '',
-    },
-    {
-        data1: 'ecc9dfd82b44a51aeb5db459b22794e2d649',
-        data2: '',
-    },
-    {
-        data1: '7bfa4735-89a4-4d0d-9299-c02c1ce38cdd',
-        data2: '',
-    },
-])
 let map = null;
+let safeItemNum = ref(0)
 onMounted(() => {
-    const result = JSON.parse(localStorage.getItem('staticDataList'))
-    console.log(result)
-    Object.keys(result).forEach(key => {
-        appRemissionList[key] = result[key];
+    const res = JSON.parse(localStorage.getItem('staticDataList'))
+    console.log(res)
+    Object.keys(res).forEach(key => {
+        appRemissionList[key] = res[key];
     });
+    stringList.value = JSON.parse(appRemissionList.hardcodedDesc)
     let ipListMap = JSON.parse(appRemissionList.dnsInfo.dnsDesc)
     //IP地图
     window._AMapSecurityConfig = {
@@ -307,10 +266,30 @@ onMounted(() => {
         console.log(e);
     });
     //设置IP地图的详细信息
-    console.log(ipListMap)
     domainList.value = ipListMap
-    //敏感信息
-    console.log(JSON.parse(appRemissionList.hardcodedDesc))
+    //滥用权限
+    console.log(appRemissionList.permissionInfo)
+    let keyword = '危险权限'
+    appRemissionList.permissionInfo.forEach((item, index) => {
+        if (item.isDangerous.includes(keyword)) {
+            appRemissionList.permissionInfo[index] = reactive({
+                ...appRemissionList.permissionInfo[index],
+                abc: true
+            });
+            safeItemNum.value = safeItemNum.value + 1;
+        } else {
+            appRemissionList.permissionInfo[index] = reactive({
+                ...appRemissionList.permissionInfo[index],
+                abc: false
+            });
+        }
+    })
+    if (safeItemNum.value != 0) {
+        percentage1.value = (safeItemNum.value * 100 / (appRemissionList.permissionInfo.length)).toFixed(2)
+    }
+    if (safeItemNum.value != appRemissionList.permissionInfo.length)
+        percentage2.value = ((appRemissionList.permissionInfo.length - safeItemNum.value) * 100 / appRemissionList.permissionInfo.length).toFixed(2)
+    console.log(appRemissionList.urlVoList)
 });
 onUnmounted(() => {
     map?.destroy();
@@ -478,6 +457,24 @@ function getInfoClass2(country) {
         .URL-content {
             margin-left: 7px;
             display: flex;
+
+            .greenLabel {
+                background-color: $green;
+                color: #fff;
+                width: 80px;
+                text-align: center;
+                border-radius: 5px;
+                height: 25px;
+            }
+
+            .redLabel {
+                background-color: $red;
+                color: #fff;
+                width: 80px;
+                text-align: center;
+                border-radius: 5px;
+                height: 25px;
+            }
         }
     }
 

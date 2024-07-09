@@ -113,6 +113,7 @@
         .el-divider {
             background-color: #414141;
             height: 40px;
+            width: 1.5px;
             margin-right: 25px;
             border-left: 1px solid #414141;
         }
@@ -915,4 +916,56 @@
 }
 .disabled{
     display: none;
+}
+.table {
+    border: 1px solid #eceffe;
+    border-radius: 10px;
+    border-collapse: collapse;
+    box-sizing: border-box;
+    width: 100%;
+
+    .tr:last-child {
+        border: 0px;
+    }
+
+    .tr {
+        display: flex;
+        justify-content: space-between;
+        height: 80px;
+        line-height: 80px;
+        border-bottom: 1px solid #eceffe;
+        margin-left: 20px;
+        margin-right: 20px;
+
+        .td {
+            flex: 1;
+
+        }
+
+        .td:nth-child(1),
+        .td:nth-child(2) {
+            display: flex;
+            justify-content: left;
+        }
+
+        .td:nth-child(3) {
+            display: flex;
+            justify-content: right;
+            align-items: center;
+        }
+
+        .homeUserInfoAvatar {
+            width: 50px;
+            height: 50px;
+            margin-top: 15px;
+            border-radius: 50%;
+        }
+
+        .fileTd {
+            line-height: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: left;
+        }
+    }
 }

@@ -9,6 +9,20 @@
         </div>
         <div class="wow fadeInUp file-content">
             <div class="file-content-main">
+                <div class="main-title">GoodAn</div>
+                <div class="main-text">
+                    GoodAn 安全分析平台是一款基于移动安全分析技术的安全分析平台，提供了丰富的安全分析功能，用于帮助企业和专业人员识别和控制移动设备中的安全威胁。
+                </div>
+                <div class="main-text">GoodAn 是 "Good Analysis"的组合，寓意提供的分析是良好、准确和可靠的，专注于提供优质的欺诈分析服务。</div>
+                <el-divider content-position="left" style="font-size: 18px;">安全分析功能</el-divider>
+                <div class="main-paragraph">
+                    <div>1、 应用安全分析：可以对移动设备上的应用进行安全分析，识别潜在的安全风险；</div>
+                    <div>2、 应用类型分析：可以对apk进行分析，识别正常，涉诈，涉赌，涉黄，黑灰产这几类不同类型的apk；</div>
+                    <div>3、 安全漏洞扫描：可以扫描移动设备中的安全漏洞，识别潜在的安全威胁；</div>
+                    <div>4、 威胁情报收集：自动收集APK中的敏感信息，发现有可能存在的安全威胁，发现身份指纹，为追踪溯源提供线索；</div>
+                    <div>5、 动态分析：可以实时分析移动设备的运行状态，发现有可能存在的安全威胁;</div>
+                    <div>6、 移动设备安全策略：可以根据移动设备的安全分析结果，制定安全策略，有效控制移动设备中的安全威胁。</div>
+                </div>
             </div>
         </div>
     </div>
@@ -61,6 +75,7 @@ function exitClick() {
     margin-top: 60px;
     padding: 60px;
     z-index: -5;
+    font-size: 14px;
     min-height: 820px;
 
     .file-content-main {
@@ -80,6 +95,26 @@ function exitClick() {
         }
 
         @media (min-width: 1024px) {}
+
+        .main-title {
+            font-weight: 600;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .main-text {
+            line-height: 25px;
+            margin-bottom: 8px;
+        }
+
+        .el-divider {
+            margin-top: 50px;
+        }
+    }
+
+    .main-paragraph {
+        margin-top: 20px;
+        line-height: 30px;
     }
 }
 </style>

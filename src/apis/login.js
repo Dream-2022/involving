@@ -25,6 +25,20 @@ export const loginAPI=(username,password,k)=>{
         }
     })
 }
+//登录
+export const login2API=(email,password,k)=>{
+    return http({
+        url:"/user-info/login",
+        method:"POST",
+        params:{
+            k
+        },
+        data:{
+            email,
+            password,
+        }
+    })
+}
 export const modifyAPI=(email,code,password,k)=>{
     return http({
         url:"/user-info/modifyAPI",
@@ -37,14 +51,15 @@ export const modifyAPI=(email,code,password,k)=>{
         }
     })
 }
-export const registerAPI=(email,code,password,k)=>{
+export const registerAPI=(email,code,password,invitationCode,k)=>{
     return http({
         url:"/user-info/register",
         method:"POST",
         data:{
             email,
             code,
-            password
+            password,
+            invitationCode
         },
         params:{
             k

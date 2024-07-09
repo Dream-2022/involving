@@ -90,7 +90,7 @@ onMounted(async () => {
     }
 
     ::-webkit-scrollbar {
-        height: 12px;
+        width: 8px;
     }
 
     /* 滚动条轨道 */

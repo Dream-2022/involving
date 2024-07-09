@@ -11,10 +11,11 @@
             </div>
             <div class="blank-box"></div>
             <div class="wow fadeInDown navigation-icon" v-if="userInfo != null">
-                <div>
+                <div style="display: flex;">
                     <span class="iconfont icon-lingdang-xianxing"></span>
-                    <span class="iconfont icon-wenhao-xianxingyuankuang"></span>
-                    <el-divider direction="vertical" class="divider" />
+                    <span class="iconfont icon-wenhao-xianxingyuankuang"
+                        @click="() => $router.push('/userIntroducePage')"></span>
+                    <el-divider direction=" vertical" class="divider" />
                 </div>
                 <el-dropdown>
                     <span class="el-dropdown-link">
@@ -26,12 +27,13 @@
                     <template #dropdown>
                         <div class="avatar">
                             <div class="avatar-box">
-                                <img :src="userInfo.userIconPath" class="drop-img">
+                                <img :src="(userInfo?.userIconPath == '') ? require('@/assets/img/title.png') : userInfo?.userIconPath"
+                                    class="drop-img">
                                 <div>{{ userInfo.userName }}</div>
                             </div>
                         </div>
                         <el-dropdown-menu>
-                            <el-dropdown-item>我的资料</el-dropdown-item>
+                            <el-dropdown-item @click="personVisible = true">我的资料</el-dropdown-item>
                             <el-dropdown-item @click="staticAnalysis('userMemberPage')">开通会员</el-dropdown-item>
                             <el-dropdown-item @click="signOutClick"><span
                                     class="iconfont icon-exit"></span>&nbsp;退出登录</el-dropdown-item>
@@ -185,9 +187,9 @@
                             </span>
                             <span class="template-bottom" @click="templateClick(item.essayId)">
                                 <span class="first-label" v-if="item.labelList && item.labelList.length > 0">{{
-                            item?.labelList[0] }}</span>
+                                    item?.labelList[0] }}</span>
                                 <span class="second-label" v-if="item.labelList && item.labelList.length > 0">{{
-                            item?.labelList[1] }}
+                                    item?.labelList[1] }}
                                 </span>
                                 <span class="name-label">{{ item?.essayWriter }}
                                 </span>
@@ -208,7 +210,8 @@
                                 class="iconfont icon-Rightyou"></span></div>
                     </div>
                     <div class="analysis-boxes">
-                        <div class="analysis-box" v-for="item in recentAnalysisList.slice(0, 6)" :key="item">
+                        <div class="analysis-box" v-for="item in recentAnalysisList.slice(0, 6)" :key="item"
+                            @click="analysisClick(item.fileMd5)">
                             <span class="analysis-top">
                                 <span class="analysis-md5">{{ item.fileMd5 }}</span>
                                 <span class="analysis-title">{{ item.fileName }}</span>
@@ -265,8 +268,8 @@
                 <div class="button-box">
                     <el-button :disabled="signInValue == true" @click="signInClick" color="#065fed"
                         class="wow fadeInRight">{{
-                            signInValue ==
-                                true ? '已签到' : '签到'
+                        signInValue ==
+                        true ? '已签到' : '签到'
                         }}</el-button>
                     <div class="prompt">
                         <span>连续签到6天, </span>
@@ -276,6 +279,39 @@
             </div>
         </div>
     </div>
+    <el-dialog v-model="personVisible" title="个人资料" width="500">
+        <div class="bindBox">
+            <table class="table">
+                <tr class="tr">
+                    <td class="td">头像</td>
+                    <td class="td"><img :src="userInfo.userIconPath" alt=""></td>
+                    <td class="td">
+                        <el-button type="small" color="#547BF1" @click="updateClick">
+                            更换头像
+                        </el-button>
+                    </td>
+                </tr>
+                <tr class="tr">
+                    <td class="td">账号</td>
+                    <td class="td">486465444545</td>
+                    <td class="td"></td>
+                </tr>
+                <tr class="tr">
+                    <td class="td">邮箱</td>
+                    <td class="td">21712204141@qq.com</td>
+                    <td class="td"></td>
+                </tr>
+            </table>
+            <div style="line-height: 35px; margin-top: 20px;">已成功邀请 <strong style="font-size: 18px;">10</strong>
+                个好友，获得 <strong style="font-size: 18px;">1000</strong> 积分
+            </div>
+        </div>
+        <template #footer>
+            <div class="dialog-footer">
+                <el-button @click="personVisible = false">关闭</el-button>
+            </div>
+        </template>
+    </el-dialog>
 </template>
 <script setup>
 import "@/assets/fontIcon/iconfont.css";
@@ -286,6 +322,7 @@ import { useWebSocketStore } from '@/stores/webSocketStore.js';
 import { getTemplateAPI, getRecentAnalysisAPI } from '@/apis/mainPage.js'
 import { getDetectionAPI, getMemberAPI, getFriendAPI, getApkAPI } from '@/apis/echarts.js'
 import { getEssayPreviewAPI, getSignInAPI, getSignInDateAPI, getSignInSuccessAPI, getPointAPI, getEssayLoadAPI } from '@/apis/mainPage.js'
+import { getApkInfoAPI } from '@/apis/apkInfo.js'
 import WOW from "wow.js";
 import { ElMessage } from "element-plus";
 let internalInstance = getCurrentInstance();
@@ -333,6 +370,7 @@ let signData = ref([])
 let nowPoints = ref(0)
 let isDisable = ref([])
 let webSocket = ref(null)
+let personVisible = ref(false)
 onMounted(async () => {
     const wow = new WOW({})
     wow.init();
@@ -449,6 +487,13 @@ async function temLoadClick(id) {
         document.body.removeChild(a);
     }
 }
+//点击查看分析
+async function analysisClick(md5){
+    const res=await getApkInfoAPI(md5,'v')
+    console.log(res.data)
+    localStorage.setItem('staticDataList',JSON.stringify(res.data.data))
+    router.push(`/userResultPage`)
+}
 //点击签到
 async function signInClick() {
     const res = await getSignInSuccessAPI(userStore.user.userMail, 'v')
@@ -539,11 +584,11 @@ function displayWindowSize() {
 }
 //获取最近分析记录的标签颜色
 function getLabelColor(word) {
-    if (word == '黑灰色') {
+    if (word == '黑灰') {
         return 'blackLabel'
-    } else if (word == '涉黄') {
+    } else if (word == '色情') {
         return 'yellowLabel'
-    } else if (word == '涉诈') {
+    } else if (word == '诈骗') {
         return 'redLabel'
     } else if (word == '涉赌') {
         return 'purpleLabel'
@@ -1152,46 +1197,35 @@ const setChart3 = () => {
         myChart3.resize();
     });
 }
-// 转换函数
-function transformData(data) {
-    const nameMap = {
-        'scam': '涉诈',
-        'black': '黑灰产',
-        'sex': '涉黄',
-        'gamble': '涉赌',
-        'white': '正常',
-    };
-    return data.map(item => {
-        const chineseName = nameMap[item.name] || item.name;
-        const value = item.value || 0;
-        const itemStyle = { color: '#000000' }
-        switch (chineseName) {
-            case '正常':
-                itemStyle.color = '#7ab25f';
-                break;
-            case '黑灰产':
-                itemStyle.color = '#cccccc';
-                break;
-            case '涉黄':
-                itemStyle.color = '#FF915A';
-                break;
-            case '涉诈':
-                itemStyle.color = '#5470C6';
-                break;
-            case '涉毒':
-                itemStyle.color = '#FAC858';
-                break;
-            default:
-                break;
+function findValue(name) {
+    const item = apkList.value.find(item => item.name === name);
+    return item ? item.value : 0;
+}
+function findValue1(category) {
+    let totalValue = 0;
+    apkList.value.forEach(item => {
+        if (category === '安全' && item.name !== '其他') {
+            totalValue += item.value;
+        } else if (category === '危险' && item.name === '其他') {
+            totalValue += item.value;
         }
-        return { value, name: chineseName, itemStyle };
     });
+    return totalValue;
 }
 const setChart4 = () => {
     let chartDom4 = document.getElementById("chart4-content");
-    myChart4 = echarts.init(chartDom4);
-    const transformedData = transformData(apkList.value);
-    console.log(transformedData);
+    myChart4 = echarts.init(chartDom4)
+    const transformedArray = [
+        { name: '正常', value: findValue('正常'), itemStyle: { color: '#7ab25f' } },
+        { name: '黑灰', value: findValue('黑灰'), itemStyle: { color: '#cccccc' } },
+        { name: '色情', value: findValue('色情'), itemStyle: { color: '#FF915A' } },
+        { name: '诈骗', value: findValue('诈骗'), itemStyle: { color: '#5470C6' } },
+        { name: '涉赌', value: findValue('涉赌'), itemStyle: { color: '#FAC858' } }
+    ];
+    const transformedArray1 = [
+        { name: '安全apk', value: findValue1('安全'), itemStyle: { color: '#7ab25f' }, hoverOffset: 10 },
+        { name: '危险apk', value: findValue1('危险'), itemStyle: { color: '#F56C6C' }, hoverOffset: 0 }
+    ];
     option4 = {
         title: {
             show: true,
@@ -1264,10 +1298,7 @@ const setChart4 = () => {
                 labelLine: {
                     show: false
                 },
-                data: [
-                    { value: 300, name: '安全', itemStyle: { color: '#7ab25f' }, hoverOffset: 10 }, // 设置 hoverOffset
-                    { value: 1000, name: '危险apk', itemStyle: { color: '#F56C6C' }, hoverOffset: 0 } // 设置 hoverOffset
-                ]
+                data: transformedArray1
             },
             {
                 name: '',
@@ -1291,13 +1322,7 @@ const setChart4 = () => {
                     position: 'center',
                     fontSize: 12
                 },
-                data: [
-                    { value: 300, name: '安全', itemStyle: { color: '#7ab25f' } }, // 设置 hoverOffset
-                    { value: 221, name: '黑灰产', itemStyle: { color: '#cccccc' } },
-                    { value: 520, name: '涉黄', itemStyle: { color: '#FF915A' } },
-                    { value: 100, name: '涉诈', itemStyle: { color: '#5470C6' } },
-                    { value: 159, name: '涉赌', itemStyle: { color: '#FAC858' } },
-                ]
+                data: transformedArray
             }
         ]
     };
