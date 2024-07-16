@@ -6,6 +6,111 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "11032212",
+      "name": "设备动态",
+      "font_class": "shebeidongtai",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "11441202",
+      "name": "仓库库存",
+      "font_class": "cangkukucun",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "1201483",
+      "name": "plus",
+      "font_class": "plus2",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "6151293",
+      "name": "plus",
+      "font_class": "plus3",
+      "unicode": "e829",
+      "unicode_decimal": 59433
+    },
+    {
+      "icon_id": "11372693",
+      "name": "删除",
+      "font_class": "shanchu",
+      "unicode": "e8b6",
+      "unicode_decimal": 59574
+    },
+    {
+      "icon_id": "658044",
+      "name": "解锁",
+      "font_class": "jiesuo",
+      "unicode": "e66a",
+      "unicode_decimal": 58986
+    },
+    {
+      "icon_id": "3172486",
+      "name": "运行时配置",
+      "font_class": "yunhangshipeizhi",
+      "unicode": "e69f",
+      "unicode_decimal": 59039
+    },
+    {
+      "icon_id": "5567576",
+      "name": "0326-map",
+      "font_class": "-map",
+      "unicode": "f0c2",
+      "unicode_decimal": 61634
+    },
+    {
+      "icon_id": "27520516",
+      "name": "截图",
+      "font_class": "jietu",
+      "unicode": "e931",
+      "unicode_decimal": 59697
+    },
+    {
+      "icon_id": "36632329",
+      "name": "Exporter",
+      "font_class": "Exporter",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "3289037",
+      "name": "dmg_48",
+      "font_class": "dmg_",
+      "unicode": "e6b5",
+      "unicode_decimal": 59061
+    },
+    {
+      "icon_id": "17997568",
+      "name": "日志",
+      "font_class": "rizhi",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "22894293",
+      "name": "HTTP",
+      "font_class": "HTTP",
+      "unicode": "e7ad",
+      "unicode_decimal": 59309
+    },
+    {
+      "icon_id": "21053275",
+      "name": "学业动态分析",
+      "font_class": "xueyedongtaifenxi",
+      "unicode": "e7db",
+      "unicode_decimal": 59355
+    },
+    {
+      "icon_id": "22554015",
+      "name": "静态模版",
+      "font_class": "youjianico_jingtaimoban",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
       "icon_id": "11200058",
       "name": "分析",
       "font_class": "analysis",

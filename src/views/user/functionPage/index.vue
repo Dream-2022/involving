@@ -124,7 +124,8 @@
                         <td class="td"><img class="iconImg" :src="avatar" alt=""></td>
                         <td class="td">
                             <el-button type="small" color="#547BF1" @click="updateClick">更换头像</el-button>
-                            <input class="fileInput" type="file" accept="image/*" style="display: none;" @change="handleAvatarChange">
+                            <input class="fileInput" type="file" accept="image/*" style="display: none;"
+                                @change="handleAvatarChange">
                         </td>
                     </tr>
                     <tr class="tr">
@@ -138,8 +139,9 @@
                         <td class="td"></td>
                     </tr>
                 </table>
-                <div style="line-height: 35px; margin-top: 20px;">已成功邀请 <strong style="font-size: 18px;">{{friendNum}}</strong>
-                    个好友，累计获得 <strong style="font-size: 18px;">{{friendNum*200}}</strong> 积分
+                <div style="line-height: 35px; margin-top: 20px;">已成功邀请 <strong
+                        style="font-size: 18px;">{{ friendNum }}</strong>
+                    个好友，累计获得 <strong style="font-size: 18px;">{{ friendNum * 200 }}</strong> 积分
                 </div>
             </div>
             <template #footer>
@@ -155,50 +157,50 @@ import { onUnmounted, onMounted, getCurrentInstance, ref } from "vue";
 import WOW from "wow.js";
 import { useRouter } from 'vue-router';
 import { useUserStore } from "@/stores/userStore";
-import { getFriendAPI, editAvatarAPI } from '@/apis/mainPage.js'
+import { getFriendNumAPI, editAvatarAPI } from '@/apis/mainPage.js'
 import { ElMessage } from "element-plus";
 const router = useRouter();
 const userStore = useUserStore()
 let userInfo = ref([])
 let widthValue = ref(true)
 let personVisible = ref(false)//个人资料的弹窗是否显示
-let avatar=ref('')//头像
+let avatar = ref('')//头像
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
-let friendNum=ref(0)
-onMounted(async() => {
+let friendNum = ref(0)
+onMounted(async () => {
     handleResize()
     const wow = new WOW({})
     wow.init();
     userStore.initialize()
     userInfo.value = userStore.user
-    avatar.value=userInfo.value.userIconPath
+    avatar.value = userInfo.value.userIconPath
     setChart()
     //获取邀请好友个数
-    const res=await getFriendAPI(userInfo.value.userMail,'v')
-    friendNum.value=res.data.data
+    const res = await getFriendNumAPI(userInfo.value.userMail, 'v')
+    friendNum.value = res.data.data
 })
 //点击更换头像
-function updateClick(){
-    let fileInput=document.querySelector('.fileInput')
-      if (fileInput) {
+function updateClick() {
+    let fileInput = document.querySelector('.fileInput')
+    if (fileInput) {
         fileInput.click();
-      }
+    }
 }
-const handleAvatarChange = (async(event) => {
+const handleAvatarChange = (async (event) => {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
-            avatar.value= e.target.result; // 更新头像图片
+            avatar.value = e.target.result; // 更新头像图片
             console.log(avatar.value)
             var blob = new Blob([avatar.value], { type: 'image/jpeg' });
-            const res =editAvatarAPI(new File([blob], '123.png', { type: 'image/jpeg' }),userInfo.value.userMail,'v')
+            const res = editAvatarAPI(new File([blob], '123.png', { type: 'image/jpeg' }), userInfo.value.userMail, 'v')
             console.log(res.data)
             ElMessage.success('头像更换成功！')
-            userInfo.value.userIconPath=avatar.value
+            userInfo.value.userIconPath = avatar.value
             console.log(userInfo.value)
-            localStorage.setItem("user",JSON.stringify(userInfo.value))
+            localStorage.setItem("user", JSON.stringify(userInfo.value))
             userStore.initialize()
         };
         reader.readAsDataURL(file);
@@ -512,7 +514,8 @@ const setChart = () => {
 
         .td {
             flex: 1;
-            .iconImg{
+
+            .iconImg {
                 border-radius: 50px;
             }
         }

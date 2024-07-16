@@ -2,11 +2,10 @@
     <div>
         <div class="upload-box">
             <div class="iconfont icon-fingerprint"></div>
-            <el-input v-model="input" style="width: 95%" placeholder="URL, IP地址, 域名, 文件hash" />
-            <el-switch size="large" v-model="isActiveAnalysis" active-text="开启动态分析" /><br>
+            <el-input v-model="input" style="width: 95%" placeholder="请输入想要搜索的md5值" />
             <div class="button-box">
-                <el-button color="#547BF1">
-                    {{ isActiveAnalysis ? '开始动态分析' : '开始静态分析' }}
+                <el-button color="#547BF1" @click="buttonClick">
+                    开始静态分析
                 </el-button>
             </div>
         </div>
@@ -14,7 +13,25 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-const isActiveAnalysis = ref(false)
+import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router';
+import { getApkInfoAPI } from '@/apis/apkInfo.js'
+const router = useRouter();
+let input = ref('')
+async function buttonClick() {
+    if (input.value == '') {
+        ElMessage.warning('md5值不能为空！')
+        return
+    }
+    const res = await getApkInfoAPI(input.value, 'v')
+    console.log(res.data)//https://download.yidianzixun.com/
+    if (res.data.code == 500) {
+        ElMessage.warning('未找到相关apk信息')
+        return
+    }
+    localStorage.setItem('staticDataList', JSON.stringify(res.data.data))
+    router.push(`/userResultPage`)
+}
 </script>
 <style lang="scss" scoped>
 .upload-box {

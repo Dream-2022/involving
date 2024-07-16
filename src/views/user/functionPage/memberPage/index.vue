@@ -36,9 +36,11 @@
         </div>
         <div class="button-box">
             <div class="in-box">
-                <div class="button-word">您当前为 {{ userStore?.user?.isVip == 0 ? '普通 用户 ，支付即可享受会员权限 >>' : '会员 用户，已成功支付' }}
+                <div class="button-word">{{ userStore?.user == null ? '请先登录再进行支付' : ((userStore?.user?.isVip == 0) ?
+                    '您当前为 普通 用户，支付即可享受会员权限 >> ' : '您当前为 会员 用户，已成功支付') }}
                 </div>
-                <el-button color="#547BF1" @click="payClick" :disabled="userStore?.user?.isVip == 1">
+                <el-button color="#547BF1" @click="payClick"
+                    :disabled="userStore?.user?.isVip == 1 || userStore?.user == null">
                     立即支付<span class="iconfont icon-zhifu"></span>
                 </el-button>
             </div>
@@ -57,7 +59,7 @@ onMounted(() => {
     userInfo.value = userStore.user
 })
 async function payClick() {
-    if (userInfo == null) {
+    if (userInfo.value == null) {
         ElMessage.warning('请登录后再购买会员')
         return
     }

@@ -93,8 +93,12 @@ const router = createRouter({
         {path:'thirdParty',component:ThirdParty},
         {path:'traceability',component:Traceability},
         {path:'unsullied',component:Unsullied},
+        {path:'dynamic/foundation',component:() => import('@/views/user/resultPage/component2/foundation.vue')},
+        {path:'dynamic/TLS',component:() => import('@/views/user/resultPage/component2/TLS.vue')},
+        {path:'dynamic/run',component:() => import('@/views/user/resultPage/component2/run.vue')},
+        {path:'dynamic/address',component:() => import('@/views/user/resultPage/component2/address.vue')},
+        {path:'dynamic/screenshot',component:() => import('@/views/user/resultPage/component2/screenshot.vue')},
       ]
-      
     },
     {
       path: '/userFileDetail/:md5',
@@ -124,6 +128,8 @@ const router = createRouter({
       children:[
         {path:'analysisManage',component:() => import('@/views/manage/components/analysisManage.vue')},
         {path:'userManage',component:() => import('@/views/manage/components/userManage.vue')},
+        {path:'templateView',component:() => import('@/views/manage/components/template/templateView.vue')},
+        {path:'blackWhite',component:() => import('@/views/manage/components/blackWhite.vue')},
       ]
     },
     // {

@@ -10,116 +10,171 @@
                 </div>
             </div>
             <el-menu default-active="1" class="el-menu-vertical-demo" :collapse="isCollapse">
-                <RouterLink :to="'foundation'">
-                    <el-menu-item index="1">
-                        <span class="iconfont icon-info1"></span>
-                        <template #title>基本信息</template>
-                    </el-menu-item>
-                </RouterLink>
-                <RouterLink :to="'certificate'">
-                    <el-menu-item index="2">
-                        <span class="iconfont icon-Certificate"></span>
-                        <template #title>证书信息</template>
-                    </el-menu-item>
-                </RouterLink>
-                <RouterLink :to="'application'">
-                    <el-menu-item index="3">
-                        <span class="iconfont icon-list"></span>
-                        <template #title>应用权限</template>
-                    </el-menu-item>
-                </RouterLink>
-                <el-sub-menu index="4">
-                    <template #title>
-                        <span class="iconfont icon-safety1"></span>
-                        <span>安全分析</span>
-                    </template>
-                    <RouterLink :to="'security'">
-                        <el-menu-item index="4-1" @click="handleMenuItemClick('scrollspyHeading1')">
-                            可浏览的Activity
-                        </el-menu-item>
-                        <el-menu-item index="4-2" @click="handleMenuItemClick('scrollspyHeading2')">
-                            网络安全配置
-                        </el-menu-item>
-                        <el-menu-item index="4-3" @click="handleMenuItemClick('scrollspyHeading3')">
-                            证书分析
-                        </el-menu-item>
-                        <el-menu-item index="4-4" @click="handleMenuItemClick('scrollspyHeading4')">
-                            Manifest分析
-                        </el-menu-item>
-                        <el-menu-item index="4-5" @click="handleMenuItemClick('scrollspyHeading5')">
-                            API调用分析
-                        </el-menu-item>
-                        <el-menu-item index="4-6" @click="handleMenuItemClick('scrollspyHeading6')">
-                            源代码分析
-                        </el-menu-item>
-                        <el-menu-item index="4-7" @click="handleMenuItemClick('scrollspyHeading7')">
-                            动态库分析
-                        </el-menu-item>
-                        <el-menu-item index="4-8" @click="handleMenuItemClick('scrollspyHeading8')">
-                            文件分析
+                <div v-if="!isDynamic">
+                    <RouterLink :to="'foundation'">
+                        <el-menu-item index="1">
+                            <span class="iconfont icon-info1"></span>
+                            <template #title>基本信息</template>
                         </el-menu-item>
                     </RouterLink>
-                </el-sub-menu>
-                <el-sub-menu index="5">
-                    <template #title>
-                        <span class="iconfont icon-plus"></span>
-                        <span>溯源取证</span>
-                    </template>
-                    <RouterLink :to="'traceability'">
-                        <el-menu-item index="5-1" @click="handleMenuItemClick('traceabilityHeading1')">
-                            滥用权限
-                        </el-menu-item>
-                        <el-menu-item index="5-2" @click="handleMenuItemClick('traceabilityHeading2')">
-                            IP地图
-                        </el-menu-item>
-                        <el-menu-item index="5-3" @click="handleMenuItemClick('traceabilityHeading3')">
-                            域名检测
-                        </el-menu-item>
-                        <el-menu-item index="5-4" @click="handleMenuItemClick('traceabilityHeading4')">
-                            手机号码
-                        </el-menu-item>
-                        <el-menu-item index="5-5" @click="handleMenuItemClick('traceabilityHeading5')">
-                            网址
-                        </el-menu-item>
-                        <el-menu-item index="5-7" @click="handleMenuItemClick('traceabilityHeading7')">
-                            邮箱
-                        </el-menu-item>
-                        <el-menu-item index="5-9" @click="handleMenuItemClick('traceabilityHeading9')">
-                            密钥凭证
+                    <RouterLink :to="'certificate'">
+                        <el-menu-item index="2">
+                            <span class="iconfont icon-Certificate"></span>
+                            <template #title>证书信息</template>
                         </el-menu-item>
                     </RouterLink>
-                </el-sub-menu>
-                <el-sub-menu index="6">
-                    <template #title>
-                        <span class="iconfont icon-thlarge"></span>
-                        <span>组件信息</span>
-                    </template>
-                    <RouterLink :to="'subassembly'">
-                        <el-menu-item index="6-1">Activity组件</el-menu-item>
-                        <el-menu-item index="6-2">Service组件</el-menu-item>
-                        <el-menu-item index="6-3">Receiver组件</el-menu-item>
-                        <el-menu-item index="6-4">Provider组件</el-menu-item>
+                    <RouterLink :to="'application'">
+                        <el-menu-item index="3">
+                            <span class="iconfont icon-list"></span>
+                            <template #title>应用权限</template>
+                        </el-menu-item>
                     </RouterLink>
-                </el-sub-menu>
-                <RouterLink :to="'thirdParty'">
-                    <el-menu-item index="7">
+                    <!-- <el-sub-menu index="4">
+                        <template #title>
+                            <span class="iconfont icon-safety1"></span>
+                            <span>安全分析</span>
+                        </template>
+                        <RouterLink :to="'security'">
+                            <el-menu-item index="4-1" @click="handleMenuItemClick('scrollspyHeading1')">
+                                可浏览的Activity
+                            </el-menu-item>
+                            <el-menu-item index="4-2" @click="handleMenuItemClick('scrollspyHeading2')">
+                                网络安全配置
+                            </el-menu-item>
+                            <el-menu-item index="4-3" @click="handleMenuItemClick('scrollspyHeading3')">
+                                证书分析
+                            </el-menu-item>
+                            <el-menu-item index="4-4" @click="handleMenuItemClick('scrollspyHeading4')">
+                                Manifest分析
+                            </el-menu-item>
+                            <el-menu-item index="4-5" @click="handleMenuItemClick('scrollspyHeading5')">
+                                API调用分析
+                            </el-menu-item>
+                            <el-menu-item index="4-6" @click="handleMenuItemClick('scrollspyHeading6')">
+                                源代码分析
+                            </el-menu-item>
+                            <el-menu-item index="4-7" @click="handleMenuItemClick('scrollspyHeading7')">
+                                动态库分析
+                            </el-menu-item>
+                            <el-menu-item index="4-8" @click="handleMenuItemClick('scrollspyHeading8')">
+                                文件分析
+                            </el-menu-item>
+                        </RouterLink>
+                    </el-sub-menu> -->
+                    <el-sub-menu index="5">
+                        <template #title>
+                            <span class="iconfont icon-plus"></span>
+                            <span v-if="!isCollapse">溯源取证</span>
+                        </template>
+                        <RouterLink :to="'traceability'">
+                            <el-menu-item index="5-1" @click="handleMenuItemClick('traceabilityHeading1')">
+                                滥用权限
+                            </el-menu-item>
+                            <el-menu-item index="5-2" @click="handleMenuItemClick('traceabilityHeading2')">
+                                IP地图
+                            </el-menu-item>
+                            <el-menu-item index="5-3" @click="handleMenuItemClick('traceabilityHeading3')">
+                                域名检测
+                            </el-menu-item>
+                            <el-menu-item index="5-4" @click="handleMenuItemClick('traceabilityHeading4')">
+                                手机号码
+                            </el-menu-item>
+                            <el-menu-item index="5-5" @click="handleMenuItemClick('traceabilityHeading5')">
+                                网址
+                            </el-menu-item>
+                            <el-menu-item index="5-7" @click="handleMenuItemClick('traceabilityHeading7')">
+                                邮箱
+                            </el-menu-item>
+                            <el-menu-item index="5-9" @click="handleMenuItemClick('traceabilityHeading9')">
+                                密钥凭证
+                            </el-menu-item>
+                        </RouterLink>
+                    </el-sub-menu>
+                    <el-sub-menu index="6">
+                        <template #title>
+                            <span class="iconfont icon-thlarge"></span>
+                            <span v-if="!isCollapse">组件信息</span>
+                        </template>
+                        <RouterLink :to="'subassembly'">
+                            <el-menu-item index="6-1">Activity组件</el-menu-item>
+                            <el-menu-item index="6-2">Service组件</el-menu-item>
+                            <el-menu-item index="6-3">Receiver组件</el-menu-item>
+                            <el-menu-item index="6-4">Provider组件</el-menu-item>
+                        </RouterLink>
+                    </el-sub-menu>
+                    <el-menu-item index="7" @click="handleExport">
                         <span class="iconfont icon-buffer1"></span>
-                        <template #title>第三方SDK</template>
+                        <template #title>导出为PDF</template>
                     </el-menu-item>
-                </RouterLink>
-                <RouterLink :to="'listOfFiles'">
-                    <el-menu-item index="8">
+                    <el-menu-item index="8" @click="handleWordExport">
                         <span class="iconfont icon-copy"></span>
-                        <template #title>文件列表</template>
+                        <template #title>导出为word</template>
                     </el-menu-item>
-                </RouterLink>
-                <RouterLink :to="'unsullied'">
-                    <el-menu-item index="9">
-                        <span class="iconfont icon-bar-chart-2"></span>
-                        <template #title>污点分析</template>
+                    <el-menu-item index="9" @click="handleWordExport">
+                        <span class="iconfont icon-shebeidongtai"></span>
+                        <template #title>开启动态分析</template>
                     </el-menu-item>
-                </RouterLink>
+                    <!-- <RouterLink :to="'unsullied'">
+                        <el-menu-item index="9">
+                            <span class="iconfont icon-bar-chart-2"></span>
+                            <template #title>污点分析</template>
+                        </el-menu-item>
+                    </RouterLink> -->
+                </div>
+                <div v-else>
+                    <RouterLink :to="'foundation'">
+                        <el-menu-item index="1">
+                            <span class="iconfont icon-info1"></span>
+                            <template #title>基本信息</template>
+                        </el-menu-item>
+                    </RouterLink>
+                    <RouterLink :to="'TLS'">
+                        <el-menu-item index="2">
+                            <span class="iconfont icon-jiesuo"></span>
+                            <template #title>关键诈骗站点</template>
+                        </el-menu-item>
+                    </RouterLink>
+                    <RouterLink :to="'run'">
+                        <el-menu-item index="3">
+                            <span class="iconfont icon-yunhangshipeizhi"></span>
+                            <template #title>运行时权限</template>
+                        </el-menu-item>
+                    </RouterLink>
+                    <!-- <RouterLink :to="'address'">
+                        <el-menu-item index="4">
+                            <span class="iconfont icon--map"></span>
+                            <template #title>通联地址分析</template>
+                        </el-menu-item>
+                    </RouterLink> -->
+                    <el-sub-menu index="4">
+                        <template #title>
+                            <span class="iconfont icon--map"></span>
+                            <span v-if="!isCollapse">通联地址分析</span>
+                        </template>
+                        <RouterLink :to="'address'">
+                            <el-menu-item index="4-1"
+                                @click="handleMenuItemClick('traceabilityHeading1')">滥用权限</el-menu-item>
+                            <el-menu-item index="4-2"
+                                @click="handleMenuItemClick('traceabilityHeading2')">IP地图</el-menu-item>
+                            <el-menu-item index="4-3"
+                                @click="handleMenuItemClick('traceabilityHeading3')">域名</el-menu-item>
+                            <el-menu-item index="4-4"
+                                @click="handleMenuItemClick('traceabilityHeading4')">URL</el-menu-item>
+                        </RouterLink>
+                    </el-sub-menu>
+                    <RouterLink :to="'screenshot'">
+                        <el-menu-item index="5">
+                            <span class="iconfont icon-jietu"></span>
+                            <template #title>屏幕截图</template>
+                        </el-menu-item>
+                    </RouterLink>
+                </div>
             </el-menu>
+            <div class="static-class">
+                <span class="iconfont icon-xueyedongtaifenxi" v-if="isDynamic && isCollapse"></span>
+                <span class="iconfont icon-youjianico_jingtaimoban" v-if="!isDynamic && isCollapse"></span>
+                <span style="margin-left: 40px" v-if="!isCollapse">{{ !isDynamic ? '静态分析' : '动态分析' }}</span>
+            </div>
         </div>
         <div class="right-box">
             <div class="wow animate__fadeInDown navigation">
@@ -140,7 +195,7 @@
                             <template #dropdown>
                                 <div class="avatar">
                                     <div class="avatar-box">
-                                        <img :src="(userInfo?.userIconPath == '') ? require('@/assets/img/title.png') : userInfo?.userIconPath"
+                                        <img :src="userInfo?.userIconPath == '' ? require('@/assets/img/title.png') : avatar"
                                             class="drop-img">
                                         <div>{{ userInfo?.userName }}</div>
                                     </div>
@@ -165,7 +220,7 @@
                     </div>
                 </div>
             </div>
-            <div class="content-box">
+            <div class="content-box" id="pdfRef">
                 <RouterView></RouterView>
             </div>
         </div>
@@ -175,11 +230,12 @@
             <table class="table">
                 <tr class="tr">
                     <td class="td">头像</td>
-                    <td class="td"><img class="iconImg" :src="userInfo.userIconPath" alt=""></td>
+                    <td class="td"><img class="iconImg" :src="avatar == '' ? require('@/assets/img/title.png') : avatar"
+                            alt=""></td>
                     <td class="td">
-                        <el-button type="small" color="#547BF1" @click="updateClick">
-                            更换头像
-                        </el-button>
+                        <el-button type="small" color="#547BF1" @click="updateClick">更换头像</el-button>
+                        <input class="fileInput" type="file" accept="image/*" style="display: none;"
+                            @change="handleAvatarChange">
                     </td>
                 </tr>
                 <tr class="tr">
@@ -193,8 +249,9 @@
                     <td class="td"></td>
                 </tr>
             </table>
-            <div style="line-height: 35px; margin-top: 20px;">已成功邀请 <strong style="font-size: 18px;">10</strong>
-                个好友，获得 <strong style="font-size: 18px;">1000</strong> 积分
+            <div style="line-height: 35px; margin-top: 20px;">已成功邀请 <strong style="font-size: 18px;">{{ friendNum
+                    }}</strong>
+                个好友，累计获得 <strong style="font-size: 18px;">{{ friendNum * 200 }}</strong> 积分
             </div>
         </div>
         <template #footer>
@@ -208,8 +265,10 @@
 import { ref, onUnmounted, onMounted, getCurrentInstance } from "vue";
 import { useRouter } from 'vue-router';
 import WOW from "wow.js";
+import { ElMessage } from "element-plus";
 import { useUserStore } from '@/stores/userStore.js'
 import { useStaticDataStore } from '@/stores/staticDataStore.js'
+import { getFriendNumAPI, editAvatarAPI } from '@/apis/mainPage.js'
 const userStore = useUserStore()
 const staticDataStore = useStaticDataStore()
 let internalInstance = getCurrentInstance();
@@ -221,6 +280,9 @@ const isCollapse = ref(false)//导航栏
 let disposed = ref(false)//判断图表是否显示
 let myChart = null
 let personVisible = ref(false)//个人资料的弹窗
+let avatar = ref('')//头像
+let friendNum = ref(0)//邀请好友个数
+let isDynamic = ref(true)
 function handleMenuItemClick(scrollId) {
     // 通过 Vue Router 导航到了目标页面  
     setTimeout(() => {
@@ -230,7 +292,15 @@ function handleMenuItemClick(scrollId) {
         }
     }, 0);
 }
-onMounted(() => {
+onMounted(async () => {
+    //获取是动态分析还是动态分析的地址
+    var pathSegments = router.currentRoute.value.href.split('/');
+    var secondLast = pathSegments[pathSegments.length - 2];
+    if (secondLast == 'dynamic') {
+        isDynamic.value = true
+    } else {
+        isDynamic.value = false
+    }
     const wow = new WOW({})
     wow.init();
     if (staticDataStore.staticDataList != null) {
@@ -242,6 +312,7 @@ onMounted(() => {
     //判断导航栏是否展开
     userStore.initialize()
     userInfo.value = userStore.user
+    avatar.value = userInfo.value.userIconPath
     let diva = document.querySelector(".navigation-icon")
     var w = document.documentElement.clientWidth;
     if (diva && w > 800) {
@@ -251,6 +322,66 @@ onMounted(() => {
     }
     if (isCollapse.value == false) {
         setChart()
+    }
+    //获取邀请好友个数
+    const res = await getFriendNumAPI(userInfo.value.userMail, 'v')
+    friendNum.value = res.data.data
+});
+import { htmlPdf } from "@/utils/htmlToPDF.js"
+// 导出成PDF
+const handleExport = (name) => {
+    var fileName = '投资评审报告'
+    const fileList = document.getElementsByClassName('pdfRef1')   // 很重要
+    htmlPdf(fileName, document.querySelector('#pdfRef'), fileList)
+}
+//导出word
+// import 'https://cdn.jsdelivr.net/npm/html-docx-js/dist/html-docx.js'
+// import 'https://cdn.jsdelivr.net/npm/file-saver/dist/FileSaver.min.js'
+// const handleWordExport = (fileName = 'exported-document.docx') => {
+//     let htmlContent = document.querySelector('#pdfRef')
+//     // 构建包含 HTML 内容的完整 HTML 文档字符串
+//     const fullHtmlContent = `
+//     <!DOCTYPE html>
+//     <html>
+//       <head>
+//         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+//       </head>
+//       <body>
+//         ${htmlContent}
+//       </body>
+//     </html>
+//   `;
+
+//     // 使用 html-docx-js 将 HTML 转换为 Word 文档的 Blob 对象
+//     const converted = htmlDocx.asBlob(fullHtmlContent);
+
+//     // 使用 file-saver 保存 Blob 对象为 Word 文档文件
+//     FileSaver.saveAs(converted, fileName);
+// };
+//点击更换头像
+function updateClick() {
+    let fileInput = document.querySelector('.fileInput')
+    if (fileInput) {
+        fileInput.click();
+    }
+}
+const handleAvatarChange = (async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            avatar.value = e.target.result; // 更新头像图片
+            console.log(avatar.value)
+            var blob = new Blob([avatar.value], { type: 'image/jpeg' });
+            const res = editAvatarAPI(new File([blob], '123.png', { type: 'image/jpeg' }), userInfo.value.userMail, 'v')
+            console.log(res.data)
+            ElMessage.success('头像更换成功！')
+            userInfo.value.userIconPath = avatar.value
+            console.log(userInfo.value)
+            localStorage.setItem("user", JSON.stringify(userInfo.value))
+            userStore.initialize()
+        };
+        reader.readAsDataURL(file);
     }
 });
 //点击登录或者退出登录
@@ -288,9 +419,8 @@ function displayWindowSize() {
 // 监听页面宽度（调整页面导航）
 displayWindowSize();
 window.addEventListener("resize", displayWindowSize);
-
 let setChart = () => {
-    let chartDom = document.querySelector(".navigation-title");
+    let chartDom = document.querySelector(".navigation-title")
     myChart = echarts.init(chartDom);
     let option = {
         graphic: {
@@ -382,8 +512,6 @@ function expandClick() {
         overflow-y: auto;
         z-index: 20;
 
-
-
         .navigation-tran {
             padding: 15px 17px;
             height: 40px;
@@ -457,6 +585,11 @@ function expandClick() {
         .icon-safety1,
         .icon-copy {
             font-size: 18px;
+        }
+
+        .static-class {
+            line-height: 50px;
+            margin-left: 20px;
         }
     }
 
@@ -553,7 +686,7 @@ function expandClick() {
     }
 
     ::-webkit-scrollbar {
-        width: 5px;
+        width: 8px;
     }
 
     /* 滚动条轨道 */
@@ -642,7 +775,8 @@ function expandClick() {
 
         .td {
             flex: 1;
-            .iconImg{
+
+            .iconImg {
                 border-radius: 50px;
             }
         }

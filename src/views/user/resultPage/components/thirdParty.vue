@@ -15,12 +15,10 @@
             </div>
         </div>
     </div>
-
 </template>
 <script setup>
-import { reactive } from "vue";
-
-const thirdPartyList = reactive([
+import { ref, reactive } from "vue";
+const thirdPartyList = ref(
     {
         data1: 'C++ 共享库',
         data2: 'https://developer.android.com/ndk/guides/cpp-support/',
@@ -39,7 +37,7 @@ const thirdPartyList = reactive([
         data3: 'Alibaba',
         data4: '岳鹰全景监控，是阿里 UC 官方出品的先进移动应用线上监控平台，为多家知名企业提供服务。',
     }
-])
+)
 </script>
 <style lang="scss" scoped>
 .thirdParty {

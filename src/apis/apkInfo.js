@@ -1,12 +1,12 @@
 import http from '@/utils/http.js'
 //获取白名单
-export const getWhiteAPI=(pageNum,pageSize,k)=>{
+export const getBlackWhiteAPI=(PageNum,PageSize,k)=>{
     return http({
-        url:`/apk-info/get_white`,
+        url:`/apk-info/BlackListAndWhiteList`,
         method:"POST",
         params:{
-            pageNum,
-            pageSize,
+            PageNum,
+            PageSize,
             k
         }
     })
@@ -53,6 +53,28 @@ export const getJavaInfoAPI=(k,fileMd5,path)=>{
             k,
             fileMd5,
             path
+        }
+    })
+}
+//获取静态安全评分
+export const getStaticPointAPI=(k,url)=>{
+    return http({
+        url:`/dynamic-analysis/testssl`,
+        method:"GET",
+        params:{
+            k,
+            url
+        }
+    })
+}
+//获取Traffic
+export const getTrafficFileAPI=(k,fileName)=>{
+    return http({
+        url:`/dynamic-analysis/getFile`,
+        method:"GET",
+        params:{
+            k,
+            fileName
         }
     })
 }

@@ -1,9 +1,9 @@
 <template>
-    <div class="wow animate__fadeInRight appRemission-box">
+    <div class="wow animate__fadeInRight appRemission-box pdfRef1">
         <div class="appRemission">
             <div class="appRemission-title">应用权限</div>
             <div class="appRemission-content">
-                <el-table :data="appRemissionList" style="width: 100%" stripe :row-class-name="tableRowClassName">
+                <el-table :data="appRemissionList" class="pdfRef1" style="width: 100%" stripe>
                     <el-table-column fixed prop="permissionApplication" label="权限名称" width="360" />
                     <el-table-column prop="permissionType" label="权限内容" width="150" />
                     <el-table-column prop="permissionDetail" label="权限描述" width="580" />

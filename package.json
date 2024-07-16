@@ -14,6 +14,8 @@
     "crypto-js": "^4.2.0",
     "echarts": "^5.5.0",
     "element-plus": "^2.7.3",
+    "file-saver": "^2.0.5",
+    "html-docx-js": "^0.3.1",
     "pinia": "^2.1.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -21,7 +23,8 @@
     "vue": "^3.4.21",
     "vue-router": "^4.3.0",
     "vuera": "^0.2.7",
-    "wow.js": "^1.2.2"
+    "wow.js": "^1.2.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",

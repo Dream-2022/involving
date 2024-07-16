@@ -22,20 +22,18 @@
                         <template #title>分析管理</template>
                     </el-menu-item>
                 </RouterLink>
-                <el-sub-menu index="3">
-                    <template #title>
+                <RouterLink :to="'templateView'">
+                    <el-menu-item index="3">
                         <span class="iconfont icon-book"></span>
-                        <span>范本管理</span>
-                    </template>
-                    <RouterLink :to="''">
-                        <el-menu-item index="3-1">
-                            范本查看
-                        </el-menu-item>
-                    </RouterLink>
-                    <el-menu-item index="3-2">
-                        范本上传
+                        <template #title>范本管理</template>
                     </el-menu-item>
-                </el-sub-menu>
+                </RouterLink>
+                <RouterLink :to="'blackWhite'">
+                    <el-menu-item index="4">
+                        <span class="iconfont icon-cangkukucun"></span>
+                        <template #title>黑白名单库</template>
+                    </el-menu-item>
+                </RouterLink>
             </el-menu>
         </div>
         <div class="right-box">

@@ -126,6 +126,15 @@
             font-size: 14px;
             margin-left: 3px;
         }
+        .dropdown-class{
+            .my-title{
+                margin: 10px 0 0 10px;
+                font-weight: 600;
+            }
+            .el-dropdown-menu{
+                margin: 20px 5px;
+            }
+        }
     }
 
     .navigation-portrait {
@@ -902,6 +911,7 @@
             margin-top: 20px;
 
             .drop-img {
+                border-radius: 50px;
                 width: 50px;
                 height: 50px;
                 text-align: center;
@@ -936,7 +946,9 @@
         border-bottom: 1px solid #eceffe;
         margin-left: 20px;
         margin-right: 20px;
-
+        .iconImg{
+            border-radius: 50px;
+        }
         .td {
             flex: 1;
 

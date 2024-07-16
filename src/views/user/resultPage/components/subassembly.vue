@@ -5,26 +5,31 @@
             <div class="content">
                 <div class="demo-collapse">
                     <el-collapse v-model="activeActivity" @change="handleChange">
-                        <el-collapse-item :title="'存在 ' + activityList.length + ' 个 activity'" name="1">
+                        <el-collapse-item name="1"
+                            :title="'存在 ' + subassemblyList[0]?.componentDesc?.componentAndIsExports?.length + ' 个 activity'">
                             <div>导出</div>
-                            <div v-for="(item, index) in activityList" :key="item"
+                            <div v-for="(item) in subassemblyList[0]?.componentDesc?.componentAndIsExports" :key="item"
                                 style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden; width: 95%">
-                                <el-tooltip placement="top-start">
-                                    <template #content>
-                                        {{ item }}
-                                    </template>
-                                    {{ index + 1 + ' . ' + item }}
-                                </el-tooltip>
+                                <div v-if="item.isExport">
+                                    <el-tooltip placement="top-start">
+                                        <template #content>
+                                            {{ item.ComponentName }}
+                                        </template>
+                                        {{ item.ComponentName }}
+                                    </el-tooltip>
+                                </div>
                             </div>
                             <div style="margin-top: 10px;">未导出</div>
-                            <div v-for="(item, index) in activityList" :key="item"
+                            <div v-for="(item) in subassemblyList[0]?.componentDesc?.componentAndIsExports" :key="item"
                                 style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden; width: 95%">
-                                <el-tooltip placement="top-start">
-                                    <template #content>
-                                        {{ item }}
-                                    </template>
-                                    {{ index + 1 + ' . ' + item }}
-                                </el-tooltip>
+                                <div v-if="!item.isExport">
+                                    <el-tooltip placement="top-start">
+                                        <template #content>
+                                            {{ item.ComponentName }}
+                                        </template>
+                                        {{ item.ComponentName }}
+                                    </el-tooltip>
+                                </div>
                             </div>
                         </el-collapse-item>
                     </el-collapse>
@@ -36,15 +41,31 @@
             <div class="content">
                 <div class="demo-collapse">
                     <el-collapse v-model="activeService" @change="handleChange">
-                        <el-collapse-item :title="'存在 ' + serviceList.length + ' 个 service'" name="1">
-                            <div v-for="(item, index) in serviceList" :key="item"
+                        <el-collapse-item name="1"
+                            :title="'存在 ' + subassemblyList[1]?.componentDesc?.componentAndIsExports?.length + ' 个 service'">
+                            <div>导出</div>
+                            <div v-for="(item) in subassemblyList[1]?.componentDesc?.componentAndIsExports" :key="item"
                                 style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden; width: 95%">
-                                <el-tooltip placement="top-start">
-                                    <template #content>
-                                        {{ item }}
-                                    </template>
-                                    {{ index + 1 + ' . ' + item }}
-                                </el-tooltip>
+                                <div v-if="item.isExport">
+                                    <el-tooltip placement="top-start">
+                                        <template #content>
+                                            {{ item.ComponentName }}
+                                        </template>
+                                        {{ item.ComponentName }}
+                                    </el-tooltip>
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px;">未导出</div>
+                            <div v-for="(item) in subassemblyList[1]?.componentDesc?.componentAndIsExports" :key="item"
+                                style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden; width: 95%">
+                                <div v-if="!item.isExport">
+                                    <el-tooltip placement="top-start">
+                                        <template #content>
+                                            {{ item.ComponentName }}
+                                        </template>
+                                        {{ item.ComponentName }}
+                                    </el-tooltip>
+                                </div>
                             </div>
                         </el-collapse-item>
                     </el-collapse>
@@ -56,15 +77,30 @@
             <div class="content">
                 <div class="demo-collapse">
                     <el-collapse v-model="activeReceiver" @change="handleChange">
-                        <el-collapse-item :title="'存在 ' + activityList.length + ' 个 receiver'" name="1">
-                            <div v-for="(item, index) in activityList" :key="item"
+                        <el-collapse-item name="1"
+                            :title="'存在 ' + subassemblyList[2]?.componentDesc?.componentAndIsExports?.length + ' 个 receiver'">
+                            <div v-for="(item) in subassemblyList[2]?.componentDesc?.componentAndIsExports" :key="item"
                                 style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden; width: 95%">
-                                <el-tooltip placement="top-start">
-                                    <template #content>
-                                        {{ item }}
-                                    </template>
-                                    {{ index + 1 + ' . ' + item }}
-                                </el-tooltip>
+                                <div v-if="item.isExport">
+                                    <el-tooltip placement="top-start">
+                                        <template #content>
+                                            {{ item.ComponentName }}
+                                        </template>
+                                        {{ item.ComponentName }}
+                                    </el-tooltip>
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px;">未导出</div>
+                            <div v-for="(item) in subassemblyList[2]?.componentDesc?.componentAndIsExports" :key="item"
+                                style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden; width: 95%">
+                                <div v-if="!item.isExport">
+                                    <el-tooltip placement="top-start">
+                                        <template #content>
+                                            {{ item.ComponentName }}
+                                        </template>
+                                        {{ item.ComponentName }}
+                                    </el-tooltip>
+                                </div>
                             </div>
                         </el-collapse-item>
                     </el-collapse>
@@ -76,15 +112,30 @@
             <div class="content">
                 <div class="demo-collapse">
                     <el-collapse v-model="activeProvider" @change="handleChange">
-                        <el-collapse-item :title="'存在 ' + activityList.length + ' 个 provider'" name="1">
-                            <div v-for="(item, index) in activityList" :key="item"
+                        <el-collapse-item name="1"
+                            :title="'存在 ' + subassemblyList[3]?.componentDesc?.componentAndIsExports?.length + ' 个 provider'">
+                            <div v-for="(item) in subassemblyList[3]?.componentDesc?.componentAndIsExports" :key="item"
                                 style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden; width: 95%">
-                                <el-tooltip placement="top-start">
-                                    <template #content>
-                                        {{ item }}
-                                    </template>
-                                    {{ index + 1 + ' . ' + item }}
-                                </el-tooltip>
+                                <div v-if="item.isExport">
+                                    <el-tooltip placement="top-start">
+                                        <template #content>
+                                            {{ item.ComponentName }}
+                                        </template>
+                                        {{ item.ComponentName }}
+                                    </el-tooltip>
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px;">未导出</div>
+                            <div v-for="(item) in subassemblyList[3]?.componentDesc?.componentAndIsExports" :key="item"
+                                style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden; width: 95%">
+                                <div v-if="!item.isExport">
+                                    <el-tooltip placement="top-start">
+                                        <template #content>
+                                            {{ item.ComponentName }}
+                                        </template>
+                                        {{ item.ComponentName }}
+                                    </el-tooltip>
+                                </div>
                             </div>
                         </el-collapse-item>
                     </el-collapse>
@@ -95,11 +146,11 @@
 </template>
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
-const activeActivity = ref()
-const activeService = ref()
-const activeReceiver = ref()
-const activeProvider = ref()
 let subassemblyList = reactive([])
+let activeActivity = ref(false)
+let activeService = ref(false)
+let activeReceiver = ref(false)
+let activeProvider = ref(false)
 onMounted(() => {
     const result = JSON.parse(localStorage.getItem('staticDataList'))
     console.log(result)
@@ -108,10 +159,9 @@ onMounted(() => {
         item.componentDesc = JSON.parse(item.componentDesc)
     })
     console.log(subassemblyList)
+    console.log(subassemblyList[0])
+    console.log(subassemblyList[0].componentDesc.componentAndIsExports)
 })
-const handleChange = (val) => {
-    console.log(val)
-}
 let activityList = ([
     'us.pinguo.pat360.cameraman.wxapi.WXPayEntryActivity',
     'us.pinguo.pat360.cameraman.purchase.CMPurchaseActionActivity',

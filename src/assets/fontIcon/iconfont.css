@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4533157 */
-  src: url('iconfont.woff2?t=1720404684492') format('woff2'),
-       url('iconfont.woff?t=1720404684492') format('woff'),
-       url('iconfont.ttf?t=1720404684492') format('truetype');
+  src: url('iconfont.woff2?t=1721012467552') format('woff2'),
+       url('iconfont.woff?t=1721012467552') format('woff'),
+       url('iconfont.ttf?t=1721012467552') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,66 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-shebeidongtai:before {
+  content: "\e615";
+}
+
+.icon-cangkukucun:before {
+  content: "\e634";
+}
+
+.icon-plus2:before {
+  content: "\e60e";
+}
+
+.icon-plus3:before {
+  content: "\e829";
+}
+
+.icon-shanchu:before {
+  content: "\e8b6";
+}
+
+.icon-jiesuo:before {
+  content: "\e66a";
+}
+
+.icon-yunhangshipeizhi:before {
+  content: "\e69f";
+}
+
+.icon--map:before {
+  content: "\f0c2";
+}
+
+.icon-jietu:before {
+  content: "\e931";
+}
+
+.icon-Exporter:before {
+  content: "\e60c";
+}
+
+.icon-dmg_:before {
+  content: "\e6b5";
+}
+
+.icon-rizhi:before {
+  content: "\e60a";
+}
+
+.icon-HTTP:before {
+  content: "\e7ad";
+}
+
+.icon-xueyedongtaifenxi:before {
+  content: "\e7db";
+}
+
+.icon-youjianico_jingtaimoban:before {
+  content: "\e647";
 }
 
 .icon-analysis:before {

@@ -12,13 +12,14 @@
                     <span class="list" :class="!navigationValue ? 'list-active' : ''" @click="
                         navigationClick(false)">黑名单</span>
                 </div>
+                <div style="margin-left: auto;">
+                    <el-button type="primary" style="height: 30px" :icon="Position" @click="exportClick">导出</el-button>
+                </div>
             </div>
-            <el-divider content-position="center"><strong style="font-size: 17px; color: #4d4d4d;">{{
-                        navigationValue ? '白名单' : '黑名单' }}</strong></el-divider>
-            <div class="middle-word"> </div>
-            <!-- navigationValue ? blackWhiteList.blackList : blackWhiteList.whiteList -->
+            <div class="middle-word">
+            </div>
             <div v-if="navigationValue">
-                <el-table :data="blackWhiteList?.whiteList?.records" style="width: 100%" stripe
+                <el-table ref="exportTableRef" :data="blackWhiteList?.whiteList?.records" style="width: 100%" stripe
                     :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
                     <el-table-column label="应用程序" width="160">
                         <template #default="{ row }">
@@ -64,7 +65,7 @@
                             <div>版本名: {{ row.versionName }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column fixed="right" label="操作" width="140">
+                    <el-table-column fixed="right" label="查看" width="90">
                         <template #default="{ row }">
                             <div>
                                 <el-button color="#7dc15b" size="small" style="margin-bottom: 10px; color:#fff;"
@@ -75,15 +76,28 @@
                                     style="margin-bottom: 10px; color:#fff;">静态报告</el-button>
                             </div>
                             <div>
-                                <el-button color="#a372df" plain size="small" style="margin-bottom: 10px;"
+                                <el-button color="#a372df" size="small" style="margin-bottom: 10px; color: #fff;"
                                     @click="safeClick(row.fileMd5)">点击下载</el-button>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column fixed="right" label="操作" width="100">
+                        <template #default="{ row }">
+                            <div>
+                                <el-button color="#e6a23c" plain size="small"
+                                    @click="blackWhiteClick(row.apkName, row.fileMd5, false)"
+                                    style="margin-bottom: 10px;">设为黑名单</el-button>
+                            </div>
+                            <div>
+                                <el-button color="#F56C6C" plain size="small" style="margin-bottom: 10px;"
+                                    @click="deleteClick(row.apkName, row.fileMd5, false)">移除</el-button>
                             </div>
                         </template>
                     </el-table-column>
                 </el-table>
             </div>
             <div v-else>
-                <el-table :data="blackWhiteList?.blackList?.records" style="width: 100%" stripe
+                <el-table ref="exportTableRef" :data="blackWhiteList?.blackList?.records" style="width: 100%" stripe
                     :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
                     <el-table-column label="应用程序" width="160">
                         <template #default="{ row }">
@@ -129,7 +143,7 @@
                             <div>版本名: {{ row.versionName }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column fixed="right" label="操作" width="140">
+                    <el-table-column fixed="right" label="查看" width="90">
                         <template #default="{ row }">
                             <div>
                                 <el-button color="#7dc15b" size="small" style="margin-bottom: 10px; color:#fff;"
@@ -140,8 +154,21 @@
                                     style="margin-bottom: 10px; color:#fff;">静态报告</el-button>
                             </div>
                             <div>
-                                <el-button color="#a372df" plain size="small" style="margin-bottom: 10px;"
+                                <el-button color="#a372df" size="small" style="margin-bottom: 10px; color: #fff;"
                                     @click="safeClick(row.fileMd5)">点击下载</el-button>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column fixed="right" label="操作" width="100">
+                        <template #default="{ row }">
+                            <div>
+                                <el-button color="#e6a23c" plain size="small"
+                                    @click="blackWhiteClick(row.apkName, row.fileMd5, true)"
+                                    style="margin-bottom: 10px;">设为白名单</el-button>
+                            </div>
+                            <div>
+                                <el-button color="#F56C6C" plain size="small" style="margin-bottom: 10px;"
+                                    @click="deleteClick(row.apkName, row.fileMd5, true)">移除</el-button>
                             </div>
                         </template>
                     </el-table-column>
@@ -153,9 +180,13 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import { useRouter } from 'vue-router';
+import { Delete, Plus, Position } from '@element-plus/icons-vue';
+import { ElMessage, ElMessageBox } from 'element-plus'
+import * as XLSX from 'xlsx';
 import { getApkInfoAPI } from '@/apis/apkInfo.js'
 import { getBlackWhiteAPI } from '@/apis/apkInfo.js'
 const router = useRouter();
+const exportTableRef = ref(null);
 let blackWhiteList = ref([])
 let navigationValue = ref(true)
 onMounted(async () => {
@@ -167,6 +198,74 @@ onMounted(async () => {
     console.log(blackWhiteList.value.blackList)
     console.log(blackWhiteList.value.whiteList)
 })
+//点击设为黑名单
+function blackWhiteClick(apkName, md5, value) {
+    ElMessageBox.confirm(
+        `确认将 ${apkName} 移入${value ? '白名单' : '黑名单'}吗?`,
+        '警告',
+        {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }).then(() => {
+            if (value) {
+                blackWhiteList.value.blackList.records.forEach((i, index) => {
+                    if (blackWhiteList.value.blackList.records[index].fileMd5 == md5) {
+                        blackWhiteList.value.blackList.records.splice(index, 1)
+                        ElMessage.success(`成功将 ${apkName} 移入 ${value ? '白名单' : '黑名单'} 成功！`)
+                        return
+                    }
+                })
+            } else {
+                blackWhiteList.value.whiteList.records.forEach((i, index) => {
+                    if (blackWhiteList.value.whiteList.records[index].fileMd5 == md5) {
+                        blackWhiteList.value.whiteList.records.splice(index, 1)
+                        ElMessage.success(`成功将 ${apkName} 移入 ${value ? '白名单' : '黑名单'} 成功！`)
+                        return
+                    }
+                })
+            }
+        })
+}
+//点击删除
+function deleteClick(apkName, md5, value) {
+    ElMessageBox.confirm(
+        `确认将 ${apkName} 删除吗?`,
+        '警告',
+        {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }).then(() => {
+            if (!value) {
+                blackWhiteList.value.whiteList.records.forEach((i, index) => {
+                    if (blackWhiteList.value.whiteList.records[index].fileMd5 == md5) {
+                        blackWhiteList.value.whiteList.records.splice(index, 1)
+                        ElMessage.success(`${apkName} 删除成功！`)
+                        return
+                    }
+                })
+            } else {
+                blackWhiteList.value.blackList.records.forEach((i, index) => {
+                    if (blackWhiteList.value.blackList.records[index].fileMd5 == md5) {
+                        blackWhiteList.value.blackList.records.splice(index, 1)
+                        ElMessage.success(`${apkName} 删除成功！`)
+                        return
+                    }
+                })
+            }
+        })
+}
+function exportClick() {
+    const tableDom = exportTableRef.value?.$el;
+    if (!tableDom) {
+        return;
+    }
+    const wb = XLSX.utils.table_to_book(tableDom);
+
+    XLSX.writeFile(wb, `${navigationValue.value == true ? '白名单' : '黑名单'}数据.xlsx`);
+}
+//点击静态报告
 async function staticClick(md5) {
     console.log(md5)
     const res = await getApkInfoAPI(md5, 'v')
@@ -211,9 +310,9 @@ function getClass(name) {
 </script>
 <style lang="scss" scoped>
 .white-box {
-    width: 90%;
+    width: 97%;
     min-width: 600px;
-    margin: 120px auto;
+    margin: 20px auto;
     padding-bottom: 50px;
     position: relative;
     background-color: #fff;
@@ -249,9 +348,9 @@ function getClass(name) {
             }
         }
 
-
         .middle-word {
-            margin-top: 30px;
+            display: flex;
+            margin-top: 10px;
             margin-bottom: 10px;
             font-size: 15px;
         }

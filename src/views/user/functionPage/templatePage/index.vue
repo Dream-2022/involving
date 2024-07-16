@@ -2,9 +2,8 @@
     <div class="wow animate__fadeInUp recent-box">
         <div class="middle-box">
             <div class="middle-title">
-                最近分析
+                范本库
             </div>
-            <div class="middle-word">以下内容是访客的分析记录，如果您不希望公开自己的分析记录，请在上传分析前登录用户账号</div>
             <el-table :data="templateList" style="width: 100%" stripe :header-cell-style="{ 'text-align': 'center' }"
                 :cell-style="{ 'text-align': 'center' }">
                 <el-table-column label="序号" width="120" fixed>

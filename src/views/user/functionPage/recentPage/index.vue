@@ -10,17 +10,22 @@
                 <el-table-column prop="data1" label="应用程序" width="220">
                     <template #default="{ row }">
                         <div><img :src="row.apkIconPath" class="apk-img"></div>
-                        <div><strong>{{ row.fileName }}</strong></div>
+                        <div><strong>{{ row.apkName }}</strong></div>
                     </template>
                 </el-table-column>
                 <el-table-column prop="fileName" label="文件名称" width="240" />
-                <el-table-column label="风险评估" width="180">
+                <el-table-column label="类型" width="180">
                     <template #default="{ row }">
-                        <span class="first-label" :class="getLabelColor(row?.apkDesc)">{{ row?.apkDesc }}
+                        <span class="first-label" :class="getClass(row?.apkDesc)">{{ row?.apkDesc }}
                         </span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="fileMd5" label="MD5值" width="360" />
+                <el-table-column label="安全评分" width="120">
+                    <template #default="{ row }">
+                        <div class="colorLabel" :class="getClass(row.secureScore)">{{ row.secureScore }}</div>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="detectedTime" label="最后分析时间" width="220" />
                 <el-table-column label="操作" width="120" fixed="right">
                     <template #default="{ row }">
@@ -32,10 +37,6 @@
                             style="margin-bottom: 10px; color:#fff;">
                             静态报告
                         </el-button>
-                        <el-button color="#547BF1" size="small" plain @click="safeClick(row.fileMd5)"
-                            style="margin-bottom: 10px;">
-                            PDF报告
-                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -44,7 +45,10 @@
 </template>
 <script setup>
 import { onMounted, ref } from "vue";
+import { useRouter } from 'vue-router';
+import { getApkInfoAPI } from '@/apis/apkInfo.js'
 import { getRecentAnalysisAPI } from '@/apis/mainPage.js'
+const router = useRouter();
 let recentAnalysisList = ref([])
 onMounted(async () => {
     //获取最近分析
@@ -57,29 +61,44 @@ onMounted(async () => {
         item.detectedTime = formattedDate;
     });
 })
-//获取最近分析记录的标签颜色
-function getLabelColor(word) {
-    if (word == '黑灰色') {
-        return 'blackLabel'
-    } else if (word == '色情') {
+async function safeClick(md5) {
+    console.log(md5)
+    const res = await getApkInfoAPI(md5, 'v')
+    console.log(res.data)
+    localStorage.setItem('staticDataList', JSON.stringify(res.data.data))
+    router.push('/userResultPage')
+}
+//获取标签颜色
+function getClass(name) {
+    if (name == '未知') {
+        return 'greyLabel'
+    } else if (name == '色情') {
         return 'yellowLabel'
-    } else if (word == '诈骗') {
+    } else if (name == '诈骗') {
         return 'redLabel'
-    } else if (word == '涉赌') {
+    } else if (name == '赌博') {
         return 'purpleLabel'
-    } else if (word == '正常') {
+    } else if (name == '正常') {
         return 'greenLabel'
-    } else {
+    } else if (name == '黑灰') {
+        return 'blackLabel'
+    } else if (!Number.isNaN(Number(name))) {
+        if (name < 30) {
+            return 'red'
+        } else if (name < 60) {
+            return 'yellow'
+        } else if (name < 80) {
+            return 'blue'
+        } else if (name <= 100) {
+            return 'green'
+        } else {
+            return 'grey'
+        }
+    }
+    else {
         return 'greyLabel'
     }
 }
-// window.addEventListener('scroll', () => {
-//     // 当滚动到页面底部时执行函数
-//     if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-//         // 发送请求获取更多数据
-//         fetchData();
-//     }
-// });
 </script>
 <style lang="scss" scoped>
 .recent-box {
@@ -117,6 +136,10 @@ function getLabelColor(word) {
         }
 
         .el-table {
+            .colorLabel {
+                font-weight: 600;
+            }
+
             .first-label {
                 color: #fff;
                 border-radius: 5px;
@@ -146,6 +169,30 @@ function getLabelColor(word) {
 
             .redLabel {
                 background-color: $red;
+            }
+
+            .purple {
+                color: $purple;
+            }
+
+            .green {
+                color: $green;
+            }
+
+            .black {
+                color: $word-black-color;
+            }
+
+            .grey {
+                color: $grey;
+            }
+
+            .yellow {
+                color: $yellow;
+            }
+
+            .red {
+                color: $red;
             }
         }
     }

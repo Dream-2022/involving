@@ -7,12 +7,12 @@
                 <div class="content-left">
                     <div class="content-top">
                         <div>恶意软件常用权限</div>
-                        <div class="content-top-number">{{ safeItemNum + '/' + appRemissionList?.permissionInfo?.length
+                        <div class="content-top-number">{{ safeItemNum + '/' + permissionInfo?.length
                             }}</div>
                     </div>
                     <el-progress :percentage="percentage1" :color="customColors1" />
                     <div class="permission-list">
-                        <div v-for="item in appRemissionList?.permissionInfo" :key="item">
+                        <div v-for="item in permissionInfo" :key="item">
                             <div v-if="item.abc">
                                 {{ item.permissionApplication }}
                             </div>
@@ -22,12 +22,12 @@
                 <div class="content-right">
                     <div class="content-top">
                         <div>其它常用权限</div>
-                        <div class="content-top-number">{{ appRemissionList?.permissionInfo?.length - safeItemNum + '/'
-                            + appRemissionList?.permissionInfo?.length }}</div>
+                        <div class="content-top-number">{{ permissionInfo?.length - safeItemNum + '/'
+                            + permissionInfo?.length }}</div>
                     </div>
                     <el-progress :percentage="percentage2" :color="customColors" />
                     <div class="permission-list">
-                        <div v-for="item in appRemissionList?.permissionInfo" :key="item">
+                        <div v-for="item in permissionInfo" :key="item">
                             <div v-if="!item.abc">
                                 {{ item.permissionApplication }}
                             </div>
@@ -101,66 +101,27 @@
                 </el-table>
             </div>
         </div>
-        <div class="phone">
+        <div class="url">
             <div id="traceabilityHeading4"></div>
-            <div class="phone-title">手机号码</div>
-            <div class="phone-content">
-                <el-table :data="appRemissionList?.phoneDto" style="width: 100%" stripe>
-                    <el-table-column label="序号" :min-width="50" fixed>
-                        <template v-slot="{ $index }">
-                            <span>{{ $index + 1 }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="data1" label="手机号" :min-width="200" />
-                </el-table>
-            </div>
-        </div>
-        <div class="URL">
-            <div id="traceabilityHeading5"></div>
-            <div class="URL-title">网址</div>
-            <div class="URL-content">
-                <el-table :data="appRemissionList?.urlVoList" style="width: 100%" stripe>
+            <div class="url-title">URL</div>
+            <div class="url-content">
+                <el-table :data="urlList" style="width: 100%" stripe>
                     <el-table-column label="序号" :min-width="80">
                         <template v-slot="{ $index }">
                             <span>{{ $index + 1 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="url" label="网址信息" :min-width="400" />
-                    <el-table-column label="分析" :min-width="200">
+                    <el-table-column prop="arrLis[0]" label="网址信息" :min-width="400" />
+                    <el-table-column label="分析" :min-width="100">
                         <template #default="{ row }">
                             <div :class="row.res == '正常请求' ? 'greenLabel' : 'redLabel'">{{ row.res }}</div>
                         </template>
                     </el-table-column>
-                </el-table>
-            </div>
-        </div>
-        <div class="email">
-            <div id="traceabilityHeading7"></div>
-            <div class="email-title">邮箱</div>
-            <div class="email-content">
-                <el-table :data="appRemissionList?.mailDto" style="width: 100%" stripe>
-                    <el-table-column label="序号" :min-width="50" fixed>
-                        <template v-slot="{ $index }">
-                            <span>{{ $index + 1 }}</span>
-                        </template>
+                    <el-table-column label="操作" :min-width="100">
+                        <el-button color="#368eec" @click="staticClick"
+                            style="margin-bottom: 10px; color:#fff; height: 25px;">安全评分</el-button>
                     </el-table-column>
-                    <el-table-column prop="data1" label="邮箱" :min-width="200" />
                 </el-table>
-            </div>
-        </div>
-        <div class="key">
-            <div id="traceabilityHeading9"></div>
-            <div class="key-title">硬编码敏感信息<div class="key-unfold">点击展开</div>
-            </div>
-            <div class="key-content">
-                <div class="demo-collapse">
-                    <el-collapse v-model="activeName" accordion>
-                        <el-collapse-item v-for="item in stringList" :key="item" :title="item.data" :name="item.data1">
-                            <div v-if="item.value != ''">{{ item.value }}</div>
-                            <div v-else>暂无</div>
-                        </el-collapse-item>
-                    </el-collapse>
-                </div>
             </div>
         </div>
     </div>
@@ -170,11 +131,12 @@ import { ref, reactive, onUnmounted, onMounted, getCurrentInstance } from 'vue'
 import { StarFilled } from '@element-plus/icons-vue';
 import AMapLoader from "@amap/amap-jsapi-loader";
 import 'echarts/extension/bmap/bmap';
+import { getStaticPointAPI } from '@/apis/apkInfo.js'
 const percentage1 = ref(0)
 const percentage2 = ref(0)
 const activeName = ref('1')
-let appRemissionList = reactive({})
-let stringList = ref([])
+let domainList = ref([])
+let appRemissionList = reactive({})//获取的动态分析数据
 //进度条的颜色
 const customColors = [
     { color: '#e6a23c', percentage: 50 },
@@ -184,37 +146,25 @@ const customColors1 = [
     { color: '#368eec', percentage: 50 },
     { color: '#9a9a9a', percentage: 100 },
 ]
-const domainList = ref([])
-const URLList = [
-    {
-        data1: 'x5tbs@tencent.com',
-    },
-    {
-        data1: '12345136523@qq.com',
-    }
-]
-const trackerList = [
-    {
-        data1: 'Yueying@tencent.com',
-        data2: 'x5tbs@tencent.com',
-        data3: 'https://reports.exodus-privacy.eu.org/trackers/448',
-    },
-    {
-        data1: 'Yueying Crash SDK',
-        data2: 'Crash reporting, Analytics',
-        data3: 'https://reports.exodus-privacy.eu.org/trackers/448',
-    }
-]
+let urlList = ref([])
+let permissionInfo = ref([])//滥用权限
 let map = null;
 let safeItemNum = ref(0)
 onMounted(() => {
-    const res = JSON.parse(localStorage.getItem('staticDataList'))
+    const res = JSON.parse(localStorage.getItem('dynamicDataList'))
     console.log(res)
     Object.keys(res).forEach(key => {
         appRemissionList[key] = res[key];
     });
-    stringList.value = JSON.parse(appRemissionList.hardcodedDesc)
-    let ipListMap = JSON.parse(appRemissionList.dnsInfo.dnsDesc)
+    urlList.value = appRemissionList.urlList
+    for (let i = 0; i < urlList.value.length; i++) {
+        let arr = urlList.value[i].url.split('?');
+        urlList.value[i].arrLis = arr
+    }
+    console.log(urlList.value)
+    let staticList = JSON.parse(localStorage.getItem('staticDataList'))
+    console.log(staticList)
+    let ipListMap = JSON.parse(staticList.dnsInfo.dnsDesc)
     //IP地图
     window._AMapSecurityConfig = {
         securityJsCode: "1ae21bcc8cbf0d57a400c60614c3632c",
@@ -265,35 +215,42 @@ onMounted(() => {
     }).catch((e) => {
         console.log(e);
     });
-    //设置IP地图的详细信息
     domainList.value = ipListMap
+    console.log(ipListMap)
     //滥用权限
-    console.log(appRemissionList.permissionInfo)
+    permissionInfo.value = staticList.permissionInfo
+    console.log(permissionInfo)
     let keyword = '危险权限'
-    appRemissionList.permissionInfo.forEach((item, index) => {
+    permissionInfo.value.forEach((item, index) => {
         if (item.isDangerous.includes(keyword)) {
-            appRemissionList.permissionInfo[index] = reactive({
-                ...appRemissionList.permissionInfo[index],
+            permissionInfo.value[index] = reactive({
+                ...permissionInfo.value[index],
                 abc: true
             });
             safeItemNum.value = safeItemNum.value + 1;
         } else {
-            appRemissionList.permissionInfo[index] = reactive({
-                ...appRemissionList.permissionInfo[index],
+            permissionInfo.value[index] = reactive({
+                ...permissionInfo.value[index],
                 abc: false
             });
         }
     })
     if (safeItemNum.value != 0) {
-        percentage1.value = (safeItemNum.value * 100 / (appRemissionList.permissionInfo.length)).toFixed(2)
+        percentage1.value = (safeItemNum.value * 100 / (permissionInfo.value.length)).toFixed(2)
     }
-    if (safeItemNum.value != appRemissionList.permissionInfo.length)
-        percentage2.value = ((appRemissionList.permissionInfo.length - safeItemNum.value) * 100 / appRemissionList.permissionInfo.length).toFixed(2)
-    console.log(appRemissionList.urlVoList)
+    if (safeItemNum.value != permissionInfo.value.length)
+        percentage2.value = ((permissionInfo.value.length - safeItemNum.value) * 100 / permissionInfo.value.length).toFixed(2)
 });
 onUnmounted(() => {
     map?.destroy();
 });
+async function staticClick() {
+    const res = await getStaticPointAPI('v', 'https://open.e.kuaishou.com/rest/e/v2/open/log/click')
+    console.log(res.data)
+    const htmlContent = res.data.message
+    const newWindow = window.open('', `_blank`);
+    newWindow.document.write(htmlContent);
+}
 //为不同的国家设置类名
 function getInfoClass2(country) {
     if (country === '中国') {
@@ -425,7 +382,6 @@ function getInfoClass2(country) {
 
     .domain {
         .domain-title {
-            margin-bottom: 10px;
             font-weight: 600;
             margin-left: 7px;
         }
@@ -437,25 +393,13 @@ function getInfoClass2(country) {
         }
     }
 
-    .phone {
-        .phone-title {
+    .url {
+        .url-title {
             font-weight: 600;
             margin-left: 7px;
         }
 
-        .phone-content {
-            margin-left: 7px;
-            display: flex;
-        }
-    }
-
-    .URL {
-        .URL-title {
-            font-weight: 600;
-            margin-left: 7px;
-        }
-
-        .URL-content {
+        .url-content {
             margin-left: 7px;
             display: flex;
 
@@ -476,79 +420,6 @@ function getInfoClass2(country) {
                 border-radius: 5px;
                 height: 25px;
             }
-        }
-    }
-
-    .firebase {
-        .firebase-title {
-            font-weight: 600;
-            margin-left: 7px;
-        }
-
-        .firebase-content {
-            margin-left: 7px;
-            display: flex;
-        }
-    }
-
-    .email {
-        .email-title {
-            font-weight: 600;
-            margin-left: 7px;
-        }
-
-        .email-content {
-            margin-left: 7px;
-            display: flex;
-        }
-    }
-
-    .tracker {
-        .tracker-title {
-            font-weight: 600;
-            margin-left: 7px;
-        }
-
-        .tracker-content {
-            margin-left: 7px;
-            display: flex;
-        }
-    }
-
-    .key {
-        .key-title {
-            font-weight: 600;
-            margin-left: 7px;
-            display: flex;
-
-            .key-unfold {
-                margin-left: auto;
-                margin-right: 20px;
-                font-size: 14px;
-                color: #808080;
-            }
-        }
-
-        .key-content {
-            margin-left: 7px;
-            display: flex;
-            margin-top: 20px;
-
-            .demo-collapse {
-                width: 100%;
-            }
-        }
-    }
-
-    .strings {
-        .strings-title {
-            font-weight: 600;
-            margin-left: 7px;
-        }
-
-        .strings-content {
-            margin-left: 7px;
-            margin-top: 10px;
         }
     }
 

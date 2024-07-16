@@ -9,7 +9,7 @@
             </div>
             <template #tip>
                 <div class="el-upload__tip">
-                    支持上传 apk 文件, 小于 500 MB
+                    支持上传 apk 文件 ( 上传文件越大, 分析时间越长 )
                 </div>
             </template>
         </el-upload>
@@ -18,7 +18,8 @@
             <el-button color="#547BF1" @click="uploadClick" :disabled="isUploadClick">
                 {{ isActiveAnalysis ? '开始动态分析' : '开始静态分析' }}
             </el-button>
-            <div style="font-size:12px;margin-top: 8px; color: #4d4d4d">非会员用户，进行{{ isActiveAnalysis ? '动态分析消耗 100 积分' : '静态分析消耗 20 积分' }}</div>
+            <div style="font-size:12px;margin-top: 8px; color: #4d4d4d">非会员用户，进行{{ isActiveAnalysis ? '动态分析消耗 100 积分' :
+            '静态分析消耗 20 积分' }}</div>
         </div>
         <div class="wow fadeInUp" style="margin-top: 20px;" v-if="isProgress != -1">
             <div style="margin-bottom: 10px; font-size: 14px;">正在分析请耐心等待...</div>
@@ -38,14 +39,14 @@ import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/userStore.js'
 import { useWebSocketStore } from '@/stores/webSocketStore.js';
 import { useStaticDataStore } from '@/stores/staticDataStore.js';
-import { multipartUploadAPI, finishUploadAPI } from '@/apis/multipartUpload.js'
+import { multipartUploadAPI, finishUploadAPI, finishUploadDynamicAPI } from '@/apis/multipartUpload.js'
 import '@/utils/spark-md5.min.js'
 const router = useRouter();
 const route = useRoute();
 const staticDataStore = useStaticDataStore();
 const userStore = useUserStore()
 const webSocketStore = useWebSocketStore();
-const isActiveAnalysis = ref(false)
+const isActiveAnalysis = ref(false)//是否开启动态分析
 const uploadList = ref([])//el-upload组件中的文件列表
 const isUploadClick = ref(false)
 let fileX = ref(null)
@@ -55,22 +56,26 @@ const chunkSize = 1 * 1024 * 1024;
 const webSocket = ref(null)
 onMounted(async () => {
     userStore.initialize()
-    //判断有没有连接webSocket
-    webSocket.value = await webSocketStore.initialize(userStore.user.userMail)
-    console.log(webSocket.value)
-    webSocket.value.onmessage = function (event) {
-        console.log("websocket.onmessage: " + event.data);
-        if (!isNaN(parseInt(event.data))) {
-            isProgress.value = event.data
-            if (isProgress.value == 100) {
-                setTimeout(() => {
-                    isProgress.value = -1
-                })
+    if (userStore.user != null) {
+        //判断有没有连接webSocket
+        webSocket.value = await webSocketStore.initialize(userStore.user.userMail)
+        console.log(webSocket.value)
+        webSocket.value.onmessage = function (event) {
+            console.log("websocket.onmessage: " + event.data);
+            if (!isNaN(parseInt(event.data))) {
+                isProgress.value = event.data
+                if (isProgress.value == 100) {
+                    setTimeout(() => {
+                        isProgress.value = -1
+                    })
+                }
             }
         }
-    }
-    webSocket.value.onclose = function () {
-        console.log("websocket.onclose: WebSocket连接关闭");
+        webSocket.value.onclose = function () {
+            console.log("websocket.onclose: WebSocket连接关闭");
+        }
+    } else {
+        ElMessage.warning('请登录后进行分析...')
     }
     if (route.query.value == 'true') {
         isActiveAnalysis.value = true;
@@ -79,15 +84,12 @@ onMounted(async () => {
     }
     console.log(isActiveAnalysis.value)
 })
-const customColors = [
-    { color: 'linear-gradient(to right,#7dc15b,#3d801b', percentage: 100 },
-    { color: 'linear-gradient(to right,#DDFA9D,#9BD420', percentage: 80 },
-    { color: 'linear-gradient(to right,#BDF1FF,#1B79D1', percentage: 60 },
-    { color: 'linear-gradient(to right,#F2DCAA,#e7823c', percentage: 40 },
-    { color: 'linear-gradient(to right,#FFD4BD,#D6573E', percentage: 20 },
-]
 //点击上传文件
 async function uploadClick() {
+    if (userStore.user == null) {
+        ElMessage.warning('请登录后进行分析...')
+        return
+    }
     if (!fileX.value || !fileX.value.raw || fileX.value.size === 0) {
         ElMessage.error('上传文件不能为空！');
         return;
@@ -113,15 +115,17 @@ async function uploadClick() {
     if (!fileMd5) return;
     //断点续传,判断是否中断传输，中断的话从中断处开始
     let flag = 0
-    const res = await finishUploadAPI(fileMd5, 'v')
-    console.log(res)
-    console.log(res.data)
-    if (res.data && res.data.data) {
-        const dataArray = res.data.data;
-        console.log(dataArray)
-        flag = dataArray[0]
+    if (isActiveAnalysis.value == false) {
+        const res = await finishUploadAPI(fileMd5, 'v')
+        console.log(res)
+        console.log(res.data)
+        if (res.data && res.data.data) {
+            const dataArray = res.data.data;
+            console.log(dataArray)
+            flag = dataArray[0]
+        }
+        console.log(flag)
     }
-    console.log(flag)
     //获取到文件
     let fileArr = sliceFile(file);
     //保存文件名称
@@ -149,32 +153,48 @@ async function uploadClick() {
         }
         ElMessage.success("上传成功，等待分析. . .")
         isProgress.value = 0
-        //静态分析的请求(上传文件完毕后)
-        const res = await finishUploadAPI(fileMd5, 'v')
-        if (res.data.code == 415) {
-            setTimeout(() => {
-                ElMessage.warning(res.data.message)
-            }, 1000)
-            return
+        //静态或动态分析的请求(上传文件完毕后)
+        if (isActiveAnalysis.value == false) {//静态
+            const res = await finishUploadAPI(fileMd5, 'v')
+            if (res.data.code == 415) {
+                setTimeout(() => {
+                    ElMessage.warning(res.data.message)
+                }, 1000)
+                return
+            }
+            if (res.data.code == 504 || res.data.code == 500) {
+                setTimeout(() => {
+                    ElMessage.warning('服务器繁忙，请稍后再试！')
+                }, 1000)
+                return
+            }
+            console.log(res.data.data)
+            staticDataStore.staticDataList = res.data.data
+            localStorage.setItem('staticDataList', JSON.stringify(res.data.data))
+            ElMessage.success('apk 解析完毕')
+            router.push('/userResultPage')
+            isUploadClick.value = false
+        } else {//动态
+            const res = await finishUploadDynamicAPI(fileMd5, 'v')
+            if (res.data.code == 415) {
+                setTimeout(() => {
+                    ElMessage.warning(res.data.message)
+                }, 1000)
+                return
+            }
+            if (res.data.code == 504 || res.data.code == 500) {
+                setTimeout(() => {
+                    ElMessage.warning('服务器繁忙，请稍后再试！')
+                }, 1000)
+                return
+            }
+            console.log(res.data.data)
+            staticDataStore.staticDataList = res.data.data
+            localStorage.setItem('dynamicDataList', JSON.stringify(res.data.data))
+            ElMessage.success('apk 解析完毕')
+            router.push('/userResultPage/dynamic/foundation')
+            isUploadClick.value = false
         }
-        if (res.data.code == 504) {
-            setTimeout(() => {
-                ElMessage.warning('服务器繁忙，请稍后再试！')
-            }, 1000)
-            return
-        }
-        if (res.data.code == 500) {
-            setTimeout(() => {
-                ElMessage.warning('服务器繁忙，请稍后再试！')
-            }, 1000)
-            return
-        }
-        console.log(res.data.data)
-        staticDataStore.staticDataList = res.data.data
-        localStorage.setItem('staticDataList', JSON.stringify(res.data.data))
-        ElMessage.success('apk 解析完毕')
-        router.push('/userResultPage')
-        isUploadClick.value = false
     } catch (error) {
         console.error('上传过程中出现错误:', error);
     }

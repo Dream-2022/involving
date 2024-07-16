@@ -12,7 +12,25 @@
             <div class="blank-box"></div>
             <div class="wow fadeInDown navigation-icon" v-if="userInfo != null">
                 <div style="display: flex;">
-                    <span class="iconfont icon-lingdang-xianxing"></span>
+                    <el-dropdown class="dropdown-class" style="margin-top: 10px;">
+                        <span class="iconfont icon-lingdang-xianxing" style="color: #000"></span>
+                        <template #dropdown>
+                            <div class="my-title" style="margin: 10px 0 0 15px;font-weight: 600;">我的消息</div>
+                            <el-dropdown-menu style="padding-bottom: 10px;">
+                                <el-dropdown-item @click="() => $router.push('/userResultPage')">
+                                    <div><strong>mv_8x8xshipin.apk</strong> 已分析完毕</div>
+                                    <div style="margin-left:auto; color:#757575;">去查看 >></div>
+                                </el-dropdown-item>
+                                <el-dropdown-item @click="staticAnalysis('userMemberPage')">
+                                    <div>
+                                        <div>成功邀请 <strong>1342415245@qq.com</strong></div>
+                                        <div style=" color:#757575; font-size: 10px">获取 200 积分</div>
+                                    </div>
+                                    <div style="margin-left: 20px; color:#757575;">2024.7.14 22:45</div>
+                                </el-dropdown-item>
+                            </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
                     <span class="iconfont icon-wenhao-xianxingyuankuang"
                         @click="() => $router.push('/userIntroducePage')"></span>
                     <el-divider direction=" vertical" class="divider" />
@@ -27,7 +45,7 @@
                     <template #dropdown>
                         <div class="avatar">
                             <div class="avatar-box">
-                                <img :src="(userInfo?.userIconPath == '') ? require('@/assets/img/title.png') : userInfo?.userIconPath"
+                                <img :src="userInfo?.userIconPath == '' ? require('@/assets/img/title.png') : avatar"
                                     class="drop-img">
                                 <div>{{ userInfo.userName }}</div>
                             </div>
@@ -49,15 +67,12 @@
                 <div class="navigation-portrait">
                     <div class="navigation-button" @click="signOutClick">登录&nbsp;</div>
                     <span style="font-size: 14px;">&nbsp;&nbsp;或&nbsp;&nbsp;</span>
-                    <div class="navigation-button" @click="signOutClick">&nbsp;注册
-                    </div>
+                    <div class="navigation-button" @click="signOutClick">&nbsp;注册 </div>
                 </div>
             </div>
         </div>
         <div class="wow fadeInLeft component-box">
-            <div class="search-word">
-                <img src="@/assets/img/word-special.png" />
-            </div>
+            <div class="search-word"> <img src="@/assets/img/word-special.png" /> </div>
             <div class="search-box">
                 <el-input v-model="searchValue" @keyup.enter="searchClick" class="search-content"
                     placeholder="MD5，包名，文件名，APP名称" />
@@ -95,9 +110,8 @@
                 <div class="wow fadeInLeft pulse chart1" v-if="userInfo != null">
                     <div id="chart1-content"></div>
                     <el-dropdown @command="handleCommand1">
-                        <span class="el-dropdown-link">{{ selectedOption1 }}
-                            <span class="iconfont icon-down"></span>
-                        </span>
+                        <span class="el-dropdown-link">{{ selectedOption1 }}<span
+                                class="iconfont icon-down"></span></span>
                         <template #dropdown>
                             <el-dropdown-menu>
                                 <el-dropdown-item command="a">近一周趋势图</el-dropdown-item>
@@ -114,8 +128,8 @@
                 <div class="wow fadeInLeft chart2" v-if="userInfo != null">
                     <div id="chart2-content"></div>
                     <el-dropdown @command="handleCommand2">
-                        <span class="el-dropdown-link">{{ selectedOption2 }}<span class="iconfont icon-down"></span>
-                        </span>
+                        <span class="el-dropdown-link">{{ selectedOption2 }}<span
+                                class="iconfont icon-down"></span></span>
                         <template #dropdown>
                             <el-dropdown-menu>
                                 <el-dropdown-item command="a">近一周趋势图</el-dropdown-item>
@@ -132,8 +146,8 @@
                 <div class="wow fadeInLeft chart3" v-if="userInfo != null">
                     <div id="chart3-content"></div>
                     <el-dropdown @command="handleCommand3">
-                        <span class="el-dropdown-link">{{ selectedOption3 }}<span class="iconfont icon-down"></span>
-                        </span>
+                        <span class="el-dropdown-link">{{ selectedOption3 }}<span
+                                class="iconfont icon-down"></span></span>
                         <template #dropdown>
                             <el-dropdown-menu>
                                 <el-dropdown-item command="a">近一周趋势图</el-dropdown-item>
@@ -150,8 +164,8 @@
                 <div class="wow fadeInLeft chart4" v-if="userInfo != null">
                     <div id="chart4-content"></div>
                     <el-dropdown @command="handleCommand4">
-                        <span class="el-dropdown-link">{{ selectedOption4 }}<span class="iconfont icon-down"></span>
-                        </span>
+                        <span class="el-dropdown-link">{{ selectedOption4 }}<span
+                                class="iconfont icon-down"></span></span>
                         <template #dropdown>
                             <el-dropdown-menu>
                                 <el-dropdown-item command="a">近一周趋势图</el-dropdown-item>
@@ -187,20 +201,15 @@
                             </span>
                             <span class="template-bottom" @click="templateClick(item.essayId)">
                                 <span class="first-label" v-if="item.labelList && item.labelList.length > 0">{{
-                                    item?.labelList[0] }}</span>
+                            item?.labelList[0] }}</span>
                                 <span class="second-label" v-if="item.labelList && item.labelList.length > 0">{{
-                                    item?.labelList[1] }}
-                                </span>
-                                <span class="name-label">{{ item?.essayWriter }}
-                                </span>
-                                <span class="time-label">{{ item?.publicationTime }}
-                                </span>
+                            item?.labelList[1] }}</span>
+                                <span class="name-label">{{ item?.essayWriter }}</span>
+                                <span class="time-label">{{ item?.publicationTime }}</span>
                             </span>
                         </div>
                     </div>
-                    <div>
-                        <img src="@/assets/img/book.png" class="template-img">
-                    </div>
+                    <div><img src="@/assets/img/book.png" class="template-img"></div>
                 </div>
                 <div class="wow fadeInUp footer2">
                     <div class="footer-title">
@@ -217,17 +226,13 @@
                                 <span class="analysis-title">{{ item.fileName }}</span>
                             </span>
                             <span class="analysis-bottom">
-                                <el-progress :percentage="percentage" :color="customColors" />
-                                <span class="first-label" :class="getLabelColor(item.apkDesc)">{{ item.apkDesc }}
-                                </span>
-                                <span class="time-label">{{ item.detectedTime }}
-                                </span>
+                                <el-progress :percentage="item.secureScore" :color="customColors" />
+                                <span class="first-label" :class="getLabelColor(item.apkDesc)">{{ item.apkDesc }}</span>
+                                <span class="time-label">{{ item.detectedTime }}</span>
                             </span>
                         </div>
                     </div>
-                    <div>
-                        <img src="@/assets/img/book.png" class="template-img">
-                    </div>
+                    <div><img src="@/assets/img/book.png" class="template-img"></div>
                 </div>
             </div>
             <div class="wow fadeInRight right-boxes">
@@ -239,19 +244,13 @@
                 </div>
                 <el-calendar ref="calendar">
                     <template #header="{ }">
-                        <el-button size="small" @click="selectDate('today')">
-                            今天
-                        </el-button>
+                        <el-button size="small" @click="selectDate('today')">今天</el-button>
                         <span class="date-content">{{ calendarString }}</span>
                         <div>
-                            <el-button size="small" @click="selectDate('prev-month')">
-                                上月
-                            </el-button>
+                            <el-button size="small" @click="selectDate('prev-month')">上月</el-button>
                         </div>
                         <div>
-                            <el-button size="small" @click="selectDate('next-month')">
-                                下月
-                            </el-button>
+                            <el-button size="small" @click="selectDate('next-month')">下月</el-button>
                         </div>
                     </template>
                     <template #date-cell="{ data }">
@@ -268,12 +267,9 @@
                 <div class="button-box">
                     <el-button :disabled="signInValue == true" @click="signInClick" color="#065fed"
                         class="wow fadeInRight">{{
-                        signInValue ==
-                        true ? '已签到' : '签到'
-                        }}</el-button>
+                            signInValue == true ? '已签到' : '签到' }}</el-button>
                     <div class="prompt">
-                        <span>连续签到6天, </span>
-                        <span>签到1天可获取100积分</span>
+                        <span>签到 1 天可获取 100 积分</span>
                     </div>
                 </div>
             </div>
@@ -284,11 +280,12 @@
             <table class="table">
                 <tr class="tr">
                     <td class="td">头像</td>
-                    <td class="td"><img :src="userInfo.userIconPath" alt=""></td>
+                    <td class="td"><img class="iconImg" :src="avatar == '' ? require('@/assets/img/title.png') : avatar"
+                            alt=""></td>
                     <td class="td">
-                        <el-button type="small" color="#547BF1" @click="updateClick">
-                            更换头像
-                        </el-button>
+                        <el-button type="small" color="#547BF1" @click="updateClick">更换头像</el-button>
+                        <input class="fileInput" type="file" accept="image/*" style="display: none;"
+                            @change="handleAvatarChange">
                     </td>
                 </tr>
                 <tr class="tr">
@@ -319,7 +316,7 @@ import { useRouter } from 'vue-router';
 import { onUnmounted, onMounted, getCurrentInstance, ref } from "vue";
 import { useUserStore } from '@/stores/userStore.js'
 import { useWebSocketStore } from '@/stores/webSocketStore.js';
-import { getTemplateAPI, getRecentAnalysisAPI } from '@/apis/mainPage.js'
+import { getTemplateAPI, getRecentAnalysisAPI, getFriendNumAPI, editAvatarAPI } from '@/apis/mainPage.js'
 import { getDetectionAPI, getMemberAPI, getFriendAPI, getApkAPI } from '@/apis/echarts.js'
 import { getEssayPreviewAPI, getSignInAPI, getSignInDateAPI, getSignInSuccessAPI, getPointAPI, getEssayLoadAPI } from '@/apis/mainPage.js'
 import { getApkInfoAPI } from '@/apis/apkInfo.js'
@@ -370,21 +367,13 @@ let signData = ref([])
 let nowPoints = ref(0)
 let isDisable = ref([])
 let webSocket = ref(null)
-let personVisible = ref(false)
+let personVisible = ref(false)//个人资料是否显示
+let avatar = ref('')//头像
 onMounted(async () => {
     const wow = new WOW({})
     wow.init();
     userStore.initialize()
     userInfo.value = userStore.user
-    //判断有没有连接webSocket
-    webSocket.value = await webSocketStore.initialize(userStore.user.userMail)
-    console.log(webSocket.value)
-    webSocket.value.onmessage = function (event) {
-        console.log("websocket.onmessage: " + event.data);
-    }
-    webSocket.value.onclose = function () {
-        console.log("websocket.onclose: WebSocket连接关闭");
-    }
     //日历上的年月
     const year = calendarDate.value.getFullYear();
     const month = calendarDate.value.getMonth() + 1;
@@ -397,6 +386,17 @@ onMounted(async () => {
     console.log(templateList.value)
     templateList.value.forEach((item, index) => {
         isDisable.value[index] = true
+        if (index == 0) {
+            item.essayLabel = '恶意检测'
+        } if (index == 1) {
+            item.essayLabel = '可视化;研究'
+        } if (index == 2) {
+            item.essayLabel = '违法犯罪;分类模型'
+        } if (index == 3) {
+            item.essayLabel = '分类模型'
+        } if (index == 4) {
+            item.essayLabel = '检测技术'
+        }
         if (item.essayLabel && item.essayLabel != '') {
             item.labelList = item.essayLabel.split(';');
         }
@@ -426,6 +426,16 @@ onMounted(async () => {
     setChart()
     //如果登录了，就将显示表格
     if (userInfo.value != null) {
+        //判断有没有连接webSocket
+        webSocket.value = await webSocketStore.initialize(userStore.user.userMail)
+        console.log(webSocket.value)
+        webSocket.value.onmessage = function (event) {
+            console.log("websocket.onmessage: " + event.data);
+        }
+        webSocket.value.onclose = function () {
+            console.log("websocket.onclose: WebSocket连接关闭");
+        }
+        avatar.value = userInfo.value.userIconPath
         //获取签到的天数
         await getSignInDate()
         //获取图表
@@ -440,15 +450,41 @@ onMounted(async () => {
         setChart2()
         setChart3()
         setChart4()
+        //获取今日该用户是否签到
+        const res6 = await getSignInAPI(userStore.user.userMail, 'v')
+        if (res6.data.message == "当天未签到") {
+            signInValue.value = false
+            console.log('当天未签到')
+        } else {
+            signInValue.value = true
+            console.log('当天签到了')
+        }
     }
-    //获取今日该用户是否签到
-    const res2 = await getSignInAPI(userStore.user.userMail, 'v')
-    if (res2.data.message == "当天未签到") {
-        signInValue.value = false
-        console.log('当天未签到')
-    } else {
-        signInValue.value = true
-        console.log('当天签到了')
+});
+//点击更换头像
+function updateClick() {
+    let fileInput = document.querySelector('.fileInput')
+    if (fileInput) {
+        fileInput.click();
+    }
+}
+const handleAvatarChange = (async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            avatar.value = e.target.result; // 更新头像图片
+            console.log(avatar.value)
+            var blob = new Blob([avatar.value], { type: 'image/jpeg' });
+            const res = editAvatarAPI(new File([blob], '123.png', { type: 'image/jpeg' }), userInfo.value.userMail, 'v')
+            console.log(res.data)
+            ElMessage.success('头像更换成功！')
+            userInfo.value.userIconPath = avatar.value
+            console.log(userInfo.value)
+            localStorage.setItem("user", JSON.stringify(userInfo.value))
+            userStore.initialize()
+        };
+        reader.readAsDataURL(file);
     }
 });
 //获取签到的天数和会员积分
@@ -488,10 +524,10 @@ async function temLoadClick(id) {
     }
 }
 //点击查看分析
-async function analysisClick(md5){
-    const res=await getApkInfoAPI(md5,'v')
+async function analysisClick(md5) {
+    const res = await getApkInfoAPI(md5, 'v')
     console.log(res.data)
-    localStorage.setItem('staticDataList',JSON.stringify(res.data.data))
+    localStorage.setItem('staticDataList', JSON.stringify(res.data.data))
     router.push(`/userResultPage`)
 }
 //点击签到
@@ -1204,9 +1240,9 @@ function findValue(name) {
 function findValue1(category) {
     let totalValue = 0;
     apkList.value.forEach(item => {
-        if (category === '安全' && item.name !== '其他') {
+        if (category == '安全' && item.name == '正常') {
             totalValue += item.value;
-        } else if (category === '危险' && item.name === '其他') {
+        } else if (category == '危险' && item.name != '正常') {
             totalValue += item.value;
         }
     });

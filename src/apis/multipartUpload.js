@@ -35,3 +35,19 @@ export const finishUploadAPI=(md5,k)=>{
         }
     })
 }
+//检查是否成功上传和静态分析
+export const finishUploadDynamicAPI=(md5,k)=>{
+    return http({
+        url:"/dynamic-analysis/checkFile",
+        method:"POST",
+        headers: {
+            "Content-Type": 'multipart/form-data'
+        },
+        params:{
+            k
+        },
+        data:{
+            md5
+        }
+    })
+}

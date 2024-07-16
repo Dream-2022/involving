@@ -1,5 +1,5 @@
 <template>
-    <div class="wow animate__fadeInRight certificate-box">
+    <div id="pdfRef" class="wow animate__fadeInRight certificate-box pdfRef1">
         <div class="certificate">
             <div class="certificate-title">证书信息</div>
             <div class="certificate-content">

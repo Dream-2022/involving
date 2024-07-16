@@ -4,13 +4,11 @@
             <div class="appRemission-title">用户管理</div>
             <div class="search-box">
                 <span style="margin-right: 10px;">查找用户：</span>
-                <el-input v-model="usernameInput" :prefix-icon="User" style="height: 30px;" clearable
-                    placeholder="请输入要查找的账号" />
-                <el-input v-model="emailInput" :prefix-icon="Message" class="email-input" clearable
-                    placeholder="请输入要查找的邮箱" />
-                <span style="margin-left: 1%;margin-right: 2%;">
+                <el-input v-model="usernameInput" :prefix-icon="User" style="flex: 2; height: 30px;" clearable
+                    placeholder="请输入要查找的用户信息" />
+                <span style="flex: 2;  margin-left: 1%;margin-right: 2%;">
                     <span>是否为会员：</span>
-                    <el-dropdown>
+                    <el-dropdown style="margin-top: 5px;">
                         <span class="el-dropdown-link">
                             全部用户
                             <el-icon class="el-icon--right">
@@ -25,27 +23,34 @@
                             </el-dropdown-menu>
                         </template>
                     </el-dropdown>
+                    <el-button color="#368eec" class="search-button" @click="searchClick">搜索</el-button>
                 </span>
-                <el-button color="#368eec" class="search-button">搜索</el-button>
             </div>
             <div class="appRemission-content">
                 <el-table :data="userList" style="width: 100%" stripe :header-cell-style="{ 'text-align': 'center' }"
                     :cell-style="{ 'text-align': 'center' }">
-                    <el-table-column fixed label="序号" width="150">
+                    <el-table-column fixed label="序号" width="120">
                         <template v-slot="{ $index }">
                             <span>{{ $index + 1 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="头像" width="250">
+                    <el-table-column label="头像" width="200">
                         <template #default="{ row }">
-                            <img :src="(row?.userIconPath == '') ? require('@/assets/img/title.png') : row?.userIconPath"
-                                class="drop-img">
+                            <img v-if="row?.userIconPath == '' || row?.userIconPath == null || !row?.userIconPath"
+                                src="@/assets/img/title.png" class="drop-img">
+                            <img v-else :src="row?.userIconPath" class="drop-img">
                         </template>
                     </el-table-column>
-                    <el-table-column prop="permissionDetail" label="账号" width="300" />
-                    <el-table-column prop="fileMd5" label="邮箱" width="300" />
-                    <el-table-column prop="fileMd5" label="会员" width="150" />
-                    <el-table-column fixed="right" label="操作" width="200">
+                    <el-table-column prop="userMail" label="邮箱" width="200" />
+                    <el-table-column label="用户类型" width="200">
+                        <template #default="{ row }">
+                            <div :class="row.isVip == 1 ? 'vip' : 'noVip'">{{ row.isVip == 1 ? '会员用户' : '普通用户' }}</div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="totalPoints" label="会员积分" width="150" />
+                    <el-table-column prop="totalFriends" label="邀请好友数" width="150" />
+                    <el-table-column prop="totalDetections" label="用户检测数" width="150" />
+                    <el-table-column fixed="right" label="操作" width="180">
                         <template #default="{ row }">
                             <div>
                                 <el-button color="#368eec" size="small" style="margin-bottom: 10px;">设置会员</el-button>
@@ -64,16 +69,21 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { User, Message, ArrowDown } from '@element-plus/icons-vue';
+import { getUserAPI } from '@/apis/manage.js'
 let usernameInput = ref('')
-let emailInput = ref('')
-const userList = ref([
-    {
-        img: ''
-    }
-])
+const userList = ref([])
 onMounted(() => {
-
+    getUsers(1, '')
 })
+async function getUsers(pageNum, value) {
+    const res = await getUserAPI(pageNum, 10, 'v', value)
+    console.log(res.data)
+    userList.value = res.data.data.records
+}
+async function searchClick() {
+    console.log(usernameInput.value)
+    getUsers(1, usernameInput.value)
+}
 </script>
 <style lang="scss" scoped>
 .appRemission-box {
@@ -115,7 +125,7 @@ onMounted(() => {
             align-items: center;
 
             >div {
-                flex: 1;
+                flex: 2;
                 margin-top: 5px;
             }
 
@@ -131,7 +141,7 @@ onMounted(() => {
             }
 
             .search-button {
-                margin-right: 1%;
+                margin-left: 5%;
                 height: 30px;
                 width: 70px;
             }
@@ -142,6 +152,21 @@ onMounted(() => {
 
             .column {
                 text-align: center;
+            }
+
+            .vip {
+                font-weight: 600;
+                color: $yellow;
+            }
+
+            .noVip {
+                font-weight: 600;
+            }
+
+            .drop-img {
+                height: 80px;
+                width: 80px;
+                border-radius: 40px;
             }
         }
     }

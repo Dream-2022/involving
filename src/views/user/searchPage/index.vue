@@ -23,7 +23,7 @@
                         :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
                         <el-table-column fixed prop="permissionApplication" label="应用程序" width="150">
                             <template #default="{ row }">
-                                <img :src="row.apkIconPath">
+                                <img :src="row.apkIconPath" class="apkImg">
                                 <div v-html="row.apkName"></div>
                             </template>
                         </el-table-column>
@@ -44,7 +44,14 @@
                         </el-table-column>
                         <el-table-column label="类型" width="140">
                             <template #default="{ row }">
-                                <div :class="getClass(row.apkDesc)">{{ row.apkDesc }}</div>
+                                <div style="display:flex; justify-content: center;">
+                                    <div class="backLabel" :class="getClass(row.apkDesc)">{{ row.apkDesc }}</div>
+                                </div>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="安全评分" width="140">
+                            <template #default="{ row }">
+                                <div class="colorLabel" :class="getClass(row.secureScore)">{{ row.secureScore }}</div>
                             </template>
                         </el-table-column>
                         <el-table-column fixed="right" label="操作" width="140">
@@ -87,24 +94,41 @@ onMounted(async () => {
     searchValue.value = route.params.searchValue;
     console.log(searchValue.value)
     const res = await getSearchAPI(searchValue.value, 'v', 1)
-    console.log(res.data)
-    searchList.value = res.data.data
+    if (res.data.code != 200) {
+        ElMessage.warning('服务器繁忙，请稍后再试')
+    } else {
+        console.log(res.data)
+        searchList.value = res.data.data
+    }
 })
 //获取标签颜色
 function getClass(name) {
     if (name == '未知') {
         return 'greyLabel'
-    } else if (name = '涉黄') {
+    } else if (name == '色情') {
         return 'yellowLabel'
-    } else if (name = '涉诈') {
+    } else if (name == '诈骗') {
         return 'redLabel'
-    } else if (name = '涉赌') {
+    } else if (name == '赌博') {
         return 'purpleLabel'
-    } else if (name = '正常') {
+    } else if (name == '正常') {
         return 'greenLabel'
-    } else if (name = '黑灰产') {
+    } else if (name == '黑灰') {
         return 'blackLabel'
-    } else {
+    } else if (!Number.isNaN(Number(name))) {
+        if (name < 30) {
+            return 'red'
+        } else if (name < 60) {
+            return 'yellow'
+        } else if (name < 80) {
+            return 'blue'
+        } else if (name <= 100) {
+            return 'green'
+        } else {
+            return 'grey'
+        }
+    }
+    else {
         return 'greyLabel'
     }
 }
@@ -173,7 +197,7 @@ function exitClick() {
     .file-content-main {
         background-color: #fff;
         box-shadow: 3px 3px 8px 2px rgba(0, 0, 0, 0.1);
-        width: 70%;
+        width: 80%;
         margin: 0px auto;
         padding: 30px 35px;
         border-radius: 10px;
@@ -197,49 +221,6 @@ function exitClick() {
                 display: flex;
                 padding: 5px;
                 background-color: #ccc;
-
-
-                .apk-img {
-                    width: 100px;
-                    height: 100px;
-                    border-radius: 5px;
-                }
-
-                .box2 {
-                    margin-right: auto;
-                    line-height: 25px;
-                    margin-left: 2%;
-                }
-
-                .box3 {
-                    display: flex;
-                    align-items: center;
-                    margin-right: 1%;
-                }
-
-                .purpleLabel {
-                    background-color: $purple;
-                }
-
-                .yellowLabel {
-                    background-color: $yellow;
-                }
-
-                .greenLabel {
-                    background-color: $green;
-                }
-
-                .blackLabel {
-                    background-color: $word-black-color;
-                }
-
-                .greyLabel {
-                    background-color: $grey;
-                }
-
-                .redLabel {
-                    background-color: $red;
-                }
             }
         }
 
@@ -263,5 +244,77 @@ function exitClick() {
         }
 
     }
+}
+
+.backLabel {
+    width: 45px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.colorLabel {
+    font-weight: 600;
+}
+
+.box2 {
+    margin-right: auto;
+    line-height: 25px;
+    margin-left: 2%;
+}
+
+.box3 {
+    display: flex;
+    align-items: center;
+    margin-right: 1%;
+}
+
+.apkImg {
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+}
+
+.purpleLabel {
+    background-color: $purple;
+}
+
+.yellowLabel {
+    background-color: $yellow;
+}
+
+.greenLabel {
+    background-color: $green;
+}
+
+.blackLabel {
+    background-color: $word-black-color;
+}
+
+.greyLabel {
+    background-color: $grey;
+}
+
+.redLabel {
+    background-color: $red;
+}
+
+.red {
+    color: $red;
+}
+
+.green {
+    color: $green;
+}
+
+.grey {
+    color: $grey;
+}
+
+.blue {
+    color: $button-color
+}
+
+.yellow {
+    color: $yellow;
 }
 </style>
