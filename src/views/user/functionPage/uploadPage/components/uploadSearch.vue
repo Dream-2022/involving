@@ -57,6 +57,7 @@ async function buttonClick() {
     .el-input {
         margin: 10px 0;
         height: 38px;
+        margin-bottom: 30px;
     }
 
     .button-box {

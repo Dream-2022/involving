@@ -197,6 +197,55 @@ onMounted(async () => {
     console.log(blackWhiteList.value)
     console.log(blackWhiteList.value.blackList)
     console.log(blackWhiteList.value.whiteList)
+    console.log(blackWhiteList.value.whiteList.records)
+    blackWhiteList.value.whiteList.records.push({
+        apkDesc: '正常',
+        apkIconPath: 'https://www.zhihuaspace.cn:8888/download/937dbb018330ffc3fb4f9b2df079627b-icon.png',
+        apkName: '极速追查',
+        apkPackageName: 'com.maoqi.app',
+        fileMd5: '937dbb018330ffc3fb4f9b2df079627b',
+        versionCode: '1.2.3',
+        versionName: '123',
+        hardeningInfo: '未加壳',
+        targetSdkVersion: '12',
+        secureScore: 100
+    })
+    blackWhiteList.value.whiteList.records.push({
+        apkDesc: '正常',
+        apkIconPath: 'https://www.zhihuaspace.cn:8888/download/f32340168a51fd66b87a2c0c2f1df09f-icon.png',
+        apkName: '遗忘魔塔',
+        apkPackageName: 'com.evkworld.ywmt',
+        fileMd5: ' f32340168a51fd66b87a2c0c2f1df09f',
+        versionCode: '1.01.38 ',
+        versionName: '101383',
+        hardeningInfo: '未加壳',
+        targetSdkVersion: '29',
+        secureScore: 100
+    })
+    blackWhiteList.value.whiteList.records.push({
+        apkDesc: '正常',
+        apkIconPath: 'https://www.zhihuaspace.cn:8888/download/451d24f5ffda826fe7d48e95f172f8d7-icon.png',
+        apkName: '中国法律',
+        apkPackageName: 'com.zhkj.law',
+        fileMd5: ' 451d24f5ffda826fe7d48e95f172f8d7',
+        versionCode: '2.4 ',
+        versionName: '15',
+        hardeningInfo: '360加固 加固',
+        targetSdkVersion: '33',
+        secureScore: 100
+    })
+    blackWhiteList.value.whiteList.records.push({
+        apkDesc: '正常',
+        apkIconPath: '	https://www.zhihuaspace.cn:8888/download/18f1b6c23be7cd024c1992851d04d178-icon.png',
+        apkName: 'Telefram',
+        apkPackageName: 'com.nosugar.chatapp',
+        fileMd5: ' 18f1b6c23be7cd024c1992851d04d178',
+        versionCode: '1.0',
+        versionName: '1',
+        hardeningInfo: '未加壳',
+        targetSdkVersion: '26',
+        secureScore: 100
+    })
 })
 //点击设为黑名单
 function blackWhiteClick(apkName, md5, value) {

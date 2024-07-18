@@ -53,6 +53,7 @@
                         <el-dropdown-menu>
                             <el-dropdown-item @click="personVisible = true">我的资料</el-dropdown-item>
                             <el-dropdown-item @click="staticAnalysis('userMemberPage')">开通会员</el-dropdown-item>
+                            <el-dropdown-item @click="staticAnalysis('adminManagePage')">管理员端</el-dropdown-item>
                             <el-dropdown-item @click="signOutClick"><span
                                     class="iconfont icon-exit"></span>&nbsp;退出登录</el-dropdown-item>
                         </el-dropdown-menu>

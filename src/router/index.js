@@ -124,7 +124,7 @@ const router = createRouter({
       path: '/adminManagePage',
       name: 'adminManagePage',
       component: () => import('@/views/manage/index.vue'),
-      redirect: "/adminManagePage/analysisManage",
+      redirect: "/adminManagePage/userManage",
       children:[
         {path:'analysisManage',component:() => import('@/views/manage/components/analysisManage.vue')},
         {path:'userManage',component:() => import('@/views/manage/components/userManage.vue')},

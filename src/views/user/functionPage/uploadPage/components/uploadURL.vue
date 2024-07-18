@@ -44,6 +44,7 @@ async function confirmClick() {
         return;
     }
     // 'https://static.yidianzixun.com/modules/build/download/images/pc_qrcode-5bd304e5.png'
+    //
     const res = await URLDownloadApkAPI(inputContent.value, 'v')
     console.log(res)
     let link = document.createElement('a');
