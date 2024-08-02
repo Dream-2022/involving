@@ -16,15 +16,6 @@ import 'highlight.js/lib/common'
 import hljsVuePlugin from '@highlightjs/vue-plugin'
 
 const app = createApp(App)
-const { app, BrowserWindow } = require('electron')
-const createWindow = () => {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600
-  })
-
-  win.loadFile('index.html')
-}
 // 注册组件
 app.use(hljsVuePlugin)
 // echarts 使用
