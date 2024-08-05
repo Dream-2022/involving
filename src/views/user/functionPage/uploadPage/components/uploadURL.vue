@@ -20,6 +20,14 @@
             '开始下载'
                 }}</el-button>
         </div>
+        <div class="wow fadeInUp" style="margin-top: 20px;" v-if="isProgress != -1">
+            <div style="margin-bottom: 10px; font-size: 14px;">正在下载请耐心等待...</div>
+            <div style="display: flex;">
+                <span style="font-size: 14px;">下载进度：</span>
+                <el-progress :percentage="40" style="flex:1;" :stroke-width="18" :text-inside="true" striped
+                    striped-flow :duration="10" />
+            </div>
+        </div>
     </div>
 </template>
 <script setup>

@@ -275,6 +275,55 @@
                 </div>
             </div>
         </div>
+        <el-affix position="bottom" :offset="100">
+            <div style="margin-left:80px;">
+                <div class="affix-box affix-box-none">
+                    <div class="affix-top">
+                        <div class="affix-title">AI反诈助手</div>
+                        <div @click="AIClick"><i class="iconfont icon-close"></i></div>
+                    </div>
+                    <div class="affix-bottom">
+                        <div class="affix-left">
+                            <div class="affix-left-content">你好啊！我是AI反诈助手，请问有什么可以帮你的吗？</div>
+                        </div>
+                        <div class="affix-right">
+                            <span class="affix-right-content">APK文件中的哪些文件比较重要？</span>
+                        </div>
+                        <div class="affix-left">
+                            <div class="affix-left-content">
+                                APK（Android应用程序包）文件是Android应用的分发和安装文件，其中包含了应用所需的所有资源和代码。以下是APK文件中一些重要的文件和目录：
+                                <strong style="font-size: 15px;"><br>
+                                1.AndroidManifest.xml：</strong><br>
+                                这个文件是整个应用的核心配置文件，定义了应用的包名、版本信息、权限、组件（如活动、服务、广播接收器、内容提供者）以及其他配置信息。<br>
+                                <strong style="font-size: 15px;">2.classes.dex：</strong><br>
+                                这个文件包含了应用的编译字节码（Dalvik
+                                Executable），即应用的Java或Kotlin代码被编译后生成的文件，供Android虚拟机（Dalvik或ART）执行。<br>
+                                res/：
+                                这个目录包含了应用的资源文件，如布局文件（layout）、字符串（values/strings.xml）、图像（drawable）、菜单（menu）等。<br>
+                                <strong style="font-size: 15px;">3.assets/：</strong><br>
+                                这个目录包含了应用的原始文件和其他资源，这些资源在运行时可以通过AssetManager访问。<br>
+                                <strong style="font-size: 15px;">4.lib/：</strong><br>
+                                这个目录包含了应用所需的本地库文件（.so文件），这些库文件针对不同的CPU架构（如arm、arm64、x86、x86_64）进行编译。<br>
+                                <strong style="font-size: 15px;">5.META-INF/：</strong><br>
+                                这个目录包含了签名相关的文件，如MANIFEST.MF、CERT.RSA、CERT.SF等。这些文件用于验证APK文件的完整性和签名。<br>
+                                <strong style="font-size: 15px;">6.resources.arsc：</strong><br>
+                                这个文件包含了经过编译的资源信息（如字符串、布局、样式等），用于高效地访问和加载资源。<br>
+                                <strong style="font-size: 15px;">7.kotlin/（如果应用使用了Kotlin）：</strong><br>
+                                这个目录包含了Kotlin标准库和其他Kotlin特定的资源。
+                                这些文件和目录共同构成了一个完整的APK文件，每个部分都扮演着重要的角色，确保应用能够正常运行。
+                            </div>
+                        </div>
+                    </div>
+                    <div class="affix-input">
+                        <textarea rows="4" cols="50" class="input" placeholder="可以问我一些问题..." />
+                        <i class="iconfont icon-fabusekuai"></i>
+                    </div>
+                </div>
+                <el-button color="#065fed" @click="AIClick" style="height: 70px;width: 70px;border-radius: 40px;">
+                    <i class="iconfont icon-rengongzhineng"></i>
+                </el-button>
+            </div>
+        </el-affix>
     </div>
     <el-dialog v-model="personVisible" title="个人资料" width="500">
         <div class="bindBox">
@@ -462,6 +511,17 @@ onMounted(async () => {
         }
     }
 });
+//点击AI助手
+function AIClick() {
+    const affixDiv = document.querySelector('.affix-box')
+    console.log(affixDiv.classList)
+    console.log(affixDiv.classList.length)
+    if (affixDiv.classList.length == 2) {
+        affixDiv.classList.remove('affix-box-none')
+    } else {
+        affixDiv.classList.add('affix-box-none')
+    }
+}
 //点击更换头像
 function updateClick() {
     let fileInput = document.querySelector('.fileInput')

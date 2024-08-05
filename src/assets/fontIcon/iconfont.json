@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "5900853",
+      "name": "发布色块",
+      "font_class": "fabusekuai",
+      "unicode": "ec46",
+      "unicode_decimal": 60486
+    },
+    {
+      "icon_id": "10635083",
+      "name": "打叉",
+      "font_class": "close",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "1108",
+      "name": "错误",
+      "font_class": "cuowu",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "4807117",
+      "name": "人工智能",
+      "font_class": "rengongzhineng",
+      "unicode": "e652",
+      "unicode_decimal": 58962
+    },
+    {
       "icon_id": "11032212",
       "name": "设备动态",
       "font_class": "shebeidongtai",

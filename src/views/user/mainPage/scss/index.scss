@@ -981,3 +981,108 @@
         }
     }
 }
+.el-affix{
+    .affix-box{
+        font-size: 13px;
+        box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.1);
+        opacity:1;
+        background-color: #fff;
+        height: 450px;
+        width: 350px;
+        margin-left: 30px;
+        margin-bottom: 5px;
+        border-radius: 10px;
+    }
+    .affix-top{
+        display: flex;
+        line-height: 40px;
+        color: #fff;
+        background-color: #065fed;
+        border-radius: 10px 10px 0 0;
+
+        .affix-title{
+            font-size: 16px;
+            margin-right: auto;
+            margin-left: 20px;
+        }
+        .icon-close::before{
+            font-size: 15px;
+            margin-right: 20px;
+        }
+    }
+    .affix-bottom{
+        padding: 3px 10px 3px 10px;
+        height: 360px;
+        overflow-y: auto;
+
+        .affix-left{
+            margin-top: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            .affix-left-content{
+                margin-right: auto;
+                max-width: 90%;
+                border-radius: 8px;
+                padding: 5px;
+                padding-left: 6px;
+                background-color: #f1f1f1;
+            }
+        }
+
+        .affix-right{
+            margin-top: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            
+            .affix-right-content{
+                margin-left:auto;
+                max-width: 90%;
+                border-radius: 8px;
+                padding: 5px;
+                padding-left: 6px;
+                background-color: #a9f0b9;
+            }
+        }
+    }
+    .affix-input{
+        line-height: 40px;
+        .input{
+            width:82%;
+            height: 16px;
+            padding-top:2px;
+            padding-left: 10px;
+            outline: none;
+        }
+    }
+    .affix-box-none{
+        opacity: 0;
+    }
+    .icon-rengongzhineng::before {
+        font-size: 35px;
+        font-weight: 300;
+    }
+    .icon-fabusekuai::before{
+        color:#065fed;
+        font-size:22px;
+        margin-left: 10px;
+        cursor: pointer;
+    }
+}
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+    
+        /* 滚动条轨道 */
+        ::-webkit-scrollbar-track {
+            background: #e8e8e8;
+        }
+    
+        /* 滚动条滑块 */
+        ::-webkit-scrollbar-thumb {
+            background: rgb(104, 174, 255);
+        }
+    
+        /* 当鼠标移上滚动条时，滑块的样式 */
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgb(67, 144, 233);
+        }

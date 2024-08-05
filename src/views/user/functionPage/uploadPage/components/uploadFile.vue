@@ -168,6 +168,12 @@ async function uploadClick() {
                 }, 1000)
                 return
             }
+            if (res.data.code != 200) {
+                setTimeout(() => {
+                    ElMessage.warning('请登录后进行操作！')
+                }, 1000)
+                return
+            }
             console.log(res.data.data)
             staticDataStore.staticDataList = res.data.data
             localStorage.setItem('staticDataList', JSON.stringify(res.data.data))

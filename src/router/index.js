@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+// import {VueRouter} from 'vue-router'
 import UserMainPage from "@/views/user/mainPage/index.vue";
 
 import UserFunctionPage from "@/views/user/functionPage/index.vue";
@@ -142,5 +143,9 @@ const router = createRouter({
     // }
   ]
 })
+// const router =  new VueRouter({
+//   mode: 'hash',
+//   routes: routes
+// })
 
 export default router

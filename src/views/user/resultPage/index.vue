@@ -330,7 +330,7 @@ onMounted(async () => {
 import { htmlPdf } from "@/utils/htmlToPDF.js"
 // 导出成PDF
 const handleExport = (name) => {
-    var fileName = '投资评审报告'
+    var fileName = '静态分析报告'
     const fileList = document.getElementsByClassName('pdfRef1')   // 很重要
     htmlPdf(fileName, document.querySelector('#pdfRef'), fileList)
 }

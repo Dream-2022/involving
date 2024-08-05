@@ -66,3 +66,14 @@ export const registerAPI=(email,code,password,invitationCode,k)=>{
         }
     })
 }
+export const refreshTokenAPI=(token,k)=>{
+    console.log(token)
+    return http({
+        url:"/user-info/refreshToken",
+        method:"GET",
+        params:{
+            k,
+            token
+        }
+    })
+}
