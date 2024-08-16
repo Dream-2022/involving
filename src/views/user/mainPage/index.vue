@@ -17,8 +17,9 @@
                         <template #dropdown>
                             <div class="my-title" style="margin: 10px 0 0 15px;font-weight: 600;">我的消息</div>
                             <el-dropdown-menu style="padding-bottom: 10px;">
-                                <el-dropdown-item @click="() => $router.push('/userResultPage')">
-                                    <div><strong>mv_8x8xshipin.apk</strong> 已分析完毕</div>
+                                <el-dropdown-item v-if="messageContent != []"
+                                    @click="() => $router.push('/userResultPage')">
+                                    <div><strong>{{ messageContent.apkName }}</strong> 已分析完毕</div>
                                     <div style="margin-left:auto; color:#757575;">去查看 >></div>
                                 </el-dropdown-item>
                                 <el-dropdown-item @click="staticAnalysis('userMemberPage')">
@@ -227,7 +228,9 @@
                                 <span class="analysis-title">{{ item.fileName }}</span>
                             </span>
                             <span class="analysis-bottom">
-                                <el-progress :percentage="item.secureScore" :color="customColors" />
+                                <el-progress :percentage="item.secureScore" :color="customColors">{{ item.secureScore }}
+                                    /
+                                    100</el-progress>
                                 <span class="first-label" :class="getLabelColor(item.apkDesc)">{{ item.apkDesc }}</span>
                                 <span class="time-label">{{ item.detectedTime }}</span>
                             </span>
@@ -280,7 +283,7 @@
                 <div class="affix-box affix-box-none">
                     <div class="affix-top">
                         <div class="affix-title">AI反诈助手</div>
-                        <div @click="AIClick"><i class="iconfont icon-close"></i></div>
+                        <div @click="AIClick(0)"><i class="iconfont icon-close"></i></div>
                     </div>
                     <div class="affix-bottom">
                         <div class="affix-left">
@@ -293,7 +296,7 @@
                             <div class="affix-left-content">
                                 APK（Android应用程序包）文件是Android应用的分发和安装文件，其中包含了应用所需的所有资源和代码。以下是APK文件中一些重要的文件和目录：
                                 <strong style="font-size: 15px;"><br>
-                                1.AndroidManifest.xml：</strong><br>
+                                    1.AndroidManifest.xml：</strong><br>
                                 这个文件是整个应用的核心配置文件，定义了应用的包名、版本信息、权限、组件（如活动、服务、广播接收器、内容提供者）以及其他配置信息。<br>
                                 <strong style="font-size: 15px;">2.classes.dex：</strong><br>
                                 这个文件包含了应用的编译字节码（Dalvik
@@ -319,7 +322,7 @@
                         <i class="iconfont icon-fabusekuai"></i>
                     </div>
                 </div>
-                <el-button color="#065fed" @click="AIClick" style="height: 70px;width: 70px;border-radius: 40px;">
+                <el-button color="#065fed" @click="AIClick(1)" style="height: 70px;width: 70px;border-radius: 40px;">
                     <i class="iconfont icon-rengongzhineng"></i>
                 </el-button>
             </div>
@@ -363,6 +366,7 @@
 <script setup>
 import "@/assets/fontIcon/iconfont.css";
 import { useRouter } from 'vue-router';
+import { ElNotification } from 'element-plus'
 import { onUnmounted, onMounted, getCurrentInstance, ref } from "vue";
 import { useUserStore } from '@/stores/userStore.js'
 import { useWebSocketStore } from '@/stores/webSocketStore.js';
@@ -379,11 +383,12 @@ const webSocketStore = useWebSocketStore();
 const router = useRouter();
 //进度条的颜色
 const customColors = [
-    { color: 'linear-gradient(to right,#FFD4BD,#D6573E', percentage: 25 },
-    { color: 'linear-gradient(to right,#F2DCAA,#e7823c', percentage: 50 },
-    { color: 'linear-gradient(to right,#BDF1FF,#1B79D1', percentage: 75 },
-    { color: 'linear-gradient(to right,#DDFA9D,#9BD420', percentage: 100 },
+    { color: 'linear-gradient(to right,#FFD4BD,#D6573E)', percentage: 25 },
+    { color: 'linear-gradient(to right,#F2DCAA,#e7823c)', percentage: 50 },
+    { color: 'linear-gradient(to right,#BDF1FF,#1B79D1)', percentage: 75 },
+    { color: 'linear-gradient(to right,#DDFA9D,#9BD420)', percentage: 100 },
 ]
+let messageContent = ref([])//消息栏的通知
 let percentage = ref(44)
 let calendarDate = ref(new Date())
 let calendarString = ref()
@@ -420,103 +425,138 @@ let webSocket = ref(null)
 let personVisible = ref(false)//个人资料是否显示
 let avatar = ref('')//头像
 onMounted(async () => {
-    const wow = new WOW({})
+    // 初始化 WOW 动画和用户信息
+    initializeWOW();
+    initializeUserStore();
+    initializeCalendar();
+    displayWindowSize();
+    // 并行化获取范本库和最近分析的数据
+    const [templateRes, analysisRes] = await Promise.all([
+        getTemplateAPI('1', 'v'),
+        getRecentAnalysisAPI('1', 'v')
+    ]);
+    // 处理范本库数据
+    processTemplateData(templateRes.data.data.records);
+    // 处理最近分析数据
+    processAnalysisData(analysisRes.data.data.records);
+    setChart();
+    // 检查用户是否已登录
+    if (isUserLoggedIn()) {
+        // 并行化初始化 WebSocket 和获取用户数据
+        const [webSocketRes, memberRes, detectionRes, friendRes, apkRes, signInRes] = await Promise.all([
+            webSocketStore.initialize(userStore.user.userMail),
+            getMemberAPI(userStore.user.userMail, '7', 'v'),
+            getDetectionAPI(userStore.user.userMail, '7', 'v'),
+            getFriendAPI(userStore.user.userMail, '7', 'v'),
+            getApkAPI(userStore.user.userMail, '7', 'v'),
+            getSignInAPI(userStore.user.userMail, 'v')
+        ]);
+        // 处理 WebSocket 初始化
+        handleWebSocket(webSocketRes);
+        // 处理用户数据
+        detectionList.value = detectionRes.data.data;
+        memberList.value = memberRes.data.data
+        friendList = friendRes.data.data;
+        apkList.value = apkRes.data.data;
+        setChart1();
+        setChart2();
+        setChart3();
+        setChart4();
+        // 处理签到状态
+        handleSignInStatus(signInRes.data.message);
+        getSignInDate()
+    }
+})
+function initializeWOW() {
+    const wow = new WOW({});
     wow.init();
-    userStore.initialize()
-    userInfo.value = userStore.user
-    //日历上的年月
+}
+// 初始化用户存储
+function initializeUserStore() {
+    userStore.initialize();
+    userInfo.value = userStore.user;
+}
+// 初始化日历
+function initializeCalendar() {
     const year = calendarDate.value.getFullYear();
     const month = calendarDate.value.getMonth() + 1;
-    calendarString.value = year + '年' + month + '月'
-    //范本库超出范围
-    displayWindowSize()
-    //获取范本库
-    const res = await getTemplateAPI('1', 'v')
-    templateList.value = res.data.data.records
-    console.log(templateList.value)
+    calendarString.value = `${year}年${month}月`;
+}
+// 处理范本库数据
+function processTemplateData(records) {
+    const labelMappings = [
+        '恶意检测',
+        '可视化;研究',
+        '违法犯罪;分类模型',
+        '分类模型',
+        '检测技术'
+    ];
+    templateList.value = records;
     templateList.value.forEach((item, index) => {
-        isDisable.value[index] = true
-        if (index == 0) {
-            item.essayLabel = '恶意检测'
-        } if (index == 1) {
-            item.essayLabel = '可视化;研究'
-        } if (index == 2) {
-            item.essayLabel = '违法犯罪;分类模型'
-        } if (index == 3) {
-            item.essayLabel = '分类模型'
-        } if (index == 4) {
-            item.essayLabel = '检测技术'
-        }
-        if (item.essayLabel && item.essayLabel != '') {
+        isDisable.value[index] = true;
+        item.essayLabel = labelMappings[index] || '';
+        if (item.essayLabel) {
             item.labelList = item.essayLabel.split(';');
         }
-    })
-    //获取最近分析
-    const res1 = await getRecentAnalysisAPI('1', 'v')
-    console.log(res1.data)
-    recentAnalysisList.value = res1.data.data.records
-    recentAnalysisList.value.forEach(item => {
-        const date = new Date(item.detectedTime);
-        const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-        item.detectedTime = formattedDate;
-        if (item.apkDesc == 'scam') {
-            item.apkDesc = '涉诈'
-        } else if (item.apkDesc == 'sex') {
-            item.apkDesc = '涉黄'
-        } else if (item.apkDesc == 'gamble') {
-            item.apkDesc = '涉赌'
-        } else if (item.apkDesc == 'black') {
-            item.apkDesc = '黑灰色'
-        } else if (item.apkDesc == 'white') {
-            item.apkDesc = '白名单'
-        } else if (item.apkDesc == 'unknown') {
-            item.apkDesc = '未知'
-        }
     });
-    setChart()
-    //如果登录了，就将显示表格
-    if (userInfo.value != null) {
-        //判断有没有连接webSocket
-        webSocket.value = await webSocketStore.initialize(userStore.user.userMail)
-        console.log(webSocket.value)
-        webSocket.value.onmessage = function (event) {
-            console.log("websocket.onmessage: " + event.data);
+}
+// 处理最近分析数据
+function processAnalysisData(records) {
+    const apkDescMappings = {
+        'scam': '涉诈',
+        'sex': '涉黄',
+        'gamble': '涉赌',
+        'black': '黑灰色',
+        'white': '白名单',
+        'unknown': '未知'
+    };
+    recentAnalysisList.value = records;
+    recentAnalysisList.value.forEach(item => {
+        item.detectedTime = formatDateTime(item.detectedTime);
+        item.apkDesc = apkDescMappings[item.apkDesc] || item.apkDesc;
+    });
+}
+// 格式化日期时间
+function formatDateTime(dateString) {
+    const date = new Date(dateString);
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+}
+// 处理 WebSocket 初始化
+function handleWebSocket(webSocketInstance) {
+    webSocket.value = webSocketInstance;
+    webSocket.value.onmessage = event => {
+        console.log("websocket.onmessage: " + event.data);
+        if (event.data.apkName != undefined) {
+            ElNotification({
+                title: '新消息',
+                dangerouslyUseHTMLString: true,
+                offset: 100,
+                message: `< strong > ${event.data.apkName} 解析成功 </strong>`,
+            })
+            messageContent.value = event.data
         }
-        webSocket.value.onclose = function () {
-            console.log("websocket.onclose: WebSocket连接关闭");
-        }
-        avatar.value = userInfo.value.userIconPath
-        //获取签到的天数
-        await getSignInDate()
-        //获取图表
-        const res2 = await getDetectionAPI(userStore.user.userMail, '7', 'v')
-        detectionList.value = res2.data.data
-        const res4 = await getFriendAPI(userStore.user.userMail, '7', 'v')
-        friendList = res4.data.data
-        const res5 = await getApkAPI(userStore.user.userMail, '7', 'v')
-        console.log(res5.data.data)
-        apkList.value = res5.data.data
-        setChart1()
-        setChart2()
-        setChart3()
-        setChart4()
-        //获取今日该用户是否签到
-        const res6 = await getSignInAPI(userStore.user.userMail, 'v')
-        if (res6.data.message == "当天未签到") {
-            signInValue.value = false
-            console.log('当天未签到')
-        } else {
-            signInValue.value = true
-            console.log('当天签到了')
-        }
-    }
-});
+    };
+    webSocket.value.onclose = () => {
+        console.log("websocket.onclose: WebSocket连接关闭");
+    };
+    avatar.value = userInfo.value.userIconPath;
+}
+// 处理签到状态
+function handleSignInStatus(message) {
+    signInValue.value = message !== "当天未签到";
+    console.log(signInValue.value ? '当天签到了' : '当天未签到');
+}
+// 检查用户是否已登录
+function isUserLoggedIn() {
+    console.log(userInfo.value)
+    return userInfo.value !== null;
+}
 //点击AI助手
-function AIClick() {
+function AIClick(flag) {
     const affixDiv = document.querySelector('.affix-box')
     console.log(affixDiv.classList)
     console.log(affixDiv.classList.length)
-    if (affixDiv.classList.length == 2) {
+    if (affixDiv.classList.length == 2 && flag == 1) {
         affixDiv.classList.remove('affix-box-none')
     } else {
         affixDiv.classList.add('affix-box-none')
@@ -552,15 +592,14 @@ const handleAvatarChange = (async (event) => {
 async function getSignInDate() {
     const year = calendarDate.value.getFullYear();
     const month = calendarDate.value.getMonth() + 1;
-    const res1 = await getSignInDateAPI(year, month, userStore.user.userMail, 'v')
-    signData.value = res1.data.data
-    console.log(signData.value)
-    const res2 = await getPointAPI(userStore.user.userMail, 'v')
-    nowPoints.value = res2.data.data
-    //获取第二个图表的内容
-    const res3 = await getMemberAPI(userStore.user.userMail, '7', 'v')
-    console.log(res3.data.data)
-    memberList.value = res3.data.data
+    const [signRes, nowPointRes, memberRes] = await Promise.all([
+        getSignInDateAPI(year, month, userStore.user.userMail, 'v'),
+        getPointAPI(userStore.user.userMail, 'v'),
+        getMemberAPI(userStore.user.userMail, '7', 'v')
+    ]);
+    signData.value = signRes.data.data
+    nowPoints.value = nowPointRes.data.data
+    memberList.value = memberRes.data.data
 }
 //点击查看范本
 async function templateClick(id) {
@@ -593,6 +632,7 @@ async function analysisClick(md5) {
 }
 //点击签到
 async function signInClick() {
+    console.log('签到成功')
     const res = await getSignInSuccessAPI(userStore.user.userMail, 'v')
     console.log(res.data)
     if (res.data.message == '签到成功') {
@@ -687,7 +727,7 @@ function getLabelColor(word) {
         return 'yellowLabel'
     } else if (word == '诈骗') {
         return 'redLabel'
-    } else if (word == '涉赌') {
+    } else if (word == '赌博') {
         return 'purpleLabel'
     } else if (word == '正常') {
         return 'greenLabel'
@@ -1025,6 +1065,7 @@ const setChart2 = () => {
     let chartDom2 = document.getElementById("chart2-content");
     myChart2 = echarts.init(chartDom2);
     let memberNum = 0
+    console.log(memberList.value)
     memberList.value[1].forEach((element) => {
         memberNum = memberNum + parseInt(element)
     })

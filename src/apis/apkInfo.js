@@ -81,7 +81,7 @@ export const getTrafficFileAPI=(k,fileName)=>{
 //获取QuarkReport
 export const getQuarkReportAPI=(fileMd5,k)=>{
     return http({
-        url:`/user-info/getQuarkReport`,
+        url:`/apk-info/getQuarkReport`,
         method:"GET",
         params:{
             k,

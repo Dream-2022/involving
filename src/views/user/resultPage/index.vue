@@ -106,11 +106,11 @@
                         <span class="iconfont icon-buffer1"></span>
                         <template #title>导出为PDF</template>
                     </el-menu-item>
-                    <el-menu-item index="8" @click="handleWordExport">
+                    <el-menu-item index="8" @click="handleExport">
                         <span class="iconfont icon-copy"></span>
                         <template #title>导出为word</template>
                     </el-menu-item>
-                    <el-menu-item index="9" @click="handleWordExport">
+                    <el-menu-item index="9" @click="dynamicClick">
                         <span class="iconfont icon-shebeidongtai"></span>
                         <template #title>开启动态分析</template>
                     </el-menu-item>
@@ -283,6 +283,7 @@ let personVisible = ref(false)//个人资料的弹窗
 let avatar = ref('')//头像
 let friendNum = ref(0)//邀请好友个数
 let isDynamic = ref(true)
+import { finishUploadDynamicAPI } from '@/apis/multipartUpload.js'
 function handleMenuItemClick(scrollId) {
     // 通过 Vue Router 导航到了目标页面  
     setTimeout(() => {
@@ -333,6 +334,29 @@ const handleExport = (name) => {
     var fileName = '静态分析报告'
     const fileList = document.getElementsByClassName('pdfRef1')   // 很重要
     htmlPdf(fileName, document.querySelector('#pdfRef'), fileList)
+}
+//开启动态分析
+const dynamicClick = async () => {
+    const fileMd5 = JSON.parse(localStorage.getItem('staticDataList')).fileMd5
+    const res = await finishUploadDynamicAPI(fileMd5, 'v')
+    if (res.data.code == 415) {
+        setTimeout(() => {
+            ElMessage.warning(res.data.message)
+        }, 0)
+        return
+    }
+    if (res.data.code == 504 || res.data.code == 500) {
+        setTimeout(() => {
+            ElMessage.warning('服务器繁忙，请稍后再试！')
+        }, 0)
+        return
+    }
+    console.log(res.data.data)
+    staticDataStore.staticDataList = res.data.data
+    localStorage.setItem('dynamicDataList', JSON.stringify(res.data.data))
+    ElMessage.success('apk 解析完毕')
+    router.push('/userResultPage/dynamic/foundation')
+    isUploadClick.value = false
 }
 //导出word
 // import 'https://cdn.jsdelivr.net/npm/html-docx-js/dist/html-docx.js'

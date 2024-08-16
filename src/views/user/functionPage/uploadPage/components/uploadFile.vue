@@ -14,12 +14,24 @@
             </template>
         </el-upload>
         <el-switch size="large" v-model="isActiveAnalysis" active-text="开启动态分析" /><br>
-        <div class="button-box">
+        <div v-if="!isActiveAnalysis">
+            <span style="font-size: 14px;display: inline-block;">APK分类模型：</span>
+            <el-select v-model="modeSelect" placeholder="Select" style="height: 28px;max-width: 430px;">
+                <el-option v-for="item in modeList" :key="item.value" :label="item.label" :value="item.value">
+                    <span style="float: left">{{ item.label }}</span>
+                    <span style=" float: right; color: var(--el-text-color-secondary); font-size: 13px;">
+                        {{ item.value }}
+                    </span>
+                </el-option>
+            </el-select>
+            <div style="font-size: 12px;margin-top:8px; color:#4d4d4d">注：选择不同的APK分类模型消耗的积分不同</div>
+        </div>
+        <div class=" button-box">
             <el-button color="#547BF1" @click="uploadClick" :disabled="isUploadClick">
                 {{ isActiveAnalysis ? '开始动态分析' : '开始静态分析' }}
             </el-button>
             <div style="font-size:12px;margin-top: 8px; color: #4d4d4d">非会员用户，进行{{ isActiveAnalysis ? '动态分析消耗 100 积分' :
-            '静态分析消耗 20 积分' }}</div>
+            '静态分析消耗默认 20 积分' }}</div>
         </div>
         <div class="wow fadeInUp" style="margin-top: 20px;" v-if="isProgress != -1">
             <div style="margin-bottom: 10px; font-size: 14px;">正在分析请耐心等待...</div>
@@ -43,6 +55,19 @@ import { multipartUploadAPI, finishUploadAPI, finishUploadDynamicAPI } from '@/a
 import '@/utils/spark-md5.min.js'
 const router = useRouter();
 const route = useRoute();
+let modeSelect = ref('基于指令集的3-gram分类模型')
+const modeList = [
+    {
+        label: '基于指令集的3-gram分类模型',
+        value: 20
+    }, {
+        label: '基于特征图像的resnet分类模型',
+        value: 30
+    }, {
+        label: '基于特征图像的VGG16+CBAM注意力机制的分类模型',
+        value: 35
+    }
+]
 const staticDataStore = useStaticDataStore();
 const userStore = useUserStore()
 const webSocketStore = useWebSocketStore();
@@ -288,7 +313,8 @@ function sliceFile(file) {
     }
 
     .el-switch {
-        margin-top: 20px;
+        margin-top: 5px;
+        margin-bottom: 10px;
     }
 
     .button-box {

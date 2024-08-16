@@ -146,8 +146,8 @@ const login = async () => {
         localStorage.setItem('user', JSON.stringify(userStore.user))
         webSocketStore.initialize(userStore.user.userMail)
         setTimeout(() => {
-            router.push('/')
-        }, 500)
+            router.push('/userMainPage')
+        }, 100)
     }
     else {
         ElMessage.error(res.data.message)
@@ -178,7 +178,7 @@ const modify = async () => {
         userStore.setUserInfo(res.data.data)
         ElMessage.success(res.data.message)
         setTimeout(() => {
-            location.href = 'http://192.168.50.8:5173/'
+            location.href = 'https://192.168.50.8:5173/'
         }, 2000)
     }
     else {

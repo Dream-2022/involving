@@ -39,17 +39,21 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'userMainPage',
-      component: UserMainPage,
-      redirect: "/userMainPage",
+      name: 'login',
+      redirect: "/login",
+      component: LoginPage,
       children:[
-        {path:'userMainPage',component:UserMainPage},
+        {path:'login',component:LoginPage},
       ]
     },
     {
-      path: '/login',
-      name: 'login',
-      component: LoginPage,
+      path: '/userMainPage',
+      name: 'userMainPage',
+      component: UserMainPage,
+      // redirect: "/userMainPage",
+      // children:[
+      //   {path:'userMainPage',component:UserMainPage},
+      // ]
     },
     {
       path: '/userFunctionPage',

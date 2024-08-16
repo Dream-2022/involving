@@ -20,7 +20,7 @@
                         <div class="tracker-word">APK类型</div>
                         <div class="tracker"><strong>{{ foundationList.apkDesc }}APK</strong></div>
                     </div>
-                    <el-button color="#065fed" plain>安全评分</el-button>
+                    <el-button color="#065fed" plain @click="scoreClick(foundationList.fileMd5)">安全评分</el-button>
                 </div>
             </div>
             <div class="middle-box">
@@ -169,6 +169,7 @@
 </template>
 <script setup>
 import { ref, onUnmounted, onMounted, getCurrentInstance, reactive } from "vue";
+import { getQuarkReportAPI } from '@/apis/apkInfo.js'
 import { useRouter } from 'vue-router';
 const router = useRouter();
 let internalInstance = getCurrentInstance();
@@ -225,6 +226,13 @@ function javaLookClick() {
 }
 function javaLoadClick() {
     loadFunction(foundationList.apkSourceUrl)
+}
+async function scoreClick(md5) {
+    const res = await getQuarkReportAPI(md5, 'v')
+    console.log(res.data)
+    const htmlContent = res.data.message
+    const newWindow = window.open('', `_blank`);
+    newWindow.document.write(htmlContent);
 }
 //生成a标签，并下载的函数
 function loadFunction(url) {

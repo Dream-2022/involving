@@ -9,7 +9,7 @@ export const useWebSocketStore = defineStore('webSocket', () => {
         if ('WebSocket' in window) {
             // 改成你的地址
             if(websocket==null){
-                websocket = new WebSocket("ws://192.168.50.100:10010/apk-info/websocket/" + userMail + "?k=v");
+                websocket = new WebSocket("ws://192.168.50.32:10010/apk-info/websocket/" + userMail + "?k=v");
                 console.log('新建一个webSocket')
             }else{
                 console.log('已存在webSocket')

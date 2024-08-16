@@ -3,7 +3,7 @@ import http from '@/utils/http.js'
 export const getDetectionAPI=(user_mail,days,k)=>{
     return http({
         url:"/goodan-homepage/get-NumberOfDetections",
-        method:"POST",
+        method:"GET",
         params:{
             user_mail,
             days,

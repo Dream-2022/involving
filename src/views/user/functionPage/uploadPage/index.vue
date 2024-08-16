@@ -5,7 +5,7 @@
             <div class="content-title">
                 <RouterLink active-class="title-active" :to="'/userUploadPage/file'">文件</RouterLink>
                 <RouterLink active-class="title-active" :to="'/userUploadPage/URL'">URL</RouterLink>
-                <RouterLink active-class="title-active" :to="'/userUploadPage/search'">搜索</RouterLink>
+                <RouterLink active-class="title-active" :to="'/userUploadPage/search'">MD5</RouterLink>
             </div>
             <RouterView></RouterView>
         </div>

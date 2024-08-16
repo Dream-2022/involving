@@ -23,14 +23,12 @@ export const multipartUploadAPI=(totalNumber,chunkNumber,md5,file,k)=>{
 export const finishUploadAPI=(md5,k)=>{
     return http({
         url:"/apk-info/checkFile",
-        method:"POST",
+        method:"GET",
         headers: {
-            "Content-Type": 'multipart/form-data'
+            'content-type': 'application/json'
         },
         params:{
-            k
-        },
-        data:{
+            k,
             md5
         }
     })

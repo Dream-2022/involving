@@ -3,7 +3,7 @@ import http from '@/utils/http.js'
 export const getTemplateAPI=(pageNum,k)=>{
     return http({
         url:"/goodan-homepage/get_EssayInfo",
-        method:"POST",
+        method:"GET",
         params:{
             pageNum,
             k
@@ -14,7 +14,7 @@ export const getTemplateAPI=(pageNum,k)=>{
 export const getRecentAnalysisAPI=(pageNum,k)=>{
     return http({
         url:"/goodan-homepage/get_RecentAnalysisRecords",
-        method:"POST",
+        method:"GET",
         params:{
             pageNum,
             k

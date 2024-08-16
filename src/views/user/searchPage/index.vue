@@ -51,17 +51,18 @@
                         </el-table-column>
                         <el-table-column label="安全评分" width="140">
                             <template #default="{ row }">
-                                <div class="colorLabel" :class="getClass(row.secureScore)">{{ row.secureScore }}</div>
+                                <div class="colorLabel" :class="getClass(row.secureScore)">{{
+                row.secureScore }}</div>
                             </template>
                         </el-table-column>
                         <el-table-column fixed="right" label="操作" width="140">
                             <template #default="{ row }">
                                 <div>
                                     <el-button color="#7dc15b" size="small" style="margin-bottom: 10px; color:#fff;"
-                                        @click="safeClick(row.fileMd5)">安全评分</el-button>
+                                        @click="scoreClick(row.fileMd5)">安全评分</el-button>
                                 </div>
                                 <div>
-                                    <el-button color="#368eec" size="small" @click="staticClick(row.fileMd5)"
+                                    <el-button color=" #368eec" size="small" @click="staticClick(row.fileMd5)"
                                         style="margin-bottom: 10px; color:#fff;">静态报告</el-button>
                                 </div>
                                 <div>
@@ -80,8 +81,8 @@
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useRoute } from 'vue-router';
+import { getApkInfoAPI, getQuarkReportAPI } from '@/apis/apkInfo.js'
 import { getSearchAPI } from '@/apis/mainPage.js'
-import { getApkInfoAPI } from '@/apis/apkInfo.js'
 import WOW from "wow.js";
 import { ElMessage } from 'element-plus';
 const router = useRouter();
@@ -101,6 +102,13 @@ onMounted(async () => {
         searchList.value = res.data.data
     }
 })
+async function scoreClick(md5) {
+    const res = await getQuarkReportAPI(md5, 'v')
+    console.log(res.data)
+    const htmlContent = res.data.message
+    const newWindow = window.open('', `_blank`);
+    newWindow.document.write(htmlContent);
+}
 //获取标签颜色
 function getClass(name) {
     if (name == '未知') {
@@ -155,7 +163,7 @@ async function staticClick(md5) {
 }
 function exitClick() {
     console.log('点击')
-    router.push('/')
+    router.push('/userMainPage')
 }
 </script>
 <style lang="scss" scoped>

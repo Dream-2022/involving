@@ -14,30 +14,62 @@
                 </el-button>
             </el-button-group>
         </div>
-        <el-switch size="large" v-if="selectValue" v-model="isActiveAnalysis" active-text="开启动态分析" />
         <div class="button-box">
-            <el-button color="#547BF1" @click="confirmClick">{{ selectValue ? isActiveAnalysis ? '开始动态分析' : '开始静态分析' :
-            '开始下载'
-                }}</el-button>
+            <el-button color="#547BF1" @click="confirmClick">{{ selectValue ? '开始静态分析' : '开始下载' }}</el-button>
         </div>
         <div class="wow fadeInUp" style="margin-top: 20px;" v-if="isProgress != -1">
-            <div style="margin-bottom: 10px; font-size: 14px;">正在下载请耐心等待...</div>
+            <div style="margin-bottom: 10px; font-size: 14px;">正在分析请耐心等待...</div>
             <div style="display: flex;">
-                <span style="font-size: 14px;">下载进度：</span>
-                <el-progress :percentage="40" style="flex:1;" :stroke-width="18" :text-inside="true" striped
+                <span style="font-size: 14px;">分析进度：</span>
+                <el-progress :percentage="isProgress" style="flex:1;" :stroke-width="18" :text-inside="true" striped
                     striped-flow :duration="10" />
             </div>
         </div>
     </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { URLDownloadApkAPI } from '@/apis/download.js'
-const isActiveAnalysis = ref(false)
+import { useRouter } from 'vue-router';
+import { useUserStore } from '@/stores/userStore.js'
+import { useStaticDataStore } from '@/stores/staticDataStore.js';
+import { useWebSocketStore } from '@/stores/webSocketStore.js';
+import { URLDownloadApkAPI, URLAnalysisApkAPI } from '@/apis/download.js'
+import { finishUploadAPI } from '@/apis/multipartUpload.js'
+const userStore = useUserStore()
+const webSocketStore = useWebSocketStore();
+const staticDataStore = useStaticDataStore();
+const router = useRouter();
 const selectValue = ref(false)
+const isProgress = ref(-1)//下载进度
+const webSocket = ref(null)
 let inputContent = ref('')
+onMounted(async () => {
+    userStore.initialize()
+    if (userStore.user != null) {
+        //判断有没有连接webSocket
+        webSocket.value = await webSocketStore.initialize(userStore.user.userMail)
+        console.log(webSocket.value)
+        webSocket.value.onmessage = function (event) {
+            console.log("websocket.onmessage: " + event.data);
+            if (!isNaN(parseInt(event.data))) {
+                isProgress.value = event.data
+                if (isProgress.value == 100) {
+                    setTimeout(() => {
+                        isProgress.value = -1
+                    })
+                }
+            }
+        }
+        webSocket.value.onclose = function () {
+            console.log("websocket.onclose: WebSocket连接关闭");
+        }
+    } else {
+        ElMessage.warning('请登录后进行分析...')
+    }
+})
 async function confirmClick() {
+    // https://static.yidianzixun.com/modules/build/download/images/pc_qrcode-5bd304e5.png
     if (inputContent.value == '') {
         ElMessage({
             message: '请输入apk下载链接', type: 'warning',
@@ -51,20 +83,51 @@ async function confirmClick() {
         })
         return;
     }
-    // 'https://static.yidianzixun.com/modules/build/download/images/pc_qrcode-5bd304e5.png'
-    //
-    const res = await URLDownloadApkAPI(inputContent.value, 'v')
-    console.log(res)
-    let link = document.createElement('a');
-    link.href = res.data.data
-    link.click();//模拟点击
-    ElMessage.success("正在下载...")
-    inputContent.value = ''
-    URL.revokeObjectURL(link.href);
-    const linkElement = document.querySelector('link[href="' + link.href + '"]');
-    if (linkElement) {
-        linkElement.remove();
-        console.log('Link removed:', url);
+    //静态分析
+    if (selectValue.value == true) {
+        const res0 = await URLAnalysisApkAPI(inputContent.value, 'v')
+        console.log(res0.data.data)
+        const res = await finishUploadAPI(res0.data.data, 'v')
+        if (res.data.code == 415) {
+            setTimeout(() => {
+                ElMessage.warning(res.data.message)
+            }, 1000)
+            return
+        }
+        if (res.data.code == 504 || res.data.code == 500) {
+            setTimeout(() => {
+                ElMessage.warning('服务器繁忙，请稍后再试！')
+            }, 1000)
+            return
+        }
+        if (res.data.code != 200) {
+            setTimeout(() => {
+                ElMessage.warning('请登录后进行操作！')
+            }, 1000)
+            return
+        }
+        console.log(res.data.data)
+        staticDataStore.staticDataList = res.data.data
+        localStorage.setItem('staticDataList', JSON.stringify(res.data.data))
+        ElMessage.success('apk 解析完毕')
+        router.push('/userResultPage')
+        isUploadClick.value = false
+    }
+    //下载APK
+    else {
+        const res = await URLDownloadApkAPI(inputContent.value, 'v')
+        console.log(res)
+        let link = document.createElement('a');
+        link.href = res.data.data
+        link.click();//模拟点击
+        ElMessage.success("正在下载...")
+        inputContent.value = ''
+        URL.revokeObjectURL(link.href);
+        const linkElement = document.querySelector('link[href="' + link.href + '"]');
+        if (linkElement) {
+            linkElement.remove();
+            console.log('Link removed:', url);
+        }
     }
 }
 </script>

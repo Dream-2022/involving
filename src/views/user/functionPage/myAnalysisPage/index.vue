@@ -24,7 +24,7 @@
                 <el-table-column prop="detectedTime" label="最后分析时间" width="220" />
                 <el-table-column label="操作" width="120" fixed="right">
                     <template #default="{ row }">
-                        <el-button color="#547BF1" size="small" plain @click="safeClick(row.fileMd5)"
+                        <el-button color="#547BF1" size="small" plain @click="scoreClick(row.fileMd5)"
                             style="margin-left:12px; margin-bottom: 10px; ">
                             安全评分
                         </el-button>
@@ -42,7 +42,7 @@
 import { onMounted, ref } from "vue";
 import { useUserStore } from '@/stores/userStore.js'
 import { getMyAnalysisAPI } from '@/apis/mainPage.js'
-import { getApkInfoAPI } from '@/apis/apkInfo.js'
+import { getApkInfoAPI, getQuarkReportAPI } from '@/apis/apkInfo.js'
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const userStore = useUserStore()
@@ -65,6 +65,13 @@ async function safeClick(md5) {
     console.log(res.data)
     localStorage.setItem('staticDataList', JSON.stringify(res.data.data))
     router.push('/userResultPage')
+}
+async function scoreClick(md5) {
+    const res = await getQuarkReportAPI(md5, 'v')
+    console.log(res.data)
+    const htmlContent = res.data.message
+    const newWindow = window.open('', `_blank`);
+    newWindow.document.write(htmlContent);
 }
 //获取我的分析记录的标签颜色
 function getLabelColor(word) {
