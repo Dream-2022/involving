@@ -73,7 +73,7 @@ onMounted(async () => {
     }
 
     .certificate-content {
-        font-size: 15px;
+        font-size: 16px;
         padding-bottom: 10px;
         margin-left: 7px;
         margin-top: 10px;

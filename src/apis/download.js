@@ -13,7 +13,7 @@ export const URLDownloadApkAPI=(apkUrl,k)=>{
 export const URLAnalysisApkAPI=(apkUrl,k)=>{
     return http({
         url:"/apk-download/downloadLocal",
-        method:"POST",
+        method:"GET",
         params:{
             apkUrl,
             k

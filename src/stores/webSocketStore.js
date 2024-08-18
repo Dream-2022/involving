@@ -5,6 +5,7 @@ import { defineStore } from 'pinia'
 import { useRouter } from 'vue-router'
 export const useWebSocketStore = defineStore('webSocket', () => {
     let websocket = null;
+    let messageData=ref([])
     const initialize = (userMail) => {
         if ('WebSocket' in window) {
             // 改成你的地址
@@ -25,9 +26,17 @@ export const useWebSocketStore = defineStore('webSocket', () => {
         }
         return websocket
     }
+    const addMessageList = (message) => {
+        console.log(message)
+        messageData.push(message.data)
+        console.log(messageData.value)
+        return messageData.value
+    }
     return {
+        messageData,
         websocket,
-        initialize
+        initialize,
+        addMessageList
     }
 },{
     persist:true

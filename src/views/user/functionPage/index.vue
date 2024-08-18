@@ -139,8 +139,8 @@
                         <td class="td"></td>
                     </tr>
                 </table>
-                <div style="line-height: 35px; margin-top: 20px;">已成功邀请 <strong
-                        style="font-size: 18px;">{{ friendNum }}</strong>
+                <div style="line-height: 35px; margin-top: 20px;">已成功邀请 <strong style="font-size: 18px;">{{ friendNum
+                        }}</strong>
                     个好友，累计获得 <strong style="font-size: 18px;">{{ friendNum * 200 }}</strong> 积分
                 </div>
             </div>
@@ -305,7 +305,7 @@ const setChart = () => {
 .background {
     position: relative;
     overflow: hidden;
-    min-height: 880px;
+    min-height: 1180px;
     background-color: #F2F6FD;
 
     .navigation-box {

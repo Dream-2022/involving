@@ -4,11 +4,11 @@
             <div class="appRemission-title">应用权限</div>
             <div class="appRemission-content">
                 <el-table :data="appRemissionList" class="pdfRef1" style="width: 100%" stripe>
-                    <el-table-column fixed prop="permissionApplication" label="权限名称" width="360" />
-                    <el-table-column prop="permissionType" label="权限内容" width="150" />
-                    <el-table-column prop="permissionDetail" label="权限描述" width="580" />
-                    <el-table-column prop="fileMd5" label="MD5" width="290" />
-                    <el-table-column fixed="right" label="安全等级" width="120">
+                    <el-table-column fixed prop="permissionApplication" label="权限名称" min-width="360" />
+                    <el-table-column prop="permissionType" label="权限内容" min-width="150" />
+                    <el-table-column prop="permissionDetail" label="权限描述" min-width="580" />
+                    <el-table-column prop="fileMd5" label="MD5" min-width="290" />
+                    <el-table-column fixed="right" label="安全等级" min-width="120">
                         <template #default="{ row }">
                             <div class="column" :class="getButtonClass(row.data5)" v-html="row.isDangerous">
                             </div>

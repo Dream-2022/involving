@@ -118,8 +118,10 @@
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" :min-width="100">
-                        <el-button color="#368eec" @click="staticClick"
-                            style="margin-bottom: 10px; color:#fff; height: 25px;">安全评分</el-button>
+                        <template #default="{ row }">
+                            <el-button color="#368eec" @click="staticClick(row.arrLis[0])"
+                                style="margin-bottom: 10px; color:#fff; height: 25px;">安全评分</el-button>
+                        </template>
                     </el-table-column>
                 </el-table>
             </div>
@@ -236,20 +238,34 @@ onMounted(() => {
         }
     })
     if (safeItemNum.value != 0) {
-        percentage1.value = (safeItemNum.value * 100 / (permissionInfo.value.length)).toFixed(2)
+        percentage1.value = parseFloat((safeItemNum.value * 100 / (permissionInfo.value.length)).toFixed(2))
     }
     if (safeItemNum.value != permissionInfo.value.length)
-        percentage2.value = ((permissionInfo.value.length - safeItemNum.value) * 100 / permissionInfo.value.length).toFixed(2)
+        percentage2.value = parseFloat(((permissionInfo.value.length - safeItemNum.value) * 100 / permissionInfo.value.length).toFixed(2))
 });
 onUnmounted(() => {
     map?.destroy();
 });
-async function staticClick() {
-    const res = await getStaticPointAPI('v', 'https://open.e.kuaishou.com/rest/e/v2/open/log/click')
-    console.log(res.data)
-    const htmlContent = res.data.message
-    const newWindow = window.open('', `_blank`);
-    newWindow.document.write(htmlContent);
+async function staticClick(url) {
+    console.log(url)
+    const res = await getStaticPointAPI('v', url)
+    console.log(res.data.message)
+
+    const htmlContent = res.data.message;
+    const newWindow = window.open('', '_blank');
+    newWindow.document.write(`
+            <html>
+                <body>
+                    <div>${htmlContent}</div>
+                </body>
+            </html>
+        `);
+    // 关闭文档流，确保文档被正确加载
+    newWindow.document.close();
+
+    // const htmlContent = res.data.message
+    // const newWindow = window.open('', `_blank`);
+    // newWindow.document.write(htmlContent);
 }
 //为不同的国家设置类名
 function getInfoClass2(country) {

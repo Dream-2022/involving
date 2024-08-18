@@ -25,7 +25,7 @@ export const getRecentAnalysisAPI=(pageNum,k)=>{
 export const getMyAnalysisAPI=(pageNum,user_mail,k)=>{
     return http({
         url:"/goodan-homepage/get_MyAnalysisRecords",
-        method:"POST",
+        method:"GET",
         params:{
             pageNum,
             user_mail,
@@ -120,6 +120,17 @@ export const getFriendNumAPI=(userMail,k)=>{
         method:"POST",
         params:{
             userMail,
+            k
+        }
+    })
+}
+//ai助手
+export const getAIMessageAPI=(query,k)=>{
+    return http({
+        url:"/goodan-homepage/ai",
+        method:"POST",
+        params:{
+            query,
             k
         }
     })

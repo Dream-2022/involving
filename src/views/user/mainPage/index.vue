@@ -13,21 +13,21 @@
             <div class="wow fadeInDown navigation-icon" v-if="userInfo != null">
                 <div style="display: flex;">
                     <el-dropdown class="dropdown-class" style="margin-top: 10px;">
-                        <span class="iconfont icon-lingdang-xianxing" style="color: #000"></span>
+                        <el-badge :value="messageContent.length" class="icon-badge">
+                            <span class="iconfont icon-lingdang-xianxing" style="color: #000"></span>
+                        </el-badge>
                         <template #dropdown>
                             <div class="my-title" style="margin: 10px 0 0 15px;font-weight: 600;">我的消息</div>
                             <el-dropdown-menu style="padding-bottom: 10px;">
-                                <el-dropdown-item v-if="messageContent != []"
-                                    @click="() => $router.push('/userResultPage')">
+                                <el-dropdown-item v-for="item in messageContent" :key="item" style="width:350px;"
+                                    @click="messageClick(item.md5)">
                                     <div><strong>{{ messageContent.apkName }}</strong> 已分析完毕</div>
                                     <div style="margin-left:auto; color:#757575;">去查看 >></div>
                                 </el-dropdown-item>
-                                <el-dropdown-item @click="staticAnalysis('userMemberPage')">
-                                    <div>
-                                        <div>成功邀请 <strong>1342415245@qq.com</strong></div>
-                                        <div style=" color:#757575; font-size: 10px">获取 200 积分</div>
+                                <el-dropdown-item v-if="messageContent.length == 0">
+                                    <div style="margin: 0 80px;">
+                                        <el-empty description="暂无消息" />
                                     </div>
-                                    <div style="margin-left: 20px; color:#757575;">2024.7.14 22:45</div>
                                 </el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
@@ -248,12 +248,12 @@
                 </div>
                 <el-calendar ref="calendar">
                     <template #header="{ }">
-                        <el-button size="small" @click="selectDate('today')">今天</el-button>
-                        <span class="date-content">{{ calendarString }}</span>
-                        <div>
+                        <el-button style="margin-bottom: 10px;" size="small" @click="selectDate('today')">今天</el-button>
+                        <span class="date-content" style="margin-bottom: 10px;">{{ calendarString }}</span>
+                        <div style="margin-bottom: 10px;">
                             <el-button size="small" @click="selectDate('prev-month')">上月</el-button>
                         </div>
-                        <div>
+                        <div style="margin-bottom: 10px;">
                             <el-button size="small" @click="selectDate('next-month')">下月</el-button>
                         </div>
                     </template>
@@ -278,55 +278,34 @@
                 </div>
             </div>
         </div>
-        <el-affix position="bottom" :offset="100">
-            <div style="margin-left:80px;">
-                <div class="affix-box affix-box-none">
-                    <div class="affix-top">
-                        <div class="affix-title">AI反诈助手</div>
-                        <div @click="AIClick(0)"><i class="iconfont icon-close"></i></div>
-                    </div>
-                    <div class="affix-bottom">
-                        <div class="affix-left">
-                            <div class="affix-left-content">你好啊！我是AI反诈助手，请问有什么可以帮你的吗？</div>
-                        </div>
-                        <div class="affix-right">
-                            <span class="affix-right-content">APK文件中的哪些文件比较重要？</span>
-                        </div>
-                        <div class="affix-left">
-                            <div class="affix-left-content">
-                                APK（Android应用程序包）文件是Android应用的分发和安装文件，其中包含了应用所需的所有资源和代码。以下是APK文件中一些重要的文件和目录：
-                                <strong style="font-size: 15px;"><br>
-                                    1.AndroidManifest.xml：</strong><br>
-                                这个文件是整个应用的核心配置文件，定义了应用的包名、版本信息、权限、组件（如活动、服务、广播接收器、内容提供者）以及其他配置信息。<br>
-                                <strong style="font-size: 15px;">2.classes.dex：</strong><br>
-                                这个文件包含了应用的编译字节码（Dalvik
-                                Executable），即应用的Java或Kotlin代码被编译后生成的文件，供Android虚拟机（Dalvik或ART）执行。<br>
-                                res/：
-                                这个目录包含了应用的资源文件，如布局文件（layout）、字符串（values/strings.xml）、图像（drawable）、菜单（menu）等。<br>
-                                <strong style="font-size: 15px;">3.assets/：</strong><br>
-                                这个目录包含了应用的原始文件和其他资源，这些资源在运行时可以通过AssetManager访问。<br>
-                                <strong style="font-size: 15px;">4.lib/：</strong><br>
-                                这个目录包含了应用所需的本地库文件（.so文件），这些库文件针对不同的CPU架构（如arm、arm64、x86、x86_64）进行编译。<br>
-                                <strong style="font-size: 15px;">5.META-INF/：</strong><br>
-                                这个目录包含了签名相关的文件，如MANIFEST.MF、CERT.RSA、CERT.SF等。这些文件用于验证APK文件的完整性和签名。<br>
-                                <strong style="font-size: 15px;">6.resources.arsc：</strong><br>
-                                这个文件包含了经过编译的资源信息（如字符串、布局、样式等），用于高效地访问和加载资源。<br>
-                                <strong style="font-size: 15px;">7.kotlin/（如果应用使用了Kotlin）：</strong><br>
-                                这个目录包含了Kotlin标准库和其他Kotlin特定的资源。
-                                这些文件和目录共同构成了一个完整的APK文件，每个部分都扮演着重要的角色，确保应用能够正常运行。
-                            </div>
-                        </div>
-                    </div>
-                    <div class="affix-input">
-                        <textarea rows="4" cols="50" class="input" placeholder="可以问我一些问题..." />
-                        <i class="iconfont icon-fabusekuai"></i>
-                    </div>
+        <div @click="handlePageClick">
+            <!-- 聊天框 -->
+            <div :class="['affix-box', { 'affix-box-show': isChatVisible }]">
+                <div class="affix-top">
+                    <div class="affix-title">AI反诈助手</div>
+                    <div @click.stop="toggleChat"><i class="iconfont icon-close"></i></div>
                 </div>
-                <el-button color="#065fed" @click="AIClick(1)" style="height: 70px;width: 70px;border-radius: 40px;">
-                    <i class="iconfont icon-rengongzhineng"></i>
-                </el-button>
+                <div class="affix-bottom">
+                    <div v-for="(message, index) in messages" :key="index" class="message-container">
+                        <div v-if="message.type === 'user'" class="affix-right">
+                            <div class="affix-right-content affix-content" v-html="message.text"></div>
+                        </div>
+                        <div v-if="message.type === 'ai'" class="affix-left">
+                            <span class="affix-left-content affix-content" v-html="message.text"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="affix-input">
+                    <textarea ref="inputArea" rows="4" cols="50" class="input" placeholder="可以问我一些问题..."></textarea>
+                    <i class="iconfont icon-fabusekuai" :class="AIInput ? '' : 'AIInputGray'" @click="sendClick"></i>
+                </div>
             </div>
-        </el-affix>
+            <el-button color="#065fed" @click="toggleChat"
+                style="height: 70px; width: 70px; border-radius: 40px; position: fixed; bottom: 50px; right: 50px; z-index: 10;">
+                <i class="iconfont icon-rengongzhineng"></i>
+            </el-button>
+        </div>
     </div>
     <el-dialog v-model="personVisible" title="个人资料" width="500">
         <div class="bindBox">
@@ -366,11 +345,11 @@
 <script setup>
 import "@/assets/fontIcon/iconfont.css";
 import { useRouter } from 'vue-router';
-import { ElNotification } from 'element-plus'
+import { ElNotification, ElLoading } from 'element-plus'
 import { onUnmounted, onMounted, getCurrentInstance, ref } from "vue";
 import { useUserStore } from '@/stores/userStore.js'
 import { useWebSocketStore } from '@/stores/webSocketStore.js';
-import { getTemplateAPI, getRecentAnalysisAPI, getFriendNumAPI, editAvatarAPI } from '@/apis/mainPage.js'
+import { getTemplateAPI, getRecentAnalysisAPI, getFriendNumAPI, editAvatarAPI, getAIMessageAPI } from '@/apis/mainPage.js'
 import { getDetectionAPI, getMemberAPI, getFriendAPI, getApkAPI } from '@/apis/echarts.js'
 import { getEssayPreviewAPI, getSignInAPI, getSignInDateAPI, getSignInSuccessAPI, getPointAPI, getEssayLoadAPI } from '@/apis/mainPage.js'
 import { getApkInfoAPI } from '@/apis/apkInfo.js'
@@ -389,7 +368,6 @@ const customColors = [
     { color: 'linear-gradient(to right,#DDFA9D,#9BD420)', percentage: 100 },
 ]
 let messageContent = ref([])//消息栏的通知
-let percentage = ref(44)
 let calendarDate = ref(new Date())
 let calendarString = ref()
 const calendar = ref()
@@ -424,6 +402,15 @@ let isDisable = ref([])
 let webSocket = ref(null)
 let personVisible = ref(false)//个人资料是否显示
 let avatar = ref('')//头像
+let isChatVisible = ref(false)//是否显示聊天框
+let inputArea = ref(null);//AI助手输入框
+let AIInput = ref(true)
+const messages = ref([
+    {
+        text: '你好啊！我是AI反诈助手，请问有什么可以帮你的吗？',
+        type: 'ai'
+    }
+])//聊天记录
 onMounted(async () => {
     // 初始化 WOW 动画和用户信息
     initializeWOW();
@@ -470,6 +457,71 @@ onMounted(async () => {
 function initializeWOW() {
     const wow = new WOW({});
     wow.init();
+}
+//点击消息
+function messageClick() {
+    console.log('点击')
+}
+async function sendClick() {
+    const inputValue = inputArea.value.value;
+    if (AIInput.value == false) {
+        ElMessage.warning('请等待回答');
+        return
+    }
+    if (!inputValue.trim()) {
+        ElMessage.warning('请输入内容');
+        return;
+    }
+    AIInput.value = false
+    // 添加用户消息到聊天记录
+    messages.value.push({ text: inputValue, type: 'user' });
+    inputArea.value.value = '';
+    // 添加“加载中...”消息
+    const loadingMessage = { text: '加载中...', type: 'ai', class: 'loading-message' };
+    messages.value.push(loadingMessage);
+    // 调用 API 获取 AI 消息
+    const res = await getAIMessageAPI(inputValue, 'v');
+    console.log(res.data);
+    // 移除“加载中...”消息
+    const lastMessageIndex = messages.value.length - 1;
+    if (messages.value[lastMessageIndex].text === '加载中...') {
+        messages.value.splice(lastMessageIndex, 1);
+    }
+    // 添加 AI 消息的占位符
+    messages.value.push({ text: '', type: 'ai' });
+    let aiMessage = res.data.data;
+    let index = 0;
+    let currentText = '';
+    const aiMessageIndex = messages.value.length - 1;
+    function typeNextCharacter() {
+        if (index < aiMessage.length) {
+            // 处理 HTML 标签和换行符
+            const nextChar = aiMessage[index++];
+            currentText += nextChar;
+            // 替换换行符为 <br> 标签
+            messages.value[aiMessageIndex].text = formatText(currentText);
+            setTimeout(typeNextCharacter, 15); // 逐字打印速度
+        } else {
+            AIInput.value = true
+        }
+    }
+    typeNextCharacter();
+}
+// 解析 HTML 内容的函数
+function formatText(text) {
+    // 将 \n 替换为 <br> 标签
+    return text.replace(/\n/g, '<br>');
+}
+//AI助手
+function toggleChat() {
+    isChatVisible.value = !isChatVisible.value;
+}
+function handlePageClick(event) {
+    // 防止点击聊天框时关闭它
+    if (event.target.closest('.affix-box') || event.target.closest('.el-button')) {
+        return;
+    }
+    isChatVisible.value = false;
 }
 // 初始化用户存储
 function initializeUserStore() {
@@ -521,19 +573,27 @@ function formatDateTime(dateString) {
     const date = new Date(dateString);
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 }
+function isValidJson(data) {
+    try {
+        JSON.parse(data);
+        console.log(data)
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
 // 处理 WebSocket 初始化
 function handleWebSocket(webSocketInstance) {
     webSocket.value = webSocketInstance;
     webSocket.value.onmessage = event => {
         console.log("websocket.onmessage: " + event.data);
-        if (event.data.apkName != undefined) {
-            ElNotification({
-                title: '新消息',
-                dangerouslyUseHTMLString: true,
-                offset: 100,
-                message: `< strong > ${event.data.apkName} 解析成功 </strong>`,
-            })
-            messageContent.value = event.data
+        if (isValidJson(event.data)) {
+            let messageData = JSON.parse(event.data)
+            console.log(messageData.data)
+            if (messageData.data.apkName != undefined) {
+                messageContent.value = webSocketStore.addMessageList(messageData.data)
+
+            }
         }
     };
     webSocket.value.onclose = () => {
@@ -550,17 +610,6 @@ function handleSignInStatus(message) {
 function isUserLoggedIn() {
     console.log(userInfo.value)
     return userInfo.value !== null;
-}
-//点击AI助手
-function AIClick(flag) {
-    const affixDiv = document.querySelector('.affix-box')
-    console.log(affixDiv.classList)
-    console.log(affixDiv.classList.length)
-    if (affixDiv.classList.length == 2 && flag == 1) {
-        affixDiv.classList.remove('affix-box-none')
-    } else {
-        affixDiv.classList.add('affix-box-none')
-    }
 }
 //点击更换头像
 function updateClick() {

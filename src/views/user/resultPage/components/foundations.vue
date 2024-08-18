@@ -171,6 +171,7 @@
 import { ref, onUnmounted, onMounted, getCurrentInstance, reactive } from "vue";
 import { getQuarkReportAPI } from '@/apis/apkInfo.js'
 import { useRouter } from 'vue-router';
+import { ElMessage } from "element-plus";
 const router = useRouter();
 let internalInstance = getCurrentInstance();
 let echarts = internalInstance.appContext.config.globalProperties.$echarts;
@@ -230,6 +231,10 @@ function javaLoadClick() {
 async function scoreClick(md5) {
     const res = await getQuarkReportAPI(md5, 'v')
     console.log(res.data)
+    if (res.data.message == '') {
+        ElMessage.warning('服务器繁忙，请稍后再试...')
+        return
+    }
     const htmlContent = res.data.message
     const newWindow = window.open('', `_blank`);
     newWindow.document.write(htmlContent);

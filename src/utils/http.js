@@ -31,7 +31,7 @@ http.interceptors.request.use(config => {
     if(user!==null){
         // console.log(user.shortToken)
         config.headers.set("Authorization",user.Accesstoken)
-    }if (config.url === '/apk-info/checkFile') {
+    }if (config.url === '/apk-info/checkFile'||config.url === '/goodan-homepage/ai') {
         // 如果是登录接口，不显示 loading 效果
         return config;
     }

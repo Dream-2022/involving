@@ -5,7 +5,7 @@
             <div class="title">可浏览的Activities</div>
             <div class="security-content">
                 <el-table :data="securityList" stripe border style="width: 100%">
-                    <el-table-column prop="data1" label="Activity" width="180" />
+                    <el-table-column prop="data1" label="Activity" :min-width="180" />
                     <el-table-column prop="data2" label="Intent" />
                 </el-table>
             </div>
@@ -15,13 +15,13 @@
             <div class="title">网络安全配置</div>
             <div class="network-content">
                 <el-table :data="networkList" stripe border style="width: 100%">
-                    <el-table-column label="序号" width="60" fixed>
+                    <el-table-column label="序号" :min-width="60" fixed>
                         <template v-slot="{ $index }">
                             <span>{{ $index + 1 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="data1" label="范围" width="180" />
-                    <el-table-column prop="data2" label="严重级别" width="120" />
+                    <el-table-column prop="data1" label="范围" :min-width="180" />
+                    <el-table-column prop="data2" label="严重级别" :min-width="120" />
                     <el-table-column prop="data3" label="描述" />
                 </el-table>
             </div>
@@ -80,13 +80,13 @@
                     </div>
                 </div>
                 <el-table :data="manifestList" style="width: 100%" stripe :row-class-name="tableRowClassName">
-                    <el-table-column label="序号" width="60" fixed>
+                    <el-table-column label="序号" :min-width="60" fixed>
                         <template v-slot="{ $index }">
                             <span>{{ $index + 1 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="data1" label="问题" :min-width="100" :max-width="350" />
-                    <el-table-column prop="data2" label="严重程度" :min-width="80" :max-width="150">
+                    <el-table-column prop="data1" label="问题" :min-width="100" />
+                    <el-table-column prop="data2" label="严重程度" :min-width="80">
                         <template #default="{ row }">
                             <div class="column" :class="getButtonClass(row.data2)">
                                 {{ row.data2 }}
@@ -103,8 +103,8 @@
             <div class="apiInvoke-title">API调用</div>
             <div class="apiInvoke-content">
                 <el-table :data="apiInvokeList" style="width: 100%" stripe :row-class-name="tableRowClassName">
-                    <el-table-column prop="data1" label="API功能" :min-width="100" :max-width="350" />
-                    <el-table-column prop="data2" label="源码文件" :min-width="80" :max-width="150">
+                    <el-table-column prop="data1" label="API功能" :min-width="100" />
+                    <el-table-column prop="data2" label="源码文件" :min-width="80">
                         <template #default="{ row }">
                             <!-- //v-slot="{ $index } -->
                             <el-button color="#547BF1" @click="toggleFileDisplay(row.id)" size="small">{{
@@ -149,9 +149,9 @@
                             <span>{{ $index + 1 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="data1" label="API功能" :min-width="70" :max-width="120" />
-                    <el-table-column prop="data3" label="参考标准" :min-width="100" :max-width="220" />
-                    <el-table-column prop="data4" label="文件位置" :min-width="80" :max-width="150">
+                    <el-table-column prop="data1" label="API功能" :min-width="70" />
+                    <el-table-column prop="data3" label="参考标准" :min-width="100" />
+                    <el-table-column prop="data4" label="文件位置" :min-width="80">
                         <template #default="{ row }">
                             <el-button color="#547BF1" @click="CodeFileDisplay(row.id)" size="small">{{
                     showCodeFile[row.id] == false ? "显示文件" : "收起文件" }}</el-button>
@@ -160,7 +160,7 @@
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="data5" label="操作" :min-width="120" :max-width="250" />
+                    <el-table-column prop="data5" label="操作" :min-width="120" />
                     <el-table-column prop="data2" label="等级" width="90">
                         <template #default="{ row }">
                             <div class="column" :class="getButtonClass(row.data2)">
@@ -176,12 +176,12 @@
             <div class="dynamic-title">动态库分析</div>
             <div class="dynamic-content">
                 <el-table :data="dynamicList" style="width: 100%" stripe :row-class-name="tableRowClassName">
-                    <el-table-column label="序号" width="60" fixed>
+                    <el-table-column label="序号" :min-width="60" fixed>
                         <template v-slot="{ $index }">
                             <span>{{ $index + 1 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column label="NX(堆栈禁止执行)" width="180">
+                    <el-table-column label="NX(堆栈禁止执行)" :min-width="180">
                         <template #default="{ row }">
                             <div>
                                 <strong>{{ row.data2.info1 }}</strong>
@@ -192,7 +192,7 @@
                             <div>{{ row.data2.info3 }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="STACK CANARY(栈保护)" width="220">
+                    <el-table-column label="STACK CANARY(栈保护)" :min-width="220">
                         <template #default="{ row }">
                             <div>
                                 <strong>{{ row.data3.info1 }}</strong>
@@ -203,7 +203,7 @@
                             <div>{{ row.data3.info3 }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="RELRO" width="220">
+                    <el-table-column label="RELRO" :min-width="220">
                         <template #default="{ row }">
                             <div>
                                 <strong>{{ row.data4.info1 }}</strong>
@@ -214,7 +214,7 @@
                             <div>{{ row.data4.info3 }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="RPATH(指定SO搜索路径)" width="180">
+                    <el-table-column label="RPATH(指定SO搜索路径)" :min-width="180">
                         <template #default="{ row }">
                             <div>
                                 <strong>{{ row.data5.info1 }}</strong>
@@ -225,7 +225,7 @@
                             <div>{{ row.data5.info3 }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="RUNPATH(指定SO搜索路径)" width="180">
+                    <el-table-column label="RUNPATH(指定SO搜索路径)" :min-width="180">
                         <template #default="{ row }">
                             <div>
                                 <strong>{{ row.data6.info1 }}</strong>
@@ -236,7 +236,7 @@
                             <div>{{ row.data6.info3 }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="FORTIFY(常用函数加强检查)" width="260">
+                    <el-table-column label="FORTIFY(常用函数加强检查)" :min-width="260">
                         <template #default="{ row }">
                             <div>
                                 <strong>{{ row.data7.info1 }}</strong>
@@ -247,7 +247,7 @@
                             <div>{{ row.data7.info3 }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="SYMBOLS STRIPPED(裁剪符号表)" width="120">
+                    <el-table-column label="SYMBOLS STRIPPED(裁剪符号表)" :min-width="120">
                         <template #default="{ row }">
                             <div>
                                 <strong>{{ row.data8.info1 }}</strong>
@@ -258,7 +258,7 @@
                             <div>{{ row.data8.info3 }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="data1" fixed="right" label="动态库" width="150" />
+                    <el-table-column prop="data1" fixed="right" label="动态库" :min-width="150" />
                 </el-table>
             </div>
         </div>
@@ -267,12 +267,12 @@
             <div class="fileAnalysis-title">文件分析</div>
             <div class="fileAnalysis-content">
                 <el-table :data="fileAnalysisList" style="width: 100%" stripe :row-class-name="tableRowClassName">
-                    <el-table-column label="序号" width="60" fixed>
+                    <el-table-column label="序号" :min-width="60" fixed>
                         <template v-slot="{ $index }">
                             <span>{{ $index + 1 }}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column fixed prop="data1" label="问题" :min-width="100" :max-width="500" />
+                    <el-table-column fixed prop="data1" label="问题" :min-width="100" />
                     <el-table-column prop="data2" label="文件" :min-width="200" />
                 </el-table>
             </div>

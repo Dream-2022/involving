@@ -26,6 +26,15 @@
             </el-select>
             <div style="font-size: 12px;margin-top:8px; color:#4d4d4d">注：选择不同的APK分类模型消耗的积分不同</div>
         </div>
+        <div v-if="isActiveAnalysis">
+            <span style="font-size: 14px;display: inline-block;">APK运行时间：</span>
+            <el-select v-model="timeSelect" style="height: 28px; max-width: 430px;">
+                <el-option v-for="item in [1, 2, 3, 4, 5]" :key="item" :label="`${item} 分钟`" :value="item">
+                    {{ item }} 分钟
+                </el-option>
+            </el-select>
+            <div style="font-size: 12px;margin-top:8px; color:#4d4d4d">注：选择不同的APK分类模型消耗的积分不同</div>
+        </div>
         <div class=" button-box">
             <el-button color="#547BF1" @click="uploadClick" :disabled="isUploadClick">
                 {{ isActiveAnalysis ? '开始动态分析' : '开始静态分析' }}
@@ -51,11 +60,12 @@ import { ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/userStore.js'
 import { useWebSocketStore } from '@/stores/webSocketStore.js';
 import { useStaticDataStore } from '@/stores/staticDataStore.js';
-import { multipartUploadAPI, finishUploadAPI, finishUploadDynamicAPI } from '@/apis/multipartUpload.js'
+import { multipartUploadAPI, finishUploadAPI, finishUploadDynamicAPI, multipartDynamicAPI } from '@/apis/multipartUpload.js'
 import '@/utils/spark-md5.min.js'
 const router = useRouter();
 const route = useRoute();
 let modeSelect = ref('基于指令集的3-gram分类模型')
+let timeSelect = ref(1)
 const modeList = [
     {
         label: '基于指令集的3-gram分类模型',
@@ -88,7 +98,7 @@ onMounted(async () => {
         webSocket.value.onmessage = function (event) {
             console.log("websocket.onmessage: " + event.data);
             if (!isNaN(parseInt(event.data))) {
-                isProgress.value = event.data
+                isProgress.value = parseInt(event.data)
                 if (isProgress.value == 100) {
                     setTimeout(() => {
                         isProgress.value = -1
@@ -119,7 +129,6 @@ async function uploadClick() {
         ElMessage.error('上传文件不能为空！');
         return;
     }
-    isUploadClick.value = true
     console.log(fileX.value.raw);
     const file = fileX.value.raw;
     const extension = file.name.split('.').pop();
@@ -177,9 +186,10 @@ async function uploadClick() {
             uploadList.value = []
         }
         ElMessage.success("上传成功，等待分析. . .")
-        isProgress.value = 0
         //静态或动态分析的请求(上传文件完毕后)
         if (isActiveAnalysis.value == false) {//静态
+            isProgress.value = 0
+            isUploadClick.value = true
             const res = await finishUploadAPI(fileMd5, 'v')
             if (res.data.code == 415) {
                 setTimeout(() => {
@@ -206,7 +216,8 @@ async function uploadClick() {
             router.push('/userResultPage')
             isUploadClick.value = false
         } else {//动态
-            const res = await finishUploadDynamicAPI(fileMd5, 'v')
+            console.log(timeSelect.value)
+            const res = await finishUploadDynamicAPI(timeSelect.value, fileMd5, 'v')
             if (res.data.code == 415) {
                 setTimeout(() => {
                     ElMessage.warning(res.data.message)
@@ -224,7 +235,6 @@ async function uploadClick() {
             localStorage.setItem('dynamicDataList', JSON.stringify(res.data.data))
             ElMessage.success('apk 解析完毕')
             router.push('/userResultPage/dynamic/foundation')
-            isUploadClick.value = false
         }
     } catch (error) {
         console.error('上传过程中出现错误:', error);
@@ -283,7 +293,12 @@ async function getFileMd5(file) {
 }
 //分片上传的请求
 async function upload(totalNumber, chunkNumber, md5, file, k) {
-    const res = await multipartUploadAPI(totalNumber, chunkNumber, md5, file, k);
+    let res = null
+    if (isActiveAnalysis.value == true) {
+        res = await multipartDynamicAPI(totalNumber, chunkNumber, md5, file, k)
+    } else {
+        res = await multipartUploadAPI(totalNumber, chunkNumber, md5, file, k);
+    }
     return res
 }
 //文件分片后上传

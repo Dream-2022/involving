@@ -120,6 +120,7 @@
 
         .iconfont {
             margin-right: 15px;
+            margin-left: 15px;
         }
 
         .icon-down1::before {
@@ -133,6 +134,9 @@
             }
             .el-dropdown-menu{
                 margin: 20px 5px;
+            }
+            .icon-lingdang-xianxing{
+                margin:0;
             }
         }
     }
@@ -211,7 +215,7 @@
     width: 70%;
     font-size: 15px;
     margin: 0 auto;
-    margin-top: 45px;
+    margin-top: 80px;
     display: grid;
     grid-template-columns: repeat(6, 10%);
     grid-gap: 10px 8%;
@@ -285,7 +289,7 @@
         grid-template-areas:
             "chart1 chart1 chart2 chart2 chart3 chart3 chart4 chart4"
             "footer1 footer1 footer1 footer2 footer2 footer2 footer2 footer2";
-        grid-template-rows: 175px 450px;
+        grid-template-rows: 200px 490px;
         grid-template-columns: repeat(8, 11%);
         grid-gap: 10px 1.7%;
         margin-right: 10px;
@@ -668,7 +672,7 @@
             display: flex;
             align-items: center;
             border-radius: 10px 10px 0 0;
-            height: 40px;
+            height: 55px;
             line-height: 25px;
             border-bottom: 1px solid #ccc;
 
@@ -717,6 +721,7 @@
 
 
         .el-calendar {
+            margin-top:20px;
             .is-selected {
                 color: #1989fa;
             }
@@ -981,93 +986,6 @@
         }
     }
 }
-.el-affix{
-    .affix-box{
-        font-size: 13px;
-        box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.1);
-        opacity:1;
-        background-color: #fff;
-        height: 450px;
-        width: 350px;
-        margin-left: 30px;
-        margin-bottom: 5px;
-        border-radius: 10px;
-    }
-    .affix-top{
-        display: flex;
-        line-height: 40px;
-        color: #fff;
-        background-color: #065fed;
-        border-radius: 10px 10px 0 0;
-
-        .affix-title{
-            font-size: 16px;
-            margin-right: auto;
-            margin-left: 20px;
-        }
-        .icon-close::before{
-            font-size: 15px;
-            margin-right: 20px;
-        }
-    }
-    .affix-bottom{
-        padding: 3px 10px 3px 10px;
-        height: 360px;
-        overflow-y: auto;
-
-        .affix-left{
-            margin-top: 8px;
-            margin-bottom: 8px;
-            display: flex;
-            .affix-left-content{
-                margin-right: auto;
-                max-width: 90%;
-                border-radius: 8px;
-                padding: 5px;
-                padding-left: 6px;
-                background-color: #f1f1f1;
-            }
-        }
-
-        .affix-right{
-            margin-top: 8px;
-            margin-bottom: 8px;
-            display: flex;
-            
-            .affix-right-content{
-                margin-left:auto;
-                max-width: 90%;
-                border-radius: 8px;
-                padding: 5px;
-                padding-left: 6px;
-                background-color: #a9f0b9;
-            }
-        }
-    }
-    .affix-input{
-        line-height: 40px;
-        .input{
-            width:82%;
-            height: 16px;
-            padding-top:2px;
-            padding-left: 10px;
-            outline: none;
-        }
-    }
-    .affix-box-none{
-        opacity: 0;
-    }
-    .icon-rengongzhineng::before {
-        font-size: 35px;
-        font-weight: 300;
-    }
-    .icon-fabusekuai::before{
-        color:#065fed;
-        font-size:22px;
-        margin-left: 10px;
-        cursor: pointer;
-    }
-}
         ::-webkit-scrollbar {
             width: 5px;
         }
@@ -1086,3 +1004,116 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgb(67, 144, 233);
         }
+
+/* 聊天*/
+.affix-box {
+    position: fixed;
+    bottom: 130px;
+    right: 80px;
+    width: 380px;
+    background-color: #fff;
+    box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+    transform: translateY(180%);
+    z-index: 20;
+    overflow: hidden;
+}
+
+.affix-box-show {
+    transform: translateY(0);
+}
+
+.affix-top {
+    display: flex;
+    line-height: 40px;
+    color: #fff;
+    background-color: #065fed;
+    border-radius: 10px 10px 0 0;
+}
+
+.affix-title {
+    font-size: 16px;
+    margin-right: auto;
+    margin-left: 20px;
+}
+
+.icon-close::before {
+    font-size: 15px;
+    margin-right: 20px;
+}
+
+.affix-bottom {
+    font-size: 15px;
+    padding: 3px 10px;
+    height: 450px;
+    overflow-y: auto;
+}
+.affix-left {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    word-break: break-all;
+}
+
+.affix-left-content {
+    margin-right: auto;
+    max-width: 90%;
+    border-radius: 8px;
+    padding: 5px;
+    padding-left: 6px;
+    background-color: #f1f1f1;
+}
+
+.affix-right {
+    margin-top: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    word-break: break-all;
+}
+
+.affix-right-content {
+    margin-left: auto;
+    max-width: 90%;
+    border-radius: 8px;
+    padding: 5px;
+    padding-left: 6px;
+    background-color: #a9f0b9;
+}
+
+.affix-input {
+    line-height: 40px;
+    .icon-fabusekuai::before{
+        padding:5px;
+    }
+}
+
+.input {
+    width: 82%;
+    height: 16px;
+    padding-top: 2px;
+    padding-left: 10px;
+    outline: none;
+}
+
+.icon-rengongzhineng::before {
+    font-size: 35px;
+    font-weight: 300;
+}
+
+.icon-fabusekuai::before {
+    color: #065fed;
+    font-size: 22px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.AIInputGray::before{
+    color: #6e6e6e;
+}
+
+
+// .el-dropdown__popper{
+//     .el-dropdown__list{
+//         width: 300px;
+//     }
+// }

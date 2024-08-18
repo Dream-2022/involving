@@ -47,10 +47,10 @@
                             <div :class="row.isVip == 1 ? 'vip' : 'noVip'">{{ row.isVip == 1 ? '会员用户' : '普通用户' }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="totalPoints" label="会员积分" width="150" />
-                    <el-table-column prop="totalFriends" label="邀请好友数" width="150" />
-                    <el-table-column prop="totalDetections" label="用户检测数" width="150" />
-                    <el-table-column fixed="right" label="操作" width="180">
+                    <el-table-column prop="totalPoints" label="会员积分" :min-width="150" />
+                    <el-table-column prop="totalFriends" label="邀请好友数" :min-width="150" />
+                    <el-table-column prop="totalDetections" label="用户检测数" :min-width="150" />
+                    <el-table-column fixed="right" label="操作" width="220">
                         <template #default="{ row }">
                             <div>
                                 <el-button color="#368eec" size="small" style="margin-bottom: 10px;">设置会员</el-button>

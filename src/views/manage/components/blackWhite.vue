@@ -69,7 +69,7 @@
                         <template #default="{ row }">
                             <div>
                                 <el-button color="#7dc15b" size="small" style="margin-bottom: 10px; color:#fff;"
-                                    @click="safeClick(row.fileMd5)">安全评分</el-button>
+                                    @click="scoreClick(row.fileMd5)">安全评分</el-button>
                             </div>
                             <div>
                                 <el-button color="#368eec" size="small" @click="staticClick(row.fileMd5)"
@@ -77,7 +77,7 @@
                             </div>
                             <div>
                                 <el-button color="#a372df" size="small" style="margin-bottom: 10px; color: #fff;"
-                                    @click="safeClick(row.fileMd5)">点击下载</el-button>
+                                    @click="temLoadClick(row.essayId)">点击下载</el-button>
                             </div>
                         </template>
                     </el-table-column>
@@ -99,55 +99,55 @@
             <div v-else>
                 <el-table ref="exportTableRef" :data="blackWhiteList?.blackList?.records" style="width: 100%" stripe
                     :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
-                    <el-table-column label="应用程序" width="160">
+                    <el-table-column label="应用程序" :min-width="160">
                         <template #default="{ row }">
                             <div><img :src="row.apkIconPath" class="apk-img"></div>
                             <div><strong>{{ row.apkName }}</strong></div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="包名" width="150">
+                    <el-table-column label="包名" :min-width="150">
                         <template #default="{ row }">
                             <div v-html="row.apkPackageName"></div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="MD5值" width="290">
+                    <el-table-column label="MD5值" :min-width="290">
                         <template #default="{ row }">
                             <div v-html="row.fileMd5"></div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="类型" width="140">
+                    <el-table-column label="类型" :min-width="140">
                         <template #default="{ row }">
                             <div style="display:flex; justify-content: center;">
                                 <div class="first-label" :class="getClass(row.apkDesc)">{{ row.apkDesc }}</div>
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="加固信息" width="180">
+                    <el-table-column label="加固信息" :min-width="180">
                         <template #default="{ row }">
                             <div v-html="row.hardeningInfo"></div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="安全评分" width="140">
+                    <el-table-column label="安全评分" :min-width="140">
                         <template #default="{ row }">
                             <div class="colorLabel" :class="getClass(row.secureScore)">{{ row.secureScore }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="目标SDK" width="100">
+                    <el-table-column label="目标SDK" :min-width="100">
                         <template #default="{ row }">
                             <div>{{ row.targetSdkVersion }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="版本" width="180">
+                    <el-table-column label="版本" :min-width="180">
                         <template #default="{ row }">
                             <div>版本号: {{ row.versionCode }}</div>
                             <div>版本名: {{ row.versionName }}</div>
                         </template>
                     </el-table-column>
-                    <el-table-column fixed="right" label="查看" width="90">
+                    <el-table-column fixed="right" label="查看" :min-width="90">
                         <template #default="{ row }">
                             <div>
                                 <el-button color="#7dc15b" size="small" style="margin-bottom: 10px; color:#fff;"
-                                    @click="safeClick(row.fileMd5)">安全评分</el-button>
+                                    @click="scoreClick(row.fileMd5)">安全评分</el-button>
                             </div>
                             <div>
                                 <el-button color="#368eec" size="small" @click="staticClick(row.fileMd5)"
@@ -155,11 +155,11 @@
                             </div>
                             <div>
                                 <el-button color="#a372df" size="small" style="margin-bottom: 10px; color: #fff;"
-                                    @click="safeClick(row.fileMd5)">点击下载</el-button>
+                                    @click="temLoadClick(row.essayId)">点击下载</el-button>
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column fixed="right" label="操作" width="100">
+                    <el-table-column fixed="right" label="操作" width="120">
                         <template #default="{ row }">
                             <div>
                                 <el-button color="#e6a23c" plain size="small"
@@ -183,7 +183,7 @@ import { useRouter } from 'vue-router';
 import { Delete, Plus, Position } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import * as XLSX from 'xlsx';
-import { getApkInfoAPI } from '@/apis/apkInfo.js'
+import { getApkInfoAPI, getQuarkReportAPI } from '@/apis/apkInfo.js'
 import { getBlackWhiteAPI } from '@/apis/apkInfo.js'
 const router = useRouter();
 const exportTableRef = ref(null);
@@ -313,6 +313,30 @@ function exportClick() {
     const wb = XLSX.utils.table_to_book(tableDom);
 
     XLSX.writeFile(wb, `${navigationValue.value == true ? '白名单' : '黑名单'}数据.xlsx`);
+}
+//点击下载范本
+async function temLoadClick(id) {
+    const res = await getEssayLoadAPI('v', id)
+    if (res.data.message == "下载范文成功") {
+        ElMessage.success('下载中...')
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.href = res.data.data
+        a.click();
+        document.body.removeChild(a);
+    }
+}
+async function scoreClick(md5) {
+    const res = await getQuarkReportAPI(md5, 'v')
+    console.log(res.data)
+    if (res.data.message == '') {
+        ElMessage.warning('服务器繁忙，请稍后再试...')
+        return
+    }
+    const htmlContent = res.data.message
+    const newWindow = window.open('', `_blank`);
+    newWindow.document.write(htmlContent);
 }
 //点击静态报告
 async function staticClick(md5) {

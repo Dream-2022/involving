@@ -19,6 +19,24 @@ export const multipartUploadAPI=(totalNumber,chunkNumber,md5,file,k)=>{
         }
     })
 }
+export const multipartDynamicAPI=(totalNumber,chunkNumber,md5,file,k)=>{
+    return http({
+        url:"/dynamic-analysis/uploadBig",
+        method:"POST",
+        headers: {
+            "Content-Type": 'multipart/form-data'
+        },
+        params:{
+            k
+        },
+        data:{
+            totalNumber,
+            chunkNumber,
+            md5,
+            file
+        }
+    })
+}
 //检查是否成功上传和静态分析
 export const finishUploadAPI=(md5,k)=>{
     return http({
@@ -34,12 +52,13 @@ export const finishUploadAPI=(md5,k)=>{
     })
 }
 //检查是否成功上传和静态分析
-export const finishUploadDynamicAPI=(md5,k)=>{
+export const finishUploadDynamicAPI=(time,md5,k)=>{
     return http({
         url:"/dynamic-analysis/checkFile",
         method:"POST",
         headers: {
-            "Content-Type": 'multipart/form-data'
+            "Content-Type": 'multipart/form-data',
+            'timeout':time
         },
         params:{
             k

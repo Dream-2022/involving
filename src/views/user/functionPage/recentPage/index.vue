@@ -5,29 +5,29 @@
                 最近分析
             </div>
             <div class="middle-word">以下内容是访客的分析记录，如果您不希望公开自己的分析记录，请在上传分析前登录用户账号</div>
-            <el-table :data="recentAnalysisList" style="width: 100%" stripe
+            <el-table :data="recentAnalysisList" style="min-width: 100%" stripe
                 :header-cell-style="{ 'text-align': 'center' }" :cell-style="{ 'text-align': 'center' }">
-                <el-table-column prop="data1" label="应用程序" width="220">
+                <el-table-column prop="data1" label="应用程序" min-width="220">
                     <template #default="{ row }">
                         <div><img :src="row.apkIconPath" class="apk-img"></div>
                         <div><strong>{{ row.apkName }}</strong></div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="fileName" label="文件名称" width="240" />
-                <el-table-column label="类型" width="180">
+                <el-table-column prop="fileName" label="文件名称" min-width="240" />
+                <el-table-column label="类型" min-width="180">
                     <template #default="{ row }">
                         <span class="first-label" :class="getClass(row?.apkDesc)">{{ row?.apkDesc }}
                         </span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="fileMd5" label="MD5值" width="360" />
-                <el-table-column label="安全评分" width="120">
+                <el-table-column prop="fileMd5" label="MD5值" min-width="360" />
+                <el-table-column label="安全评分" min-width="120">
                     <template #default="{ row }">
                         <div class="colorLabel" :class="getClass(row.secureScore)">{{ row.secureScore }}</div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="detectedTime" label="最后分析时间" width="220" />
-                <el-table-column label="操作" width="120" fixed="right">
+                <el-table-column prop="detectedTime" label="最后分析时间" min-width="220" />
+                <el-table-column label="操作" min-width="120" fixed="right">
                     <template #default="{ row }">
                         <el-button color="#547BF1" size="small" plain @click="scoreClick(row.fileMd5)"
                             style="margin-left:12px; margin-bottom: 10px; ">
@@ -71,6 +71,10 @@ async function safeClick(md5) {
 async function scoreClick(md5) {
     const res = await getQuarkReportAPI(md5, 'v')
     console.log(res.data)
+    if (res.data.message == '') {
+        ElMessage.warning('服务器繁忙，请稍后再试...')
+        return
+    }
     const htmlContent = res.data.message
     const newWindow = window.open('', `_blank`);
     newWindow.document.write(htmlContent);

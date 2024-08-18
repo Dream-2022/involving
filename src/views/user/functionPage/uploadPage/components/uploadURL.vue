@@ -1,7 +1,7 @@
 <template>
     <div class="upload-box">
         <div class="iconfont icon-networks"></div>
-        <el-input v-model="inputContent" style="width: 95%" placeholder="akp 下载链接（支持下载链接，内嵌二维码链接，网页点击下载按钮链接）" />
+        <el-input v-model="inputContent" style="width: 95%" placeholder="apk 下载链接（支持下载链接，内嵌二维码链接，网页点击下载按钮链接）" />
         <div style="margin-bottom: 20px;">
             <el-button-group style="margin: 10px 0 10px 5px" v-model="selectValue">
                 <el-button @click="selectValue = false" style="border-top-left-radius:15px;"

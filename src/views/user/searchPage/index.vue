@@ -27,29 +27,29 @@
                                 <div v-html="row.apkName"></div>
                             </template>
                         </el-table-column>
-                        <el-table-column label="文件名" width="180">
+                        <el-table-column label="文件名" :min-width="180">
                             <template #default="{ row }">
                                 <div v-html="row.fileName"></div>
                             </template>
                         </el-table-column>
-                        <el-table-column label="包名" width="150">
+                        <el-table-column label="包名" :min-width="150">
                             <template #default="{ row }">
                                 <div v-html="row.apkPackageName"></div>
                             </template>
                         </el-table-column>
-                        <el-table-column label="MD5值" width="290">
+                        <el-table-column label="MD5值" :min-width="290">
                             <template #default="{ row }">
                                 <div v-html="row.fileMd5"></div>
                             </template>
                         </el-table-column>
-                        <el-table-column label="类型" width="140">
+                        <el-table-column label="类型" :min-width="140">
                             <template #default="{ row }">
                                 <div style="display:flex; justify-content: center;">
                                     <div class="backLabel" :class="getClass(row.apkDesc)">{{ row.apkDesc }}</div>
                                 </div>
                             </template>
                         </el-table-column>
-                        <el-table-column label="安全评分" width="140">
+                        <el-table-column label="安全评分" :min-width="140">
                             <template #default="{ row }">
                                 <div class="colorLabel" :class="getClass(row.secureScore)">{{
                 row.secureScore }}</div>
@@ -200,7 +200,7 @@ function exitClick() {
     margin-top: 60px;
     padding: 60px;
     z-index: -5;
-    min-height: 820px;
+    min-height: 1180px;
 
     .file-content-main {
         background-color: #fff;

@@ -14,16 +14,16 @@
             <el-divider />
             <el-table :data="templateList" style="width: 100%" stripe :header-cell-style="{ 'text-align': 'center' }"
                 :cell-style="{ 'text-align': 'center' }">
-                <el-table-column label="序号" width="120" fixed>
+                <el-table-column label="序号" :min-width="120" fixed>
                     <template v-slot="{ $index }">
                         <span>{{ $index + 1 }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="essayTitle" label="范本名" width="450" />
-                <el-table-column prop="essayWriter" label="作者" width="250" />
-                <el-table-column prop="downloadNum" label="下载数量" width="120" />
-                <el-table-column prop="publicationTime" label="上传时间" width="250" />
-                <el-table-column label="操作" width="170" fixed="right">
+                <el-table-column prop="essayTitle" label="范本名" :min-width="450" />
+                <el-table-column prop="essayWriter" label="作者" :min-width="250" />
+                <el-table-column prop="downloadNum" label="下载数量" :min-width="120" />
+                <el-table-column prop="publicationTime" label="上传时间" :min-width="250" />
+                <el-table-column label="操作" :min-width="170" fixed="right">
                     <template #default="{ row }">
                         <el-button color="#547BF1" size="small" plain @click="templateClick(row.essayId)"
                             style="margin-left:12px; margin-bottom: 10px; ">
